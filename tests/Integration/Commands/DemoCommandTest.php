@@ -9,11 +9,9 @@ use Capell\Core\Models\Site;
 
 describe('capell:address-demo command', function (): void {
     it('creates demo address and links it to the site', function (): void {
-        $languageModel = Language::class;
-        $language = $languageModel::factory()->english()->create();
+        $language = Language::factory()->english()->create();
 
-        $siteModel = Site::class;
-        $site = $siteModel::factory()
+        $site = Site::factory()
             ->language($language)
             ->create([
                 'name' => 'Demo Site',
@@ -43,8 +41,7 @@ describe('capell:address-demo command', function (): void {
     });
 
     it('creates reusable demo address content when no sites exist', function (): void {
-        $languageModel = Language::class;
-        $languageModel::factory()->english()->create();
+        Language::factory()->english()->create();
 
         $this->artisan('capell:address-demo')
             ->expectsOutputToContain('No sites found. Created reusable demo address content without linking it to a site.')
@@ -76,9 +73,8 @@ describe('capell:address-demo command', function (): void {
     });
 
     it('uses the existing english language when available', function (): void {
-        $languageModel = Language::class;
-        $french = $languageModel::factory()->french(isDefault: true, order: 1)->create();
-        $english = $languageModel::factory()->english(isDefault: false, order: 2)->create();
+        $french = Language::factory()->french(isDefault: true, order: 1)->create();
+        $english = Language::factory()->english(isDefault: false, order: 2)->create();
 
         $this->artisan('capell:address-demo')
             ->expectsOutputToContain('Address demo content inserted successfully.')
@@ -92,9 +88,8 @@ describe('capell:address-demo command', function (): void {
     });
 
     it('uses the default language when english does not exist', function (): void {
-        $languageModel = Language::class;
-        $french = $languageModel::factory()->french(isDefault: true, order: 2)->create();
-        $german = $languageModel::factory()->german(isDefault: false, order: 1)->create();
+        $french = Language::factory()->french(isDefault: true, order: 2)->create();
+        $german = Language::factory()->german(isDefault: false, order: 1)->create();
 
         $this->artisan('capell:address-demo')
             ->expectsOutputToContain('Address demo content inserted successfully.')
@@ -109,9 +104,8 @@ describe('capell:address-demo command', function (): void {
     });
 
     it('uses the first ordered language when english and default languages do not exist', function (): void {
-        $languageModel = Language::class;
-        $german = $languageModel::factory()->german(isDefault: false, order: 2)->create();
-        $french = $languageModel::factory()->french(isDefault: false, order: 1)->create();
+        $german = Language::factory()->german(isDefault: false, order: 2)->create();
+        $french = Language::factory()->french(isDefault: false, order: 1)->create();
 
         $this->artisan('capell:address-demo')
             ->expectsOutputToContain('Address demo content inserted successfully.')
@@ -126,8 +120,7 @@ describe('capell:address-demo command', function (): void {
     });
 
     it('fails when explicitly selected sites cannot be found', function (): void {
-        $languageModel = Language::class;
-        $languageModel::factory()->english()->create();
+        Language::factory()->english()->create();
 
         $this->artisan('capell:address-demo', [
             '--sites' => 'Missing Site',

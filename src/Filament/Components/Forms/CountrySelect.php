@@ -6,12 +6,15 @@ namespace Capell\Address\Filament\Components\Forms;
 
 use Capell\Address\Actions\GetCountryNameAction;
 use Capell\Address\Actions\ListCountryOptionsAction;
+use Capell\Address\Enums\ResourceEnum;
 use Capell\Address\Filament\Resources\Countries\Schemas\CountryForm;
 use Capell\Address\Models\Country;
+use Capell\Admin\Support\AdminSurfaceLookup;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Gate;
 use Override;
 
 class CountrySelect extends Select
@@ -22,6 +25,22 @@ class CountrySelect extends Select
         parent::setUp();
 
         $this->label(__('capell-address::form.country'))
+            ->helperText(fn (): ?string => Country::query()->enabled()->exists() ? null : (string) __('capell-address::import.no_active_countries'))
+            ->hintAction(Action::make('importCountries')
+                ->label(__('capell-address::import.action'))
+                ->visible(function (): bool {
+                    $resource = AdminSurfaceLookup::resource(ResourceEnum::Country);
+
+                    return ! Country::query()->enabled()->exists()
+                        && $resource::canViewAny()
+                        && Gate::allows('create', Country::class)
+                        && Gate::allows('update', new Country);
+                })
+                ->url(function (): string {
+                    $resource = AdminSurfaceLookup::resource(ResourceEnum::Country);
+
+                    return $resource::getUrl(parameters: ['action' => 'import']);
+                }))
             ->searchable()
             ->options(
                 fn (self $component): array => ListCountryOptionsAction::run(null, $component->getOptionsLimit()),
@@ -40,7 +59,7 @@ class CountrySelect extends Select
             ->model(Country::class))
             ->createOptionAction(
                 fn (Action $action): Action => $action
-                    ->modalHeading(__('capell-admin::generic.language'))
+                    ->modalHeading(__('capell-address::form.country'))
                     ->model(Country::class)
                     ->successNotificationTitle(
                         fn (Action $action): string => __(

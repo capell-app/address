@@ -2,9 +2,33 @@
 
 declare(strict_types=1);
 
+use Capell\Address\Actions\ImportCountriesAction;
 use Capell\Address\Models\Country;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+
+it('uses the validated upload format when a temporary path has no dataset extension', function (string $format, string $contents): void {
+    $path = addressCountryDatasetPath('upload.tmp');
+    File::put($path, $contents);
+
+    try {
+        $importer = resolve(ImportCountriesAction::class);
+        $preview = $importer->handle($path, dryRun: true, format: $format);
+
+        expect($preview->created)->toBe(1)
+            ->and(Country::query()->where('iso2', 'GB')->exists())->toBeFalse();
+
+        $result = $importer->handle($path, format: $format);
+
+        expect($result->created)->toBe(1)
+            ->and(Country::query()->where('iso2', 'GB')->exists())->toBeTrue();
+    } finally {
+        File::delete($path);
+    }
+})->with([
+    'json' => ['json', '[{"name":"United Kingdom","iso2":"GB","iso3":"GBR"}]'],
+    'csv' => ['csv', "name,iso2,iso3\nUnited Kingdom,GB,GBR\n"],
+]);
 
 it('imports JSON country datasets and can restore or disable countries', function (): void {
     Country::factory()->create([

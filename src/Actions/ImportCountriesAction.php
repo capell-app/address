@@ -14,7 +14,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
 use RuntimeException;
 
 /**
- * @method static ImportCountriesResultData run(string $path, bool $dryRun = false, bool $disableMissing = false, bool $restore = false)
+ * @method static ImportCountriesResultData run(string $path, bool $dryRun = false, bool $disableMissing = false, bool $restore = false, ?string $format = null)
  */
 final class ImportCountriesAction
 {
@@ -26,6 +26,7 @@ final class ImportCountriesAction
         bool $dryRun = false,
         bool $disableMissing = false,
         bool $restore = false,
+        ?string $format = null,
     ): ImportCountriesResultData {
         if (! File::isFile($path)) {
             throw new InvalidArgumentException(sprintf('Country dataset [%s] does not exist.', $path));
@@ -37,8 +38,10 @@ final class ImportCountriesAction
         $restored = 0;
         /** @var list<string> $importedIso2 */
         $importedIso2 = [];
+        /** @var list<int> $matchedIds */
+        $matchedIds = [];
 
-        foreach ($this->rows($path) as $row) {
+        foreach ($this->rows($path, $format) as $row) {
             $countryData = $this->countryData($row);
 
             if ($countryData === null) {
@@ -63,6 +66,7 @@ final class ImportCountriesAction
                 continue;
             }
 
+            $matchedIds[] = $country->id;
             $wasTrashed = $country->trashed();
             $country->forceFill($countryData + [
                 'status' => true,
@@ -89,7 +93,7 @@ final class ImportCountriesAction
             }
         }
 
-        $disabled = $this->disableMissingCountries(array_values(array_unique($importedIso2)), $dryRun, $disableMissing);
+        $disabled = $this->disableMissingCountries(array_values(array_unique($importedIso2)), $dryRun, $disableMissing, $matchedIds);
 
         return new ImportCountriesResultData(
             created: $created,
@@ -104,9 +108,9 @@ final class ImportCountriesAction
     /**
      * @return iterable<array<string, mixed>>
      */
-    private function rows(string $path): iterable
+    private function rows(string $path, ?string $format = null): iterable
     {
-        return match (strtolower(pathinfo($path, PATHINFO_EXTENSION))) {
+        return match (strtolower($format ?? pathinfo($path, PATHINFO_EXTENSION))) {
             'json' => $this->jsonRows($path),
             'csv' => $this->csvRows($path),
             default => throw new InvalidArgumentException('Country dataset must be a JSON or CSV file.'),
@@ -120,8 +124,8 @@ final class ImportCountriesAction
     {
         try {
             $data = json_decode((string) File::get($path), associative: true, flags: JSON_THROW_ON_ERROR);
-        } catch (JsonException $exception) {
-            throw new InvalidArgumentException('Country JSON dataset could not be decoded.', previous: $exception);
+        } catch (JsonException $jsonException) {
+            throw new InvalidArgumentException('Country JSON dataset could not be decoded.', $jsonException->getCode(), previous: $jsonException);
         }
 
         if (
@@ -140,7 +144,7 @@ final class ImportCountriesAction
             static fn (array $row): array => $row,
             array_filter(
                 $data,
-                static fn (mixed $row): bool => is_array($row),
+                is_array(...),
             ),
         ));
     }
@@ -154,7 +158,7 @@ final class ImportCountriesAction
 
         throw_if($stream === false, RuntimeException::class, 'Unable to open country CSV dataset.');
 
-        $headers = fgetcsv($stream);
+        $headers = fgetcsv($stream, escape: '\\');
 
         if ($headers === false) {
             fclose($stream);
@@ -168,7 +172,7 @@ final class ImportCountriesAction
         );
         $rows = [];
 
-        while (($values = fgetcsv($stream)) !== false) {
+        while (($values = fgetcsv($stream, escape: '\\')) !== false) {
             $row = [];
 
             foreach ($headers as $index => $header) {
@@ -208,6 +212,10 @@ final class ImportCountriesAction
     {
         $query = Country::query();
 
+        if ((new Country)->getConnection()->transactionLevel() > 0) {
+            $query->lockForUpdate();
+        }
+
         if ($restore) {
             $query->withTrashed();
         }
@@ -223,19 +231,23 @@ final class ImportCountriesAction
 
     /**
      * @param  list<string>  $importedIso2
+     * @param  list<int>  $matchedIds
      */
-    private function disableMissingCountries(array $importedIso2, bool $dryRun, bool $disableMissing): int
+    private function disableMissingCountries(array $importedIso2, bool $dryRun, bool $disableMissing, array $matchedIds): int
     {
         if (! $disableMissing || $importedIso2 === []) {
             return 0;
         }
 
         $query = Country::query()
+            ->whereNotIn('id', $matchedIds)
             ->whereNotNull('iso2')
             ->whereNotIn('iso2', $importedIso2)
             ->where('status', true);
 
-        $count = $query->count();
+        $count = (new Country)->getConnection()->transactionLevel() > 0
+            ? (clone $query)->lockForUpdate()->count()
+            : $query->count();
 
         if (! $dryRun && $count > 0) {
             $query->update(['status' => false]);

@@ -37,28 +37,128 @@ Screenshot contract: `docs/screenshots.json`.
 
 ![Addresses admin index](docs/screenshots/addresses-admin-index.png)
 
-- Countries admin index (admin, required).
-- Addresses admin index (admin, required).
-- Create/edit country form (admin, optional).
-- Create/edit address form (admin, optional).
-- Site settings fields where address data is injected (admin, optional).
+- Countries admin index (admin, required evidence).
+- Addresses admin index (admin, required evidence).
+- Create/edit country form (admin, supplementary evidence).
+- Create/edit address form (admin, supplementary evidence).
+- Site settings fields where address data is injected (admin, supplementary evidence).
+- Countries admin index with admin sidebar menu open (admin, supplementary evidence).
 
 ## Technical Shape
 
-- Service providers: `Capell\Address\Providers\AddressServiceProvider`.
-- Migrations: `packages/address/database/migrations/2026_05_10_190839_01_create_countries_table.php`, `packages/address/database/migrations/2026_05_10_190839_02_create_addresses_table.php`, `packages/address/database/migrations/2026_07_12_000001_add_address_ownership_and_encrypt_meta.php`.
-- Models: `Address`, `Country`.
-- Filament classes: `AddressSelect`, `CountrySelect`, `FlagSelect`, `DefaultAddressConfigurator`, `DefaultCountryConfigurator`, `DefaultLanguageConfigurator`, `AddressResource`, `ManageAddresses`, `AddressForm`, `AddressesTable`, `CountryResource`, `ManageCountries`, `and 3 more`.
-- Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
-- Extension contracts: `AddressGeocodingProvider`, `AddressValidationProvider`.
-- Actions: `BuildAddressPrivacyExportAction`, `BuildAddressQualityHealthReportAction`, `CloneSharedAddressForMutationAction`, `EnsureSiteOwnsAddressAction`, `EraseAddressPrivacyDataAction`, `FindDuplicateAddressGroupsAction`, `GetAddressNameAction`, `GetAddressSelectRecordAction`, `GetCountryNameAction`, `ImportCountriesAction`, `InstallAddressPackageAction`, `ListAddressOptionsAction`, `and 2 more`.
-- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`, `ImportCountriesResultData`, `NormalizeAddressGeocodingResultData`.
-- Command signatures: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
-- Manifest action API: `install: Capell\Address\Actions\InstallAddressPackageAction`.
-- Console command classes: `DemoCommand`, `FakerCommand`, `ImportCountriesCommand`, `InstallCommand`, `NormalizeAddressGeocodingCommand`.
-- Manifest contributions: `admin-resource: Capell\Address\Manifest\AddressResourceContribution`, `admin-resource: Capell\Address\Manifest\CountryResourceContribution`, `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`, `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`, `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`, `health-check: Capell\Address\Health\AddressHealthCheck`, `migration: Capell\Address\Manifest\AddressMigrationsContribution`, `model: Capell\Address\Manifest\AddressModelsContribution`, `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`.
-- Health checks: `Capell\Address\Health\AddressHealthCheck`.
-- Blade views: `packages/address/resources/views/components/flag-icon.blade.php`.
+### Service providers
+
+- `Capell\Address\Providers\AddressServiceProvider`
+
+### Migrations
+
+- `packages/address/database/migrations/2026_05_10_190839_01_create_countries_table.php`
+- `packages/address/database/migrations/2026_05_10_190839_02_create_addresses_table.php`
+- `packages/address/database/migrations/2026_07_12_000001_add_address_ownership_and_encrypt_meta.php`
+
+### Models
+
+- `Address`
+- `Country`
+
+### Filament classes
+
+- `AddressSelect`
+- `CountrySelect`
+- `FlagSelect`
+- `DefaultAddressConfigurator`
+- `DefaultCountryConfigurator`
+- `DefaultLanguageConfigurator`
+- `AddressResource`
+- `ManageAddresses`
+- `AddressForm`
+- `AddressesTable`
+- `CountryResource`
+- `ManageCountries`
+- `CountryForm`
+- `CountriesTable`
+- `SiteSchemaExtender`
+
+### Policies
+
+- `AbstractAddressResourcePolicy`
+- `AddressPolicy`
+- `CountryPolicy`
+
+### Extension contracts
+
+- `AddressGeocodingProvider`
+- `AddressValidationProvider`
+
+### Actions
+
+- `BuildAddressPrivacyExportAction`
+- `BuildAddressQualityHealthReportAction`
+- `CloneSharedAddressForMutationAction`
+- `EnsureSiteOwnsAddressAction`
+- `EraseAddressPrivacyDataAction`
+- `FindDuplicateAddressGroupsAction`
+- `GetAddressNameAction`
+- `GetAddressSelectRecordAction`
+- `GetCountryNameAction`
+- `ImportCountriesAction`
+- `InstallAddressPackageAction`
+- `ListAddressOptionsAction`
+- `ListCountryOptionsAction`
+- `NormalizeAddressGeocodingAction`
+- `ReviewCountryUploadAction`
+
+### Data objects
+
+- `AddressGeocodingResultData`
+- `AddressMetaData`
+- `AddressQualityHealthReportData`
+- `AddressValidationResultData`
+- `CountryImportReviewData`
+- `DuplicateAddressGroupData`
+- `ImportCountriesResultData`
+- `NormalizeAddressGeocodingResultData`
+
+### Command signatures
+
+- `capell:address-countries-import`
+- `capell:address-demo`
+- `capell:address-faker`
+- `capell:address-geocode-normalize`
+- `capell:address-install`
+
+### Manifest action API
+
+- `install: Capell\Address\Actions\InstallAddressPackageAction`
+
+### Console command classes
+
+- `DemoCommand`
+- `FakerCommand`
+- `ImportCountriesCommand`
+- `InstallCommand`
+- `NormalizeAddressGeocodingCommand`
+
+### Manifest contributions
+
+- `admin-resource: Capell\Address\Manifest\AddressResourceContribution`
+- `admin-resource: Capell\Address\Manifest\CountryResourceContribution`
+- `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`
+- `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`
+- `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`
+- `health-check: Capell\Address\Health\AddressHealthCheck`
+- `migration: Capell\Address\Manifest\AddressMigrationsContribution`
+- `model: Capell\Address\Manifest\AddressModelsContribution`
+- `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`
+
+### Health checks
+
+- `Capell\Address\Health\AddressHealthCheck`
+
+### Blade views
+
+- `packages/address/resources/views/components/flag-icon.blade.php`
+
 
 ## Data Model
 
@@ -74,7 +174,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Required packages: `capell-app/admin`.
 - Admin navigation: declares `admin-resource: AddressResourceContribution`, `admin-resource: CountryResourceContribution`; each Filament page or resource controls its own navigation visibility.
 - Admin/editor extensions: `configurator: AddressConfiguratorsContribution`, `schema-extender: AddressSiteSchemaExtenderContribution`.
-- Permissions: none declared in `capell.json`.
+- Permissions: access also governed by package policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
 - Public routes: none declared.
 - Database changes: package migrations are declared.
 - Config: no package config files.
@@ -98,8 +198,9 @@ Screenshot contract: `docs/screenshots.json`.
 ## Quick Start
 
 1. Install the package: `composer require capell-app/address`.
-2. Run the required setup: `php artisan capell:address-install`.
-3. Open the Countries admin index and confirm the admin workflow loads.
+2. Run the package setup: `php artisan capell:address-install`.
+3. See it working: run `php artisan capell:address-demo`.
+4. Open the package admin surface at `/address/countries` and confirm Address is available.
 
 ## Next Steps
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\Address\Filament\Resources\Countries\Tables;
 
+use Capell\Address\Filament\Resources\Countries\Pages\ManageCountries;
 use Capell\Address\Filament\Resources\Countries\Schemas\CountryForm;
 use Capell\Admin\Filament\Components\Tables\Actions\EditAction;
 use Capell\Admin\Filament\Components\Tables\Actions\ReplicateAction;
@@ -27,7 +28,12 @@ class CountriesTable implements TableConfigurator
 {
     public static function configure(Table $table): Table
     {
+        $livewire = $table->getLivewire();
+
         return $table
+            ->emptyStateHeading(__('capell-address::import.empty_heading'))
+            ->emptyStateDescription(__('capell-address::import.empty_description'))
+            ->emptyStateActions($livewire instanceof ManageCountries ? [$livewire->importAction()] : [])
             ->columns(static::getTableColumns())
             ->recordActions([
                 EditAction::make('edit'),
