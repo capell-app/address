@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Capell\Address\Providers;
 
-use Capell\Address\Actions\BuildAddressPrivacyExportAction;
 use Capell\Address\Actions\EnsureSiteOwnsAddressAction;
-use Capell\Address\Actions\EraseAddressPrivacyDataAction;
+use Capell\Address\Bridges\AddressPrivacyBridge;
 use Capell\Address\Console\Commands\DemoCommand;
 use Capell\Address\Console\Commands\FakerCommand;
 use Capell\Address\Console\Commands\ImportCountriesCommand;
@@ -35,10 +34,7 @@ use Capell\Core\Data\VendorAssetData;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Site;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
-use Capell\PrivacyCenter\Support\PrivacySubjectEraserRegistry;
-use Capell\PrivacyCenter\Support\PrivacySubjectExporterRegistry;
 use Filament\Facades\Filament;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\Blade;
@@ -246,16 +242,7 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     private function registerPrivacyCenterContributors(): self
     {
-        $eraser = PrivacySubjectEraserRegistry::class;
-        $exporter = PrivacySubjectExporterRegistry::class;
-
-        if ($this->app->bound($eraser)) {
-            $this->app->make($eraser)->register('address', static fn (Model $subject): int => EraseAddressPrivacyDataAction::run($subject));
-        }
-
-        if ($this->app->bound($exporter)) {
-            $this->app->make($exporter)->register('address', static fn (Model $subject): array => BuildAddressPrivacyExportAction::run($subject));
-        }
+        $this->app->make(AddressPrivacyBridge::class)->register($this->app);
 
         return $this;
     }

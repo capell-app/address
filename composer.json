@@ -28,6 +28,9 @@
         "capell-app/admin": "^1.0",
         "stijnvanouplines/blade-country-flags": "^1.0"
     },
+    "suggest": {
+        "capell-app/privacy-center": "Export and erase postal addresses owned by a privacy subject."
+    },
     "autoload": {
         "psr-4": {
             "Capell\\Address\\": "src/",
