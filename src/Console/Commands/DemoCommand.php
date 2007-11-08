@@ -107,13 +107,22 @@ class DemoCommand extends Command
         /** @var class-string<Address> $model */
         $model = Address::class;
 
+        $countryId = $this->setupCountry()->id;
+
+        // Address columns are encrypted, so an attribute lookup never matches
+        // an existing row; resolve through the blind index instead.
+        $existing = $model::findAddress('123 Main St', '12345', $countryId);
+
+        if ($existing instanceof Address) {
+            return $existing;
+        }
+
         /** @var Address $address */
-        $address = $model::query()->firstOrCreate([
+        $address = $model::query()->create([
             'line1' => '123 Main St',
             'city' => 'Anytown',
             'postal_code' => '12345',
-            'country_id' => $this->setupCountry()->id,
-        ], [
+            'country_id' => $countryId,
             'name' => 'Headquarters',
             'line2' => 'Suite 100',
             'state' => 'CA',

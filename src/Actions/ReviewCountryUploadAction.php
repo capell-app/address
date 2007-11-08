@@ -105,7 +105,7 @@ final class ReviewCountryUploadAction
     private function importSnapshot(string $path, string $format, bool $disableMissing, bool $restore, bool $dryRun): ImportCountriesResultData
     {
         try {
-            return resolve(ImportCountriesAction::class)->handle(
+            return ImportCountriesAction::run(
                 $path,
                 $dryRun,
                 $disableMissing,

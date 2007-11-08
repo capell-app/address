@@ -132,3 +132,12 @@ describe('capell:address-demo command', function (): void {
             ->and(Address::query()->count())->toBe(0);
     });
 });
+
+it('does not duplicate the encrypted demo address when run repeatedly', function (): void {
+    Language::factory()->english()->create();
+
+    $this->artisan('capell:address-demo')->assertExitCode(0);
+    $this->artisan('capell:address-demo')->assertExitCode(0);
+
+    expect(Address::query()->count())->toBe(1);
+});

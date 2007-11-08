@@ -4,6 +4,7 @@
     "generatedFor": "deployment-screenshot-runner",
     "requiresInstalledPackage": true,
     "outputDirectory": "packages/address/docs/screenshots",
+    "fixtureCommands": ["capell:address-screenshot-fixture"],
     "entries": [
         {
             "id": "countries-admin-index",
@@ -73,12 +74,16 @@
             "package": "address",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "SiteSchemaExtender",
+            "target": "/screenshot-fixtures/address/site",
             "required": false,
-            "notes": "Optional Beta evidence target. The current file is a shared host Site screen rather than proof of the injected Address fields; replace it with an independently captured populated Address section before using it as release or Marketplace evidence.",
+            "notes": "Disposable fixture prepares real package records and opens the claimed installed component. Browser capture remains required.",
             "useCase": "A site administrator selects reusable address data while editing site-level settings.",
             "screenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected.png",
-            "darkScreenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected-dark.png"
+            "darkScreenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected-dark.png",
+            "url": "/screenshot-fixtures/address/site",
+            "scenario": "frontend-page",
+            "user": "admin",
+            "waitFor": "[id$=\"address_id\"]"
         },
         {
             "id": "address-admin-sidebar-menu-open",
