@@ -65,12 +65,17 @@ class CountryResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return (string) (__('capell-admin::navigation.countries'));
+        return (string) (__('capell-address::navigation.countries'));
     }
 
     public static function getNavigationGroup(): ?string
     {
         return (string) (__('capell-admin::navigation.group_system'));
+    }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return CapellCore::getPackage('capell-app/address')->isInstalled();
     }
 
     #[Override]

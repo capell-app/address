@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Capell\Address\Commands;
 
+use Capell\Address\AddressModelRegistrar;
+use Capell\Address\Enums\ResourceEnum;
+use Capell\Admin\Actions\AssignPermissionsToRole;
+use Filament\Facades\Filament;
 use Illuminate\Console\Command;
 
 class InstallCommand extends Command
@@ -28,6 +32,13 @@ class InstallCommand extends Command
     public function handle(): int
     {
         $this->info('Installing Capell Address...');
+
+        AddressModelRegistrar::register();
+
+        Filament::getDefaultPanel()
+            ->resources(array_map(fn (ResourceEnum $resourceEnum) => $resourceEnum->value, ResourceEnum::cases()));
+
+        AssignPermissionsToRole::run(resources: ResourceEnum::cases());
 
         $this->call(
             'capell:publish-migrations',

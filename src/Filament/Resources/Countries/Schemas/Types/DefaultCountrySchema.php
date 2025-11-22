@@ -6,6 +6,7 @@ namespace Capell\Address\Filament\Resources\Countries\Schemas\Types;
 
 use Capell\Address\Enums\ModelEnum;
 use Capell\Address\Enums\SchemaTypeEnum;
+use Capell\Admin\Contracts\SchemaTypeEnumInterface;
 use Capell\Admin\Contracts\TypeSchemaInterface;
 use Capell\Admin\Enums\SchemaExtenderEnum;
 use Capell\Admin\Filament\Components\Forms\DefaultToggle;
@@ -22,7 +23,7 @@ class DefaultCountrySchema implements TypeSchemaInterface
 {
     use HasTypeSchema;
 
-    public static string $schemaType = SchemaTypeEnum::Country->value;
+    public static SchemaTypeEnumInterface $schemaType = SchemaTypeEnum::Country;
 
     public static function getExtenders(): iterable
     {
@@ -40,7 +41,8 @@ class DefaultCountrySchema implements TypeSchemaInterface
             TextInput::make('name')
                 ->label(__('capell-address::form.name'))
                 ->required(),
-            LanguageSelect::make('language_id'),
+            LanguageSelect::make('language_id')
+                ->withRelationship(),
             TextInput::make('iso2')
                 ->label(__('capell-address::form.iso2'))
                 ->helperText(__('capell-admin::generic.iso_3166_2'))
