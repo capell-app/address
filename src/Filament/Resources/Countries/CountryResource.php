@@ -10,6 +10,7 @@ use Capell\Address\Filament\Resources\Countries\Pages\ManageCountries;
 use Capell\Address\Filament\Resources\Countries\Schemas\CountryForm;
 use Capell\Address\Filament\Resources\Countries\Tables\CountriesTable;
 use Capell\Address\Models\Country;
+use Capell\Address\Providers\AddressServiceProvider;
 use Capell\Admin\Filament\Concerns\HasFormConfigurator;
 use Capell\Admin\Filament\Concerns\HasNavigationBadge;
 use Capell\Admin\Filament\Concerns\HasTableConfigurator;
@@ -75,7 +76,7 @@ class CountryResource extends Resource
 
     public static function shouldRegisterNavigation(): bool
     {
-        return CapellCore::getPackage('capell-app/address')->isInstalled();
+        return CapellCore::getPackage(AddressServiceProvider::$packageName)->isInstalled();
     }
 
     #[Override]
