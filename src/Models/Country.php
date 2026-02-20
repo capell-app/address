@@ -8,10 +8,11 @@ use Capell\Address\Database\Factories\CountryFactory;
 use Capell\Address\Observers\CountryObserver;
 use Capell\Core\Models\Concerns\HasDefault;
 use Capell\Core\Models\Concerns\HasStatus;
+use Capell\Core\Models\Concerns\HasUserstamps;
 use Capell\Core\Models\Contracts\Defaultable;
+use Capell\Core\Models\Contracts\Userstampable;
 use Capell\Core\Models\Language;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,7 +22,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 use Staudenmeir\EloquentJsonRelations\Relations\BelongsToJson;
-use Wildside\Userstamps\Userstamps;
 
 /**
  * @mixin Model
@@ -50,7 +50,7 @@ use Wildside\Userstamps\Userstamps;
  * @mixin Model
  */
 #[ObservedBy(CountryObserver::class)]
-class Country extends Model implements Defaultable
+class Country extends Model implements Defaultable, Userstampable
 {
     use HasDefault;
 
@@ -59,8 +59,8 @@ class Country extends Model implements Defaultable
 
     use HasJsonRelationships;
     use HasStatus;
+    use HasUserstamps;
     use SoftDeletes;
-    use Userstamps;
 
     protected $fillable = [
         'default',
@@ -70,10 +70,6 @@ class Country extends Model implements Defaultable
         'meta',
         'name',
         'status',
-    ];
-
-    protected $casts = [
-        'meta' => 'json',
     ];
 
     protected static string $factory = CountryFactory::class;
@@ -88,9 +84,15 @@ class Country extends Model implements Defaultable
         return $this->belongsToJson(Language::class, 'meta->languages');
     }
 
-    #[Scope]
-    protected function ordered(Builder $query): Builder
+    protected function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('name');
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'meta' => 'json',
+        ];
     }
 }

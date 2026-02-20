@@ -22,8 +22,8 @@ Simple address and country management for Capell. This package provides reusable
 - Model relationships to `Site`
     - `Site::address()` and `Site::country()` are registered at runtime
 - Commands
-    - `capell-address:install` — publish migrations and migrate
-    - `capell-address:demo` — optional demo data
+    - `capell:address-install` — publish migrations and migrate
+    - `capell:address-demo` — optional demo data
 
 ## Installation
 
@@ -36,7 +36,7 @@ Steps:
 1. Install and run the installer:
 
     ```bash
-    php artisan capell-address:install
+    php artisan capell:address-install
     ```
 
     This will:
@@ -47,7 +47,7 @@ Steps:
 
 2. (Optional) Seed demo data:
     ```bash
-    php artisan capell-address:demo
+    php artisan capell:address-demo
     ```
 
 ## Database

@@ -24,30 +24,45 @@ class CountrySelect extends Select
         $this->label(__('capell-address::form.country'))
             ->searchable()
             ->options(
-                fn (self $component): array => CapellCore::getModel(ModelEnum::Country)::query()
-                    ->limit($component->getOptionsLimit())
-                    ->ordered()
-                    ->get()
-                    ->mapWithKeys(fn (Country $country): array => [$country->getKey() => $country->name])
-                    ->all(),
+                function (self $component): array {
+                    /** @var class-string<Country> $model */
+                    $model = CapellCore::getModel(ModelEnum::Country);
+
+                    return $model::query()
+                        ->limit($component->getOptionsLimit())
+                        ->ordered()
+                        ->get()
+                        ->mapWithKeys(fn (Country $country): array => [$country->getKey() => $country->name])
+                        ->all();
+                },
             )
             ->getOptionLabelUsing(
-                fn (?string $value): ?string => CapellCore::getModel(ModelEnum::Country)::query()
-                    ->find($value)
-                    ?->name,
+                function (?string $value): ?string {
+                    /** @var class-string<Country> $model */
+                    $model = CapellCore::getModel(ModelEnum::Country);
+
+                    return $model::query()
+                        ->whereKey($value)
+                        ->value('name');
+                },
             )
             ->getSearchResultsUsing(
-                fn (self $component, string $search): array => CapellCore::getModel(ModelEnum::Country)::query()
-                    ->where(
-                        fn (Builder $query): Builder => $query->where('name', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('iso2', 'like', $search)
-                            ->orWhere('iso3', 'like', $search),
-                    )
-                    ->limit($component->getOptionsLimit())
-                    ->ordered()
-                    ->get()
-                    ->mapWithKeys(fn (Country $country): array => [$country->getKey() => $country->name])
-                    ->all(),
+                function (self $component, string $search): array {
+                    /** @var class-string<Country> $model */
+                    $model = CapellCore::getModel(ModelEnum::Country);
+
+                    return $model::query()
+                        ->where(
+                            fn (Builder $query): Builder => $query->where('name', 'like', sprintf('%%%s%%', $search))
+                                ->orWhere('iso2', 'like', $search)
+                                ->orWhere('iso3', 'like', $search),
+                        )
+                        ->limit($component->getOptionsLimit())
+                        ->ordered()
+                        ->get()
+                        ->mapWithKeys(fn (Country $country): array => [$country->getKey() => $country->name])
+                        ->all();
+                },
             );
     }
 

@@ -25,34 +25,54 @@ class AddressSelect extends Select
         $this->label(__('capell-address::form.address'))
             ->searchable()
             ->options(
-                fn (self $component): array => CapellCore::getModel(ModelEnum::Address)::query()
-                    ->limit($component->getOptionsLimit())
-                    ->ordered()
-                    ->get()
-                    ->mapWithKeys(fn (Address $address): array => [$address->getKey() => $address->name])
-                    ->all(),
+                function (self $component): array {
+                    /** @var class-string<Address> $model */
+                    $model = CapellCore::getModel(ModelEnum::Address);
+
+                    return $model::query()
+                        ->limit($component->getOptionsLimit())
+                        ->ordered()
+                        ->get()
+                        ->mapWithKeys(fn (Address $address): array => [$address->getKey() => $address->name])
+                        ->all();
+                },
             )
             ->getSelectedRecordUsing(
-                fn (int $state): Address => CapellCore::getModel(ModelEnum::Address)::query()
-                    ->find($state),
+                function (int $state): Address {
+                    /** @var class-string<Address> $model */
+                    $model = CapellCore::getModel(ModelEnum::Address);
+
+                    return $model::query()
+                        ->find($state);
+                },
             )
             ->getOptionLabelUsing(
-                fn (?string $value): ?string => CapellCore::getModel(ModelEnum::Address)::query()
-                    ->whereKey($value)
-                    ->value('name'),
+                function (?string $value): ?string {
+                    /** @var class-string<Address> $model */
+                    $model = CapellCore::getModel(ModelEnum::Address);
+
+                    return $model::query()
+                        ->whereKey($value)
+                        ->value('name');
+                },
             )
             ->getSearchResultsUsing(
-                fn (self $component, string $search): array => CapellCore::getModel(ModelEnum::Address)::query()
-                    ->where(fn (Builder $query): Builder => $query->where('address_line_1', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('address_line_2', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('city', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('state', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('postal_code', 'like', sprintf('%%%s%%', $search))
-                        ->orWhereRelation('country', 'name', 'like', sprintf('%%%s%%', $search)))
-                    ->limit($component->getOptionsLimit())
-                    ->ordered()
-                    ->pluck('name', 'id')
-                    ->all(),
+                function (self $component, string $search): array {
+                    /** @var class-string<Address> $model */
+                    $model = CapellCore::getModel(ModelEnum::Address);
+
+                    return $model::query()
+                        ->where(fn (Builder $query): Builder => $query->where('address_line_1', 'like', sprintf('%%%s%%', $search))
+                            ->orWhere('address_line_2', 'like', sprintf('%%%s%%', $search))
+                            ->orWhere('city', 'like', sprintf('%%%s%%', $search))
+                            ->orWhere('state', 'like', sprintf('%%%s%%', $search))
+                            ->orWhere('postal_code', 'like', sprintf('%%%s%%', $search))
+                            ->orWhereRelation('country', 'name', 'like', sprintf('%%%s%%', $search)))
+                        ->limit($component->getOptionsLimit())
+                        ->ordered()
+                        ->pluck('name', 'id')
+                        ->all();
+                },
             );
     }
 

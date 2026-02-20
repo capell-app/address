@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Capell\Address;
+namespace Capell\Address\Support;
 
 use Capell\Address\Enums\ModelEnum;
 use Capell\Core\Facades\CapellCore;
