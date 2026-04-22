@@ -19,6 +19,7 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\ForceDeleteBulkAction;
 use Filament\Actions\RestoreBulkAction;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 
@@ -55,6 +56,16 @@ class CountriesTable implements TableConfigurator
             IdentifierColumn::make('id'),
             NameColumn::make('name')
                 ->defaultBadge(),
+            TextColumn::make('iso_3166_1_alpha_2')
+                ->label(__('capell-address::table.iso_code'))
+                ->sortable()
+                ->toggleable(),
+            TextColumn::make('addresses_count')
+                ->label(__('capell-address::table.total_addresses'))
+                ->alignCenter()
+                ->numeric()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
             StatusIconColumn::make('status'),
             DateColumn::make('created_at'),
             DateColumn::make('updated_at'),

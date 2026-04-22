@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Capell\Address\Filament\Resources\Addresses\Schemas\Types;
+namespace Capell\Address\Filament\Schemas\Addresses;
 
 use Capell\Address\Enums\SchemaTypeEnum;
 use Capell\Address\Filament\Components\Forms\CountrySelect;

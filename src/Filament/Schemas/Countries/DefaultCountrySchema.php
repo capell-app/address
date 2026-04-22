@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Capell\Address\Filament\Resources\Countries\Schemas\Types;
+namespace Capell\Address\Filament\Schemas\Countries;
 
 use Capell\Address\Enums\ModelEnum;
 use Capell\Address\Enums\SchemaTypeEnum;

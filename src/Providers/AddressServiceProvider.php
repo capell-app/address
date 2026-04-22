@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\Address\Providers;
 
 use Capell\Address\Console\Commands\DemoCommand;
+use Capell\Address\Console\Commands\FakerCommand;
 use Capell\Address\Console\Commands\InstallCommand;
 use Capell\Address\Enums\ResourceEnum;
 use Capell\Address\Enums\SchemaTypeEnum;
@@ -14,7 +15,7 @@ use Capell\Address\Models\Country;
 use Capell\Address\Support\AddressModelRegistrar;
 use Capell\Admin\Enums\SchemaExtenderEnum;
 use Capell\Admin\Facades\CapellAdmin;
-use Capell\Admin\Providers\AdminServiceProvider;
+use Capell\Core\Data\VendorAssetData;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Site;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
@@ -30,13 +31,12 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/address';
 
-    public static string $description = 'Address and country field components for forms.';
-
     public function configurePackage(Package $package): void
     {
         $package->name(self::$name)
             ->hasCommands([
                 DemoCommand::class,
+                FakerCommand::class,
                 InstallCommand::class,
             ])
             ->hasTranslations();
@@ -48,7 +48,8 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
             ->registerModels()
             ->registerRelationships()
             ->registerResources()
-            ->registerPackageMetadata();
+            ->registerPackageMetadata()
+            ->registerPackageAssets();
 
         $this->booted(function (): void {
             if (! $this->isPackageInstalled()) {
@@ -79,19 +80,16 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
             type: static::getType(),
             serviceProviderClass: static::class,
             path: realpath(__DIR__ . '/../..'),
-            sort: 10,
-            description: static::getDescription(),
-            installCommand: 'capell:address-install',
-            demoCommand: 'capell:address-demo',
-            demoParams: ['sites'],
-            requirements: [
-                AdminServiceProvider::$packageName,
-            ],
             version: $this->getVersion(),
-            url: 'https://capell.app',
-            tailwindSources: [
-                'resources/views/**/*.blade.php',
-            ],
+        );
+
+        return $this;
+    }
+
+    private function registerPackageAssets(): self
+    {
+        CapellCore::registerVendorAsset(
+            VendorAssetData::tailwindSource('resources/views/**/*.blade.php', static::$packageName),
         );
 
         return $this;
