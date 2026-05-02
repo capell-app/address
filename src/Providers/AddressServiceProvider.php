@@ -51,16 +51,9 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
-        $this
-            ->registerModels()
-            ->registerRelationships()
-            ->registerResources()
-            ->registerPackageMetadata()
-            ->registerPackageAssets()
-            ->registerSupportServices()
-            ->registerBladeComponents();
+        $this->registerPackageMetadata();
 
-        $this->booted(function (): void {
+        $this->app->booted(function (): void {
             if (! $this->isPackageInstalled()) {
                 return;
             }
@@ -77,9 +70,15 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
     private function bootInstalledPackage(): self
     {
         return $this
+            ->registerModels()
+            ->registerRelationships()
+            ->registerPackageAssets()
+            ->registerSupportServices()
+            ->registerResources()
             ->registerConfigurators()
             ->registerLanguageConfigurator()
-            ->registerSchemaExtenders();
+            ->registerSchemaExtenders()
+            ->registerBladeComponents();
     }
 
     private function registerPackageMetadata(): self
