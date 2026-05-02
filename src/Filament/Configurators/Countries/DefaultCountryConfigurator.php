@@ -2,40 +2,39 @@
 
 declare(strict_types=1);
 
-namespace Capell\Address\Filament\Schemas\Countries;
+namespace Capell\Address\Filament\Configurators\Countries;
 
-use Capell\Address\Enums\ModelEnum;
-use Capell\Address\Enums\SchemaTypeEnum;
-use Capell\Admin\Contracts\SchemaTypeEnumInterface;
-use Capell\Admin\Contracts\TypeSchemaInterface;
+use Capell\Address\Enums\ConfiguratorTypeEnum;
+use Capell\Address\Models\Country;
+use Capell\Admin\Contracts\ConfiguratorInterface;
+use Capell\Admin\Contracts\ConfiguratorTypeEnumInterface;
 use Capell\Admin\Enums\SchemaExtenderEnum;
 use Capell\Admin\Filament\Components\Forms\DefaultToggle;
 use Capell\Admin\Filament\Components\Forms\LanguageSelect;
 use Capell\Admin\Filament\Components\Forms\StatusToggle;
-use Capell\Admin\Filament\Concerns\HasTypeSchema;
-use Capell\Core\Facades\CapellCore;
+use Capell\Admin\Filament\Concerns\HasConfigurator;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 use Illuminate\Validation\Rules\Unique;
 
-class DefaultCountrySchema implements TypeSchemaInterface
+class DefaultCountryConfigurator implements ConfiguratorInterface
 {
-    use HasTypeSchema;
+    use HasConfigurator;
 
-    public static SchemaTypeEnumInterface $schemaType = SchemaTypeEnum::Country;
+    protected static ConfiguratorTypeEnumInterface $configuratorType = ConfiguratorTypeEnum::Country;
 
     public static function getExtenders(): iterable
     {
         return app()->tagged(SchemaExtenderEnum::Country->value);
     }
 
-    public function make(Schema $schema): array
+    public function make(Schema $configurator): array
     {
-        return $this->getFormSchema($schema);
+        return $this->getFormSchema($configurator);
     }
 
-    private function getFormSchema(Schema $schema): array
+    private function getFormSchema(Schema $configurator): array
     {
         return [
             TextInput::make('name')
@@ -49,8 +48,8 @@ class DefaultCountrySchema implements TypeSchemaInterface
                 ->required()
                 ->maxLength(2)
                 ->unique(
-                    table: CapellCore::getModel(ModelEnum::Country),
-                    ignoreRecord: $schema->getOperation() !== 'replicate',
+                    table: Country::class,
+                    ignoreRecord: $configurator->getOperation() !== 'replicate',
                     modifyRuleUsing: fn (Unique $rule) => $rule->withoutTrashed(),
                 ),
             TextInput::make('iso3')
@@ -59,8 +58,8 @@ class DefaultCountrySchema implements TypeSchemaInterface
                 ->required()
                 ->maxLength(3)
                 ->unique(
-                    table: CapellCore::getModel(ModelEnum::Country),
-                    ignoreRecord: $schema->getOperation() !== 'replicate',
+                    table: Country::class,
+                    ignoreRecord: $configurator->getOperation() !== 'replicate',
                     modifyRuleUsing: fn (Unique $rule) => $rule->withoutTrashed(),
                 ),
             Grid::make()

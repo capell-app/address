@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Capell\Address\Enums;
 
-use Capell\Address\Filament\Schemas\Addresses\DefaultAddressSchema;
+use Capell\Address\Filament\Configurators\Addresses\DefaultAddressConfigurator;
 
 enum AddressSchemaEnum: string
 {
-    case Default = DefaultAddressSchema::class;
+    case Default = DefaultAddressConfigurator::class;
 }

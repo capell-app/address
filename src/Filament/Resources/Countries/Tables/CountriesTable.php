@@ -30,11 +30,11 @@ class CountriesTable implements TableConfigurator
         return $table
             ->columns(static::getTableColumns())
             ->recordActions([
-                EditAction::make(),
+                EditAction::make('edit'),
                 ActionGroup::make([
-                    ReplicateAction::make()
-                        ->schema(fn (Schema $schema): Schema => CountryForm::configure($schema)),
-                    DeleteAction::make(),
+                    ReplicateAction::make('replicate')
+                        ->schema(fn (Schema $configurator): Schema => CountryForm::configure($configurator)),
+                    DeleteAction::make('delete'),
                 ])
                     ->color('gray'),
             ])
@@ -43,11 +43,10 @@ class CountriesTable implements TableConfigurator
                 TrashedFilter::make(),
             ])
             ->toolbarActions([
-                DeleteBulkAction::make(),
-                RestoreBulkAction::make(),
-                ForceDeleteBulkAction::make(),
-            ])
-            ->reorderable('order');
+                DeleteBulkAction::make('delete'),
+                RestoreBulkAction::make('restore'),
+                ForceDeleteBulkAction::make('forceDelete'),
+            ]);
     }
 
     protected static function getTableColumns(): array
@@ -56,7 +55,7 @@ class CountriesTable implements TableConfigurator
             IdentifierColumn::make('id'),
             NameColumn::make('name')
                 ->defaultBadge(),
-            TextColumn::make('iso_3166_1_alpha_2')
+            TextColumn::make('iso2')
                 ->label(__('capell-address::table.iso_code'))
                 ->sortable()
                 ->toggleable(),

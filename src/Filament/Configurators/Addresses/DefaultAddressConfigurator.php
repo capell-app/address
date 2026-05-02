@@ -2,37 +2,37 @@
 
 declare(strict_types=1);
 
-namespace Capell\Address\Filament\Schemas\Addresses;
+namespace Capell\Address\Filament\Configurators\Addresses;
 
-use Capell\Address\Enums\SchemaTypeEnum;
+use Capell\Address\Enums\ConfiguratorTypeEnum;
 use Capell\Address\Filament\Components\Forms\CountrySelect;
-use Capell\Admin\Contracts\SchemaTypeEnumInterface;
-use Capell\Admin\Contracts\TypeSchemaInterface;
+use Capell\Admin\Contracts\ConfiguratorInterface;
+use Capell\Admin\Contracts\ConfiguratorTypeEnumInterface;
 use Capell\Admin\Enums\SchemaExtenderEnum;
 use Capell\Admin\Filament\Components\Forms\DefaultToggle;
 use Capell\Admin\Filament\Components\Forms\StatusToggle;
-use Capell\Admin\Filament\Concerns\HasTypeSchema;
+use Capell\Admin\Filament\Concerns\HasConfigurator;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Schema;
 
-class DefaultAddressSchema implements TypeSchemaInterface
+class DefaultAddressConfigurator implements ConfiguratorInterface
 {
-    use HasTypeSchema;
+    use HasConfigurator;
 
-    public static SchemaTypeEnumInterface $schemaType = SchemaTypeEnum::Address;
+    protected static ConfiguratorTypeEnumInterface $configuratorType = ConfiguratorTypeEnum::Address;
 
     public static function getExtenders(): iterable
     {
         return app()->tagged(SchemaExtenderEnum::Address->value);
     }
 
-    public function make(Schema $schema): array
+    public function make(Schema $configurator): array
     {
-        return $this->getFormSchema($schema);
+        return $this->getFormSchema($configurator);
     }
 
-    private function getFormSchema(Schema $schema): array
+    private function getFormSchema(Schema $configurator): array
     {
         return [
             TextInput::make('name')
@@ -60,7 +60,7 @@ class DefaultAddressSchema implements TypeSchemaInterface
                 ->required(),
             CountrySelect::make('country_id')
                 ->when(
-                    $schema->isCreating(),
+                    $configurator->isCreating(),
                     fn (CountrySelect $component): CountrySelect => $component->withCreateForm(),
                     fn (CountrySelect $component): CountrySelect => $component->withEditForm(),
                 ),

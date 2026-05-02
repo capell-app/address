@@ -7,12 +7,16 @@ namespace Capell\Address\Providers;
 use Capell\Address\Console\Commands\DemoCommand;
 use Capell\Address\Console\Commands\FakerCommand;
 use Capell\Address\Console\Commands\InstallCommand;
+use Capell\Address\Enums\ConfiguratorTypeEnum;
 use Capell\Address\Enums\ResourceEnum;
-use Capell\Address\Enums\SchemaTypeEnum;
+use Capell\Address\Filament\Configurators\Languages\DefaultLanguageConfigurator;
 use Capell\Address\Filament\Resources\Sites\Schemas\Extenders\SiteSchemaExtender;
 use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
 use Capell\Address\Support\AddressModelRegistrar;
+use Capell\Address\Support\FlagIconRenderer;
+use Capell\Address\Support\Language\FlagsService;
+use Capell\Admin\Enums\ConfiguratorTypeEnum as AdminConfiguratorTypeEnum;
 use Capell\Admin\Enums\SchemaExtenderEnum;
 use Capell\Admin\Facades\CapellAdmin;
 use Capell\Core\Data\VendorAssetData;
@@ -27,6 +31,8 @@ use Spatie\LaravelPackageTools\Package;
 
 class AddressServiceProvider extends AbstractPackageServiceProvider
 {
+    private const ADMIN_FLAG_ICON_RENDERER_CONTRACT = \Capell\Admin\Contracts\Support\FlagIconRenderer::class;
+
     public static string $name = 'capell-address';
 
     public static string $packageName = 'capell-app/address';
@@ -34,6 +40,7 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
     public function configurePackage(Package $package): void
     {
         $package->name(self::$name)
+            ->hasViews(self::$name)
             ->hasCommands([
                 DemoCommand::class,
                 FakerCommand::class,
@@ -49,7 +56,9 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
             ->registerRelationships()
             ->registerResources()
             ->registerPackageMetadata()
-            ->registerPackageAssets();
+            ->registerPackageAssets()
+            ->registerSupportServices()
+            ->registerBladeComponents();
 
         $this->booted(function (): void {
             if (! $this->isPackageInstalled()) {
@@ -68,8 +77,8 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
     private function bootInstalledPackage(): self
     {
         return $this
-            ->registerBladeComponents()
-            ->registerSchemas()
+            ->registerConfigurators()
+            ->registerLanguageConfigurator()
             ->registerSchemaExtenders();
     }
 
@@ -81,6 +90,7 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
             serviceProviderClass: static::class,
             path: realpath(__DIR__ . '/../..'),
             version: $this->getVersion(),
+            description: fn (): string => __('capell-address::package.description'),
         );
 
         return $this;
@@ -91,6 +101,18 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
         CapellCore::registerVendorAsset(
             VendorAssetData::tailwindSource('resources/views/**/*.blade.php', static::$packageName),
         );
+
+        return $this;
+    }
+
+    private function registerSupportServices(): self
+    {
+        $this->app->singleton(FlagIconRenderer::class);
+        $this->app->singleton(FlagsService::class);
+
+        if (interface_exists(self::ADMIN_FLAG_ICON_RENDERER_CONTRACT)) {
+            $this->app->singleton(self::ADMIN_FLAG_ICON_RENDERER_CONTRACT, FlagIconRenderer::class);
+        }
 
         return $this;
     }
@@ -121,11 +143,18 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
         return $this;
     }
 
-    private function registerSchemas(): self
+    private function registerConfigurators(): self
     {
-        foreach (SchemaTypeEnum::getAllSchemas() as $type => $schemas) {
-            CapellAdmin::registerSchemas($type, $schemas, defaultSchemas: true);
+        foreach (ConfiguratorTypeEnum::getAllConfigurators() as $type => $configurators) {
+            CapellAdmin::registerConfigurators($type, $configurators, defaultConfigurators: true);
         }
+
+        return $this;
+    }
+
+    private function registerLanguageConfigurator(): self
+    {
+        CapellAdmin::registerConfigurator(AdminConfiguratorTypeEnum::Language, DefaultLanguageConfigurator::class);
 
         return $this;
     }

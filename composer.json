@@ -19,7 +19,8 @@
     ],
     "require": {
         "php": "^8.2",
-        "capell-app/admin": "*"
+        "capell-app/admin": "*",
+        "stijnvanouplines/blade-country-flags": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -32,6 +33,9 @@
             "providers": [
                 "Capell\\Address\\Providers\\AddressServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "4.x-dev"
         }
     },
     "config": {

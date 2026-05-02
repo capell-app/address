@@ -64,6 +64,8 @@ class InstallCommand extends Command
 
         $this->call('migrate');
 
+        $this->callSilent('vendor:publish', ['--tag' => 'blade-country-flags']);
+
         $this->callSilent('filament:assets');
 
         $this->newLine();

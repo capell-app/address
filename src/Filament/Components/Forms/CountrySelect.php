@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Capell\Address\Filament\Components\Forms;
 
-use Capell\Address\Enums\ModelEnum;
 use Capell\Address\Filament\Resources\Countries\Schemas\CountryForm;
 use Capell\Address\Models\Country;
-use Capell\Core\Facades\CapellCore;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
@@ -26,7 +24,7 @@ class CountrySelect extends Select
             ->options(
                 function (self $component): array {
                     /** @var class-string<Country> $model */
-                    $model = CapellCore::getModel(ModelEnum::Country);
+                    $model = Country::class;
 
                     return $model::query()
                         ->limit($component->getOptionsLimit())
@@ -39,7 +37,7 @@ class CountrySelect extends Select
             ->getOptionLabelUsing(
                 function (?string $value): ?string {
                     /** @var class-string<Country> $model */
-                    $model = CapellCore::getModel(ModelEnum::Country);
+                    $model = Country::class;
 
                     return $model::query()
                         ->whereKey($value)
@@ -49,7 +47,7 @@ class CountrySelect extends Select
             ->getSearchResultsUsing(
                 function (self $component, string $search): array {
                     /** @var class-string<Country> $model */
-                    $model = CapellCore::getModel(ModelEnum::Country);
+                    $model = Country::class;
 
                     return $model::query()
                         ->where(
@@ -68,12 +66,12 @@ class CountrySelect extends Select
 
     public function withCreateForm(): self
     {
-        return $this->createOptionForm(fn (Schema $schema): Schema => CountryForm::configure($schema)
-            ->model(CapellCore::getModel(ModelEnum::Country)))
+        return $this->createOptionForm(fn (Schema $configurator): Schema => CountryForm::configure($configurator)
+            ->model(Country::class))
             ->createOptionAction(
                 fn (Action $action): Action => $action
                     ->modalHeading(__('capell-admin::generic.language'))
-                    ->model(CapellCore::getModel(ModelEnum::Country))
+                    ->model(Country::class)
                     ->successNotificationTitle(
                         fn (Action $action): string => __(
                             'capell-admin::notification.created_successfully',
@@ -93,11 +91,11 @@ class CountrySelect extends Select
 
             return $record?->attributesToArray() ?? [];
         })
-            ->editOptionForm(fn (Schema $schema): Schema => CountryForm::configure($schema))
+            ->editOptionForm(fn (Schema $configurator): Schema => CountryForm::configure($configurator))
             ->editOptionAction(
                 fn (Action $action): Action => $action
                     ->modalHeading(__('capell-address::form.country'))
-                    ->model(CapellCore::getModel(ModelEnum::Country))
+                    ->model(Country::class)
                     ->successNotificationTitle(
                         fn (Action $action): string => __(
                             'capell-admin::notification.updated_successfully',

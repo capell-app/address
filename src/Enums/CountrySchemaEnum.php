@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Capell\Address\Enums;
 
-use Capell\Address\Filament\Schemas\Countries\DefaultCountrySchema;
+use Capell\Address\Filament\Configurators\Countries\DefaultCountryConfigurator;
 
 enum CountrySchemaEnum: string
 {
-    case Default = DefaultCountrySchema::class;
+    case Default = DefaultCountryConfigurator::class;
 }

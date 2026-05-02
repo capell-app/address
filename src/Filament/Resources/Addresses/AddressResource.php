@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Capell\Address\Filament\Resources\Addresses;
 
 use BackedEnum;
-use Capell\Address\Enums\ModelEnum;
 use Capell\Address\Filament\Resources\Addresses\Pages\ManageAddresses;
 use Capell\Address\Filament\Resources\Addresses\Schemas\AddressForm;
 use Capell\Address\Filament\Resources\Addresses\Tables\AddressesTable;
 use Capell\Address\Models\Address;
 use Capell\Address\Providers\AddressServiceProvider;
-use Capell\Admin\Filament\Concerns\HasFormConfigurator;
+use Capell\Admin\Filament\Concerns\HasConfiguredForm;
+use Capell\Admin\Filament\Concerns\HasConfiguredTable;
 use Capell\Admin\Filament\Concerns\HasNavigationBadge;
-use Capell\Admin\Filament\Concerns\HasTableConfigurator;
 use Capell\Core\Facades\CapellCore;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -25,9 +24,9 @@ use Override;
 
 class AddressResource extends Resource
 {
-    use HasFormConfigurator;
+    use HasConfiguredForm;
+    use HasConfiguredTable;
     use HasNavigationBadge;
-    use HasTableConfigurator;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
@@ -40,9 +39,9 @@ class AddressResource extends Resource
     protected static string $tableConfigurator = AddressesTable::class;
 
     #[Override]
-    public static function form(Schema $schema): Schema
+    public static function form(Schema $configurator): Schema
     {
-        return static::getFormConfigurator()::configure($schema);
+        return static::getFormConfigurator()::configure($configurator);
     }
 
     #[Override]
@@ -57,7 +56,7 @@ class AddressResource extends Resource
     #[Override]
     public static function getModel(): string
     {
-        return CapellCore::getModel(ModelEnum::Address);
+        return Address::class;
     }
 
     public static function getNavigationLabel(): string
@@ -73,6 +72,12 @@ class AddressResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return CapellCore::getPackage(AddressServiceProvider::$packageName)->isInstalled();
+    }
+
+    public static function canGloballySearch(): bool
+    {
+        return CapellCore::getPackage(AddressServiceProvider::$packageName)->isInstalled()
+            && parent::canGloballySearch();
     }
 
     #[Override]

@@ -1,23 +1,13 @@
 {
-    "label": "Address",
-    "slug": "address",
-    "kind": "addon",
-    "order": 30,
-    "dependsOn": ["capell-app/mosaic"],
-    "description": "Address and country field components for forms.",
-    "icon": null,
-    "url": "https://capell.app",
-    "scopes": [],
-    "commands": {
-        "install": "capell:address-install",
-        "afterInstall": null,
-        "afterInstallParams": [],
-        "setup": null,
-        "setupParams": [],
-        "upgrade": null,
-        "demo": "capell:address-demo",
-        "demoParams": ["sites"],
-        "faker": "capell:address-faker",
-        "fakerParams": []
+    "name": "capell-app/address",
+    "kind": "package",
+    "capell-version": "^4.0",
+    "productGroup": "Capell Foundation",
+    "tier": "free",
+    "bundle": "foundation",
+    "contexts": ["admin"],
+    "requires": ["capell-app/admin"],
+    "providers": {
+        "shared": ["Capell\\Address\\Providers\\AddressServiceProvider"]
     }
 }

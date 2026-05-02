@@ -34,11 +34,11 @@ class AddressesTable implements TableConfigurator
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('country'))
             ->columns(static::getTableColumns())
             ->recordActions([
-                EditAction::make(),
+                EditAction::make('edit'),
                 ActionGroup::make([
-                    ReplicateAction::make()
-                        ->schema(fn (Schema $schema): Schema => AddressForm::configure($schema)),
-                    DeleteAction::make(),
+                    ReplicateAction::make('replicate')
+                        ->schema(fn (Schema $configurator): Schema => AddressForm::configure($configurator)),
+                    DeleteAction::make('delete'),
                 ])
                     ->color('gray'),
             ])
@@ -50,11 +50,10 @@ class AddressesTable implements TableConfigurator
                 TrashedFilter::make(),
             ])
             ->toolbarActions([
-                DeleteBulkAction::make(),
-                RestoreBulkAction::make(),
-                ForceDeleteBulkAction::make(),
-            ])
-            ->reorderable('order');
+                DeleteBulkAction::make('delete'),
+                RestoreBulkAction::make('restore'),
+                ForceDeleteBulkAction::make('forceDelete'),
+            ]);
     }
 
     protected static function getTableColumns(): array

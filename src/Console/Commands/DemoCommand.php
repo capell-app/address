@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Capell\Address\Console\Commands;
 
-use Capell\Address\Enums\ModelEnum as AddressModelEnum;
 use Capell\Address\Models\Address;
+use Capell\Address\Models\Country;
 use Capell\Core\Console\Commands\Concerns\HasSitesOption;
-use Capell\Core\Enums\ModelEnum;
-use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Language;
 use Capell\Core\Models\Site;
 use Illuminate\Console\Command;
@@ -32,7 +30,7 @@ class DemoCommand extends Command
         }
 
         /** @var class-string<Site> $model */
-        $model = CapellCore::getModel(ModelEnum::Site);
+        $model = Site::class;
 
         $sites = $model::query()
             ->with(['language', 'languages'])
@@ -68,10 +66,11 @@ class DemoCommand extends Command
 
     private function setupCountry()
     {
-        $countryModel = CapellCore::getModel(AddressModelEnum::Country);
+        /** @var class-string<Country> $countryModel */
+        $countryModel = Country::class;
 
         /** @var class-string<Language> $model */
-        $model = CapellCore::getModel(ModelEnum::Language);
+        $model = Language::class;
 
         return $countryModel::query()->firstOrCreate(['iso2' => 'US'], [
             'name' => 'United States',
@@ -84,7 +83,7 @@ class DemoCommand extends Command
     private function setupAddress(): Address
     {
         /** @var class-string<Address> $model */
-        $model = CapellCore::getModel(AddressModelEnum::Address);
+        $model = Address::class;
 
         /** @var Address $address */
         $address = $model::query()->firstOrCreate([
