@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Symfony\Component\Finder\Finder;
 
 it('keeps address package references inside the address source package', function (): void {
-    $rootPath = dirname(__DIR__, 5);
+    $rootPath = dirname(__DIR__, 4);
     $violations = [];
 
     $files = (new Finder)
@@ -18,7 +18,7 @@ it('keeps address package references inside the address source package', functio
     foreach ($files as $file) {
         $relativePath = str_replace($rootPath . '/', '', $file->getPathname());
 
-        if (str_starts_with($relativePath, 'packages/foundation/address/src/')) {
+        if (str_starts_with($relativePath, 'packages/address/src/')) {
             continue;
         }
 
