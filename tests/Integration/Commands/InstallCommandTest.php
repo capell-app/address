@@ -9,7 +9,7 @@ use Capell\Core\Support\Migration\MigrationFilesystemInterface;
 use Capell\Tests\Fixtures\FakeMigrationFileManager;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
-use Illuminate\Database\Migrations\MigrationAssistant;
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\DB;
 
 use function Pest\Laravel\artisan;
@@ -32,7 +32,7 @@ it('runs install command and does not publish files for capell:publish-migration
             ->shouldReceive('run')->once()->andReturn(0)->getMock(),
     );
 
-    $fakeMigrationAssistant = Mockery::mock(MigrationAssistant::class);
+    $fakeMigrationAssistant = Mockery::mock(Migrator::class);
     $fakeDispatcher = Mockery::mock(Dispatcher::class);
     test()->instance(
         MigrateCommand::class,
