@@ -1,4 +1,5 @@
 {
+    "manifest-version": 2,
     "name": "capell-app/address",
     "kind": "package",
     "capell-version": "^4.0",
@@ -6,9 +7,46 @@
     "tier": "free",
     "bundle": "foundation",
     "description": "Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.",
-    "contexts": ["admin"],
-    "requires": ["capell-app/admin"],
+    "surfaces": [
+        "admin"
+    ],
+    "dependencies": {
+        "requires": [
+            "capell-app/admin"
+        ],
+        "optional": [],
+        "conflicts": []
+    },
+    "lifecycle": {
+        "activation": "manual",
+        "defaultStatus": "available",
+        "requiresInstallCommand": false
+    },
     "providers": {
-        "shared": ["Capell\\Address\\Providers\\AddressServiceProvider"]
-    }
+        "metadata": [],
+        "install": [],
+        "runtime": [
+            "Capell\\Address\\Providers\\AddressServiceProvider"
+        ],
+        "admin": [],
+        "frontend": []
+    },
+    "database": {
+        "migrations": true,
+        "settings": false,
+        "requiredTables": []
+    },
+    "commands": {
+        "install": null,
+        "setup": null,
+        "setupParams": [],
+        "demo": null,
+        "demoParams": [],
+        "health": null
+    },
+    "settings": [],
+    "permissions": [],
+    "capabilities": [],
+    "assets": [],
+    "healthChecks": []
 }
