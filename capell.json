@@ -7,13 +7,9 @@
     "tier": "free",
     "bundle": "foundation",
     "description": "Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.",
-    "surfaces": [
-        "admin"
-    ],
+    "surfaces": ["admin"],
     "dependencies": {
-        "requires": [
-            "capell-app/admin"
-        ],
+        "requires": ["capell-app/admin"],
         "optional": [],
         "conflicts": []
     },
@@ -25,9 +21,7 @@
     "providers": {
         "metadata": [],
         "install": [],
-        "runtime": [
-            "Capell\\Address\\Providers\\AddressServiceProvider"
-        ],
+        "runtime": ["Capell\\Address\\Providers\\AddressServiceProvider"],
         "admin": [],
         "frontend": []
     },
