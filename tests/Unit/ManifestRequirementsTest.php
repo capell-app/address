@@ -25,6 +25,16 @@ describe('address capell.json manifest', function (): void {
         expect($manifest['dependencies']['requires'])->toContain('capell-app/admin');
     });
 
+    it('declares its demo command for package demo installs', function (): void {
+        $manifest = json_decode(
+            file_get_contents(__DIR__ . '/../../capell.json'),
+            associative: true,
+        );
+
+        expect($manifest['commands']['demo'])->toBe('capell:address-demo')
+            ->and($manifest['commands']['demoParams'])->toBe(['sites']);
+    });
+
     it('keeps composer package requirements aligned with the manifest', function (): void {
         $manifest = json_decode(
             file_get_contents(__DIR__ . '/../../capell.json'),

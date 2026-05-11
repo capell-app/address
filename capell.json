@@ -34,8 +34,8 @@
         "install": null,
         "setup": null,
         "setupParams": [],
-        "demo": null,
-        "demoParams": [],
+        "demo": "capell:address-demo",
+        "demoParams": ["sites"],
         "health": null
     },
     "settings": [],
