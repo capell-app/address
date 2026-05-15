@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Capell\Address\Filament\Resources\Addresses\Pages;
 
 use Capell\Address\Enums\ResourceEnum;
-use Capell\Address\Filament\Resources\Addresses\AddressResource;
 use Capell\Admin\Support\AdminSurfaceLookup;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
@@ -14,7 +13,6 @@ use Override;
 
 class ManageAddresses extends ManageRecords
 {
-    /** @return class-string<AddressResource> */
     #[Override]
     public static function getResource(): string
     {

@@ -58,7 +58,7 @@ use Staudenmeir\EloquentJsonRelations\Relations\BelongsToJson;
  * @property string|null $iso2
  * @property string|null $iso3
  * @property int|null $language_id
- * @property int $default
+ * @property bool $default
  * @property int $status
  * @property array<array-key, mixed>|null $meta
  * @property CarbonImmutable|null $deleted_at

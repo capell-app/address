@@ -28,7 +28,7 @@ describe('Country model scopes', function (): void {
         $nonDefaults = Country::query()->nonDefault()->get();
 
         expect($nonDefaults)->toHaveCount(2);
-        expect($nonDefaults->every(fn (Country $c): bool => ! (bool) $c->default))->toBeTrue();
+        expect($nonDefaults->every(fn (Country $c): bool => ! $c->default))->toBeTrue();
     });
 
     it('can query enabled countries', function (): void {
