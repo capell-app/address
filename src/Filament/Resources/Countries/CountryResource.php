@@ -68,7 +68,7 @@ class CountryResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return (string) (__('capell-admin::navigation.group_website'));
+        return (string) (__('capell-admin::navigation.group_websites'));
     }
 
     public static function shouldRegisterNavigation(): bool
