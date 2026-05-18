@@ -19,6 +19,7 @@ class ManageAddresses extends ManageRecords
         return AdminSurfaceLookup::resource(ResourceEnum::Address);
     }
 
+    #[Override]
     protected function getActions(): array
     {
         $countryResource = AdminSurfaceLookup::resource(ResourceEnum::Country);

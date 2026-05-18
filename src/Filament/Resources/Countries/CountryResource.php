@@ -61,21 +61,25 @@ class CountryResource extends Resource
         return Country::class;
     }
 
+    #[Override]
     public static function getNavigationLabel(): string
     {
         return (string) (__('capell-address::navigation.countries'));
     }
 
+    #[Override]
     public static function getNavigationGroup(): ?string
     {
         return (string) (__('capell-admin::navigation.group_websites'));
     }
 
+    #[Override]
     public static function shouldRegisterNavigation(): bool
     {
         return CapellCore::getPackage(AddressServiceProvider::$packageName)->isInstalled();
     }
 
+    #[Override]
     public static function canGloballySearch(): bool
     {
         return CapellCore::getPackage(AddressServiceProvider::$packageName)->isInstalled()
@@ -96,6 +100,7 @@ class CountryResource extends Resource
             ]);
     }
 
+    #[Override]
     public static function getPages(): array
     {
         return [

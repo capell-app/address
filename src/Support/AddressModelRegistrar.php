@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 class AddressModelRegistrar
 {
     /** @var list<class-string> */
-    private const MODELS = [
+    private const array MODELS = [
         Address::class,
         Country::class,
     ];

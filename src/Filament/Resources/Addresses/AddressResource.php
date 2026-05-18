@@ -59,21 +59,25 @@ class AddressResource extends Resource
         return Address::class;
     }
 
+    #[Override]
     public static function getNavigationLabel(): string
     {
         return (string) (__('capell-address::generic.addresses'));
     }
 
+    #[Override]
     public static function getNavigationGroup(): ?string
     {
         return (string) (__('capell-admin::navigation.group_websites'));
     }
 
+    #[Override]
     public static function shouldRegisterNavigation(): bool
     {
         return CapellCore::getPackage(AddressServiceProvider::$packageName)->isInstalled();
     }
 
+    #[Override]
     public static function canGloballySearch(): bool
     {
         return CapellCore::getPackage(AddressServiceProvider::$packageName)->isInstalled()
@@ -94,6 +98,7 @@ class AddressResource extends Resource
             ]);
     }
 
+    #[Override]
     public static function getPages(): array
     {
         return [

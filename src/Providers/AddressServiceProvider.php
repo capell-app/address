@@ -31,7 +31,7 @@ use Spatie\LaravelPackageTools\Package;
 
 class AddressServiceProvider extends AbstractPackageServiceProvider
 {
-    private const ADMIN_FLAG_ICON_RENDERER_CONTRACT = \Capell\Admin\Contracts\Support\FlagIconRenderer::class;
+    private const string ADMIN_FLAG_ICON_RENDERER_CONTRACT = \Capell\Admin\Contracts\Support\FlagIconRenderer::class;
 
     public static string $name = 'capell-address';
 

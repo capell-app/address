@@ -18,6 +18,7 @@ class ManageCountries extends ManageRecords
         return AdminSurfaceLookup::resource(ResourceEnum::Country);
     }
 
+    #[Override]
     protected function getActions(): array
     {
         return [
