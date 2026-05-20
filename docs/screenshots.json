@@ -11,9 +11,11 @@
             "package": "address",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "AddressResource",
+            "target": "CountryResource",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Requires package migrations and seeded country rows with ISO2/ISO3 codes and language relationships.",
+            "useCase": "An administrator reviews available countries before using country and address selectors elsewhere in Capell.",
+            "screenshotPath": "public/docs/screenshots/packages/address/countries-admin-index.png"
         },
         {
             "id": "addresses-admin-index",
@@ -23,7 +25,9 @@
             "targetType": "admin-surface",
             "target": "AddressResource",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Requires seeded addresses connected to seeded countries. Include at least one address with full line, city, state, postal code, and country data.",
+            "useCase": "An administrator manages reusable postal addresses that other packages can reference instead of duplicating location fields.",
+            "screenshotPath": "public/docs/screenshots/packages/address/addresses-admin-index.png"
         },
         {
             "id": "create-edit-country-form",
@@ -31,9 +35,11 @@
             "package": "address",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "AddressResource",
+            "target": "CountryResource",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Open the create or edit modal from `CountryResource`; the current resource uses table actions rather than a separate create page.",
+            "useCase": "An administrator adds or corrects a country name, ISO code, and language mapping.",
+            "screenshotPath": "public/docs/screenshots/packages/address/create-edit-country-form.png"
         },
         {
             "id": "create-edit-address-form",
@@ -43,7 +49,9 @@
             "targetType": "admin-surface",
             "target": "AddressResource",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Open the create or edit modal from `AddressResource`; seed countries first so the country selector is meaningful.",
+            "useCase": "An administrator creates a structured address with country, street, locality, region, and postal fields.",
+            "screenshotPath": "public/docs/screenshots/packages/address/create-edit-address-form.png"
         },
         {
             "id": "site-settings-fields-where-address-data-is-injected",
@@ -51,9 +59,11 @@
             "package": "address",
             "surface": "admin",
             "targetType": "admin-surface",
-            "target": "AddressResource",
+            "target": "SiteSchemaExtender",
             "required": true,
-            "notes": "Resolved by the deployment screenshot runner after the package is installed and demo data is prepared."
+            "notes": "Requires the host admin site form that consumes `SiteSchemaExtender` plus seeded countries and addresses.",
+            "useCase": "A site administrator selects reusable address data while editing site-level settings.",
+            "screenshotPath": "public/docs/screenshots/packages/address/site-settings-fields-where-address-data-is-injected.png"
         }
     ]
 }

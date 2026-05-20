@@ -22,6 +22,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
+use Override;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 use Staudenmeir\EloquentJsonRelations\Relations\BelongsToJson;
 
@@ -58,7 +59,7 @@ use Staudenmeir\EloquentJsonRelations\Relations\BelongsToJson;
  * @property string|null $iso2
  * @property string|null $iso3
  * @property int|null $language_id
- * @property int $default
+ * @property bool $default
  * @property int $status
  * @property array<array-key, mixed>|null $meta
  * @property CarbonImmutable|null $deleted_at
@@ -130,6 +131,7 @@ class Country extends Model implements Defaultable, Userstampable
         return $query->orderBy('name');
     }
 
+    #[Override]
     protected function casts(): array
     {
         return [

@@ -9,11 +9,11 @@ use Illuminate\View\ComponentAttributeBag;
 
 class FlagIconRenderer
 {
-    private const DEFAULT_STYLE = '4x3';
+    private const string DEFAULT_STYLE = '4x3';
 
-    private const VALID_ICON_PATTERN = '/\A(?:1x1|4x3)-[a-z0-9]+(?:-[a-z0-9]+)*\z/';
+    private const string VALID_ICON_PATTERN = '/\A(?:1x1|4x3)-[a-z0-9]+(?:-[a-z0-9]+)*\z/';
 
-    private const VALID_STYLE_PATTERN = '/\A(?:1x1|4x3)\z/';
+    private const string VALID_STYLE_PATTERN = '/\A(?:1x1|4x3)\z/';
 
     /**
      * @param  array<string, mixed>  $attributes

@@ -24,7 +24,6 @@ use Capell\Core\Data\VendorAssetData;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Site;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
-use Composer\InstalledVersions;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\Blade;
@@ -32,7 +31,7 @@ use Spatie\LaravelPackageTools\Package;
 
 class AddressServiceProvider extends AbstractPackageServiceProvider
 {
-    private const ADMIN_FLAG_ICON_RENDERER_CONTRACT = \Capell\Admin\Contracts\Support\FlagIconRenderer::class;
+    private const string ADMIN_FLAG_ICON_RENDERER_CONTRACT = \Capell\Admin\Contracts\Support\FlagIconRenderer::class;
 
     public static string $name = 'capell-address';
 
@@ -52,7 +51,11 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
-        $this->registerPackageMetadata();
+        $this->app->booting(function (): void {
+            if ($this->isPackageInstalled()) {
+                $this->registerResources();
+            }
+        });
 
         $this->app->booted(function (): void {
             if (! $this->isPackageInstalled()) {
@@ -82,20 +85,6 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
             ->registerBladeComponents();
     }
 
-    private function registerPackageMetadata(): self
-    {
-        CapellCore::registerPackage(
-            static::$packageName,
-            type: static::getType(),
-            serviceProviderClass: static::class,
-            path: realpath(__DIR__ . '/../..'),
-            version: $this->getVersion(),
-            description: fn (): string => __('capell-address::package.description'),
-        );
-
-        return $this;
-    }
-
     private function registerPackageAssets(): self
     {
         CapellCore::registerVendorAsset(
@@ -115,19 +104,6 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
         }
 
         return $this;
-    }
-
-    private function getVersion(): string
-    {
-        if (! class_exists(InstalledVersions::class)) {
-            return 'dev';
-        }
-
-        if (! InstalledVersions::isInstalled(static::$packageName)) {
-            return 'dev';
-        }
-
-        return InstalledVersions::getPrettyVersion(static::$packageName) ?? 'dev';
     }
 
     private function registerSchemaExtender(string $tag, string $class): void

@@ -34,13 +34,13 @@ it('renders a published country flag through the admin renderer contract', funct
     File::put(public_path('vendor/blade-country-flags/4x3-fr.svg'), '<svg></svg>');
 
     $html = resolve(Capell\Admin\Contracts\Support\FlagIconRenderer::class)
-        ->render('flag-4x3-fr', 'France', attributes: ['class' => 'h-4'])
+        ->render('flag-4x3-fr', 'France', attributes: ['class' => 'flag-renderer-test-class'])
         ->toHtml();
 
     expect($html)
         ->toContain('src="http://localhost/vendor/blade-country-flags/4x3-fr.svg"')
         ->toContain('alt="France"')
-        ->toContain('h-4');
+        ->toContain('flag-renderer-test-class');
 });
 
 it('resolves a published blade country flag asset from a blade icon name', function (): void {

@@ -26,12 +26,12 @@ it('renders a published blade country flag asset', function (): void {
     File::ensureDirectoryExists(public_path('vendor/blade-country-flags'));
     File::put(public_path('vendor/blade-country-flags/4x3-fr.svg'), '<svg></svg>');
 
-    $html = Blade::render('<x-capell-address::flag-icon flag="flag-4x3-fr" label="France" class="h-4" />');
+    $html = Blade::render('<x-capell-address::flag-icon flag="flag-4x3-fr" label="France" class="flag-renderer-test-class" />');
 
     expect($html)
         ->toContain('src="http://localhost/vendor/blade-country-flags/4x3-fr.svg"')
         ->toContain('alt="France"')
-        ->toContain('h-4')
+        ->toContain('flag-renderer-test-class')
         ->not->toContain('Missing flag');
 });
 

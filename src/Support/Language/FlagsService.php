@@ -10,11 +10,11 @@ use Illuminate\Support\Facades\File;
 
 class FlagsService
 {
-    private const CACHE_KEY = 'capell_address.language_flags.available';
+    private const string CACHE_KEY = 'capell_address.language_flags.available';
 
-    private const CACHE_TTL = 3600;
+    private const int CACHE_TTL = 3600;
 
-    private const SVG_PREFIX = '1x1';
+    private const string SVG_PREFIX = '1x1';
 
     private readonly string $svgDirectory;
 

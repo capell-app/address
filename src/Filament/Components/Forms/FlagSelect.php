@@ -10,7 +10,7 @@ use Filament\Forms\Components\Select;
 class FlagSelect extends Select
 {
     /** @var array<int, string> */
-    private const PRIMARY_FLAGS = ['us', 'gb', 'de', 'fr', 'es', 'it'];
+    private const array PRIMARY_FLAGS = ['us', 'gb', 'de', 'fr', 'es', 'it'];
 
     protected function setUp(): void
     {
