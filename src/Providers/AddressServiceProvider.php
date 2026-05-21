@@ -13,6 +13,8 @@ use Capell\Address\Filament\Configurators\Languages\DefaultLanguageConfigurator;
 use Capell\Address\Filament\Resources\Sites\Schemas\Extenders\SiteSchemaExtender;
 use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
+use Capell\Address\Policies\AddressPolicy;
+use Capell\Address\Policies\CountryPolicy;
 use Capell\Address\Support\AddressModelRegistrar;
 use Capell\Address\Support\FlagIconRenderer;
 use Capell\Address\Support\Language\FlagsService;
@@ -27,6 +29,7 @@ use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Gate;
 use Spatie\LaravelPackageTools\Package;
 
 class AddressServiceProvider extends AbstractPackageServiceProvider
@@ -75,6 +78,7 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
     {
         return $this
             ->registerModels()
+            ->registerPolicies()
             ->registerRelationships()
             ->registerPackageAssets()
             ->registerSupportServices()
@@ -115,6 +119,14 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
     private function registerModels(): self
     {
         AddressModelRegistrar::register();
+
+        return $this;
+    }
+
+    private function registerPolicies(): self
+    {
+        Gate::policy(Address::class, AddressPolicy::class);
+        Gate::policy(Country::class, CountryPolicy::class);
 
         return $this;
     }
