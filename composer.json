@@ -19,7 +19,7 @@
     ],
     "require": {
         "php": "^8.3",
-        "capell-app/admin": "*",
+        "capell-app/admin": "^4.0 || 4.x-dev",
         "stijnvanouplines/blade-country-flags": "^1.0"
     },
     "autoload": {
@@ -38,5 +38,10 @@
     "config": {
         "sort-packages": true
     },
-    "prefer-stable": true
+    "prefer-stable": true,
+    "type": "library",
+    "support": {
+        "source": "https://github.com/capell-app/capell-packages",
+        "docs": "https://docs.capell.app/packages/address"
+    }
 }
