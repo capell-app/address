@@ -62,7 +62,7 @@ class InstallCommand extends Command
             ],
         );
 
-        $this->call('migrate');
+        $this->call('migrate', ['--force' => true]);
 
         $this->callSilent('vendor:publish', ['--tag' => 'blade-country-flags']);
 
