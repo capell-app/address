@@ -4,7 +4,7 @@ Status: **Available, schema-owning** · Kind: **package** · Tier: **free** · B
 
 This page is the consolidated implementation overview for the Address package. It is extracted from the package README, service providers, migrations, config files, routes, resources, models, actions, and the shared Capell ERD notes where available.
 
-## What This Plugin Adds
+## What This Package Adds
 
 Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.
 

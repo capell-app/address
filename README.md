@@ -11,6 +11,18 @@ Address adds reusable country, region, and address data structures for Capell fo
 - Capell dependencies: `capell-app/admin`
 - Third-party dependencies: `stijnvanouplines/blade-country-flags`
 
+## Why It Helps Your Capell Workflow
+
+- Gives Capell packages one reusable country/address foundation instead of repeating selectors and storage rules in every form.
+- Helps editors and admins collect consistent address data across content, forms, events, and business records.
+- Keeps address UI and database ownership in one optional package so other packages can integrate without owning geography data.
+
+## Best Used With
+
+- [Form Builder](../form-builder/README.md)
+- [Events](../events/README.md)
+- [Content Sections](../content-sections/README.md)
+
 ## What It Adds
 
 Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.
@@ -130,6 +142,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 
 ## Docs
 
+- [docs index](docs/README.md)
 - [address-api.md](docs/address-api.md)
 - [address-database.md](docs/address-database.md)
 - [credits-and-acknowledgements.md](docs/credits-and-acknowledgements.md)
