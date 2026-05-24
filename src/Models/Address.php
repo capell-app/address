@@ -15,13 +15,13 @@ use Capell\Core\Models\Site;
 use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Collection;
 use Override;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
@@ -33,7 +33,7 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @property bool|null $default
  * @property string|null $line1
  * @property string|null $line2
- * @property array|null $meta
+ * @property array<array-key, mixed>|null $meta
  * @property string|null $name
  * @property string|null $postal_code
  * @property string|null $state
@@ -93,13 +93,17 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 #[ObservedBy(AddressObserver::class)]
 class Address extends Model implements Defaultable, Userstampable
 {
+    /** @use HasDefault<self> */
     use HasDefault;
 
     /** @use HasFactory<AddressFactory> */
     use HasFactory;
 
     use HasJsonRelationships;
+
+    /** @use HasStatus<self> */
     use HasStatus;
+
     use HasUserstamps;
     use SoftDeletes;
 
@@ -130,18 +134,25 @@ class Address extends Model implements Defaultable, Userstampable
     }
 
     /**
-     * Get the country for the address.
+     * @return BelongsTo<Country, $this>
      */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }
 
+    /**
+     * @return HasMany<Site, $this>
+     */
     public function sites(): HasMany
     {
         return $this->hasMany(Site::class, 'meta->address_id');
     }
 
+    /**
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
+     */
     protected function scopeOrdered(Builder $query): Builder
     {
         return $query

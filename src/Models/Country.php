@@ -89,13 +89,17 @@ use Staudenmeir\EloquentJsonRelations\Relations\BelongsToJson;
 #[ObservedBy(CountryObserver::class)]
 class Country extends Model implements Defaultable, Userstampable
 {
+    /** @use HasDefault<self> */
     use HasDefault;
 
     /** @use HasFactory<CountryFactory> */
     use HasFactory;
 
     use HasJsonRelationships;
+
+    /** @use HasStatus<self> */
     use HasStatus;
+
     use HasUserstamps;
     use SoftDeletes;
 
@@ -111,21 +115,34 @@ class Country extends Model implements Defaultable, Userstampable
 
     protected static string $factory = CountryFactory::class;
 
+    /**
+     * @return BelongsTo<Language, $this>
+     */
     public function language(): BelongsTo
     {
         return $this->belongsTo(Language::class);
     }
 
+    /**
+     * @return BelongsToJson<Language, $this>
+     */
     public function languages(): BelongsToJson
     {
         return $this->belongsToJson(Language::class, 'meta->languages');
     }
 
+    /**
+     * @return HasMany<Address, $this>
+     */
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::class);
     }
 
+    /**
+     * @param  Builder<Model>  $query
+     * @return Builder<Model>
+     */
     protected function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('name');
