@@ -63,7 +63,7 @@ class AddressesTable implements TableConfigurator
             NameColumn::make('name')
                 ->defaultBadge(),
             TextColumn::make('address')
-                ->getStateUsing(fn (Address $record): ?string => $record->full_address)
+                ->getStateUsing(fn (Address $record): string => $record->full_address)
                 ->searchable([
                     'line1',
                     'line2',

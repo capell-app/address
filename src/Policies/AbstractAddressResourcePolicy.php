@@ -96,10 +96,6 @@ abstract class AbstractAddressResourcePolicy
             return true;
         }
 
-        if (! method_exists($user, 'checkPermissionTo')) {
-            return false;
-        }
-
         try {
             return $user->checkPermissionTo(self::permission($ability, static::subject()));
         } catch (Throwable) {

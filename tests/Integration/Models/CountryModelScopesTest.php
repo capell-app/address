@@ -39,7 +39,7 @@ describe('Country model scopes', function (): void {
         $enabled = Country::query()->enabled()->get();
 
         expect($enabled)->toHaveCount(2);
-        expect($enabled->every(fn (Country $c) => $c->status))->toBeTrue();
+        expect($enabled->every(fn (Country $country): bool => (bool) $country->status))->toBeTrue();
     });
 
     it('can query disabled countries', function (): void {
