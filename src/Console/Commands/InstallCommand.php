@@ -4,11 +4,9 @@ declare(strict_types=1);
 
 namespace Capell\Address\Console\Commands;
 
-use Capell\Address\Enums\ResourceEnum;
-use Capell\Address\Support\AddressModelRegistrar;
-use Capell\Admin\Actions\AssignPermissionsToRole;
-use Capell\Core\Support\Migration\MigrationFilesystemInterface;
-use Filament\Facades\Filament;
+use Capell\Address\Actions\InstallAddressPackageAction;
+use Capell\Core\Facades\CapellCore;
+use Capell\Core\Support\Install\ConsoleProgressReporter;
 use Illuminate\Console\Command;
 
 class InstallCommand extends Command
@@ -27,48 +25,12 @@ class InstallCommand extends Command
      */
     protected $signature = 'capell:address-install';
 
-    public function __construct(private readonly MigrationFilesystemInterface $fileManager)
-    {
-        parent::__construct();
-    }
-
     /**
      * Execute the console command.
      */
     public function handle(): int
     {
-        AddressModelRegistrar::register();
-
-        Filament::getDefaultPanel()
-            ->resources(array_map(fn (ResourceEnum $resourceEnum) => $resourceEnum->value, ResourceEnum::cases()));
-
-        AssignPermissionsToRole::run(resources: array_map(fn (ResourceEnum $resourceEnum): string => $resourceEnum->value, ResourceEnum::cases()));
-
-        $migrations = __DIR__ . '/../../../database/migrations';
-        if (! $this->fileManager->isDir($migrations)) {
-            $this->error('Migrations directory does not exist.');
-
-            return Command::FAILURE;
-        }
-
-        $this->call(
-            'capell:publish-migrations',
-            [
-                '--items' => [
-                    'create_countries_table',
-                    'create_addresses_table',
-                ],
-                '--path' => $migrations,
-            ],
-        );
-
-        $this->call('migrate', ['--force' => true]);
-
-        $this->callSilent('vendor:publish', ['--tag' => 'blade-country-flags']);
-
-        if (! app()->runningUnitTests()) {
-            $this->callSilent('filament:assets');
-        }
+        InstallAddressPackageAction::run(CapellCore::getPackage('capell-app/address'), [], new ConsoleProgressReporter($this));
 
         $this->newLine();
         $this->info('Capell Address installed successfully.');

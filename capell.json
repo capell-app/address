@@ -39,6 +39,9 @@
         "demoParams": ["sites"],
         "doctor": null
     },
+    "actions": {
+        "install": "Capell\\Address\\Actions\\InstallAddressPackageAction"
+    },
     "settings": [],
     "permissions": [],
     "capabilities": ["address", "address-admin"],
