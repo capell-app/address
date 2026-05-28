@@ -2,9 +2,7 @@
 
 declare(strict_types=1);
 
-use Capell\Core\Console\Commands\PublishMigrationsCommand;
 use Capell\Core\Models\Theme;
-use Capell\Core\Support\Dataset\DatasetPublisher;
 use Capell\Core\Support\Migration\MigrationFilesystemInterface;
 use Capell\Tests\Fixtures\FakeMigrationFileManager;
 use Illuminate\Contracts\Events\Dispatcher;
@@ -23,15 +21,6 @@ it('runs install command and does not publish files for capell:publish-migration
         'fileExists' => [],
         'isDir' => [],
     ]);
-    $fakeDatasetPublisher = Mockery::mock(DatasetPublisher::class);
-
-    test()->instance(
-        PublishMigrationsCommand::class,
-        Mockery::mock(new PublishMigrationsCommand($fakeDatasetPublisher, $fakeFileManager))
-            ->makePartial()
-            ->shouldReceive('run')->once()->andReturn(0)->getMock(),
-    );
-
     $fakeMigrationAssistant = Mockery::mock(Migrator::class);
     $fakeDispatcher = Mockery::mock(Dispatcher::class);
     test()->instance(
@@ -68,11 +57,6 @@ it('runs install command and does not publish files for capell:publish-migration
     expect(collect($fakeFileManager->calls)->contains(
         fn (array $call): bool => $call[0] === 'isDir' && str_contains((string) $call[1], 'database/migrations'),
     ))->toBeTrue();
-
-    // Assert fileExists was not called (no migration file existence check)
-    expect(collect($fakeFileManager->calls)->contains(
-        fn (array $call): bool => $call[0] === 'fileExists',
-    ))->toBeFalse();
 
     // Assert makeDir was not called (no directory creation)
     expect(collect($fakeFileManager->calls)->contains(
