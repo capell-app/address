@@ -29,6 +29,8 @@ Address adds reusable countries, address records, address selectors, country sel
 
 - Filament resources for countries and addresses.
 - Address, country, and flag form components for other packages.
+- Address validation and geocoding provider contracts for package integrations.
+- Address quality health reporting for country and coordinate coverage.
 - Site schema extension support where address details are needed.
 - Install, demo, and faker commands for local package data.
 
@@ -105,6 +107,8 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 - Deletion behaviour should be verified before documenting cascading rules.
 
 - Models: `Address`, `Country`.
+- Provider contracts: `AddressValidationProvider`, `AddressGeocodingProvider`.
+- Health: `AddressHealthCheck::qualityReport()` returns a typed address quality report.
 - Migrations: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`.
 - Data objects live in `src/Data/`; use them for payloads, form state, and view models.
 
