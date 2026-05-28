@@ -10,8 +10,6 @@ use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\DB;
 
-use function Pest\Laravel\artisan;
-
 afterEach(function (): void {
     Mockery::close();
 });
@@ -42,7 +40,7 @@ it('runs install command and does not publish files for capell:publish-migration
 
     $theme = Theme::factory()->create();
 
-    artisan('capell:address-install')
+    $this->artisan('capell:address-install')
         ->doesntExpectOutput('Publishing migrations')
         ->doesntExpectOutput('Migrating')
         ->doesntExpectOutput('Building assets')
