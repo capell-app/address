@@ -21,8 +21,6 @@ class DemoCommand extends Command
     public function handle(): int
     {
         $siteNames = $this->resolveSiteNames();
-        $address = $this->setupAddress();
-
         $sites = $this->resolveSites($siteNames);
 
         if ($sites->isEmpty()) {
@@ -32,12 +30,16 @@ class DemoCommand extends Command
                 return Command::FAILURE;
             }
 
+            $this->setupAddress();
+
             $this->warn('No sites found. Created reusable demo address content without linking it to a site.');
             $this->newLine();
             $this->info('Address demo content inserted successfully.');
 
             return Command::SUCCESS;
         }
+
+        $address = $this->setupAddress();
 
         $sites->each(function (Site $site) use ($address): void {
             $this->newLine();
@@ -63,15 +65,41 @@ class DemoCommand extends Command
         /** @var class-string<Country> $countryModel */
         $countryModel = Country::class;
 
-        /** @var class-string<Language> $model */
-        $model = Language::class;
-
         return $countryModel::query()->firstOrCreate(['iso2' => 'US'], [
             'name' => 'United States',
             'iso2' => 'US',
             'iso3' => 'USA',
-            'language_id' => $model::query()->where('code', 'en')->first()->id,
+            'language_id' => $this->resolveAddressLanguage()->id,
         ]);
+    }
+
+    private function resolveAddressLanguage(): Language
+    {
+        /** @var class-string<Language> $model */
+        $model = Language::class;
+
+        $language = $model::query()
+            ->where('code', 'en')
+            ->first()
+            ?? $model::query()->default()->ordered()->first()
+            ?? $model::query()->ordered()->first();
+
+        if ($language instanceof Language) {
+            return $language;
+        }
+
+        /** @var Language $createdLanguage */
+        $createdLanguage = $model::query()->create([
+            'code' => 'en',
+            'name' => 'English',
+            'flag' => 'gb-eng',
+            'locale' => 'en',
+            'order' => 1,
+            'default' => true,
+            'status' => true,
+        ]);
+
+        return $createdLanguage;
     }
 
     private function setupAddress(): Address

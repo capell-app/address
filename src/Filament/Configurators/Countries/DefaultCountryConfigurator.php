@@ -24,16 +24,25 @@ class DefaultCountryConfigurator implements ConfiguratorInterface
 
     protected static ConfiguratorTypeEnumInterface $configuratorType = ConfiguratorTypeEnum::Country;
 
+    /**
+     * @return iterable<int, mixed>
+     */
     public static function getExtenders(): iterable
     {
         return app()->tagged(SchemaExtenderEnum::Country->value);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     public function make(Schema $configurator): array
     {
         return $this->getFormSchema($configurator);
     }
 
+    /**
+     * @return array<array-key, mixed>
+     */
     private function getFormSchema(Schema $configurator): array
     {
         return [

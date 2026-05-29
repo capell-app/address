@@ -11,12 +11,26 @@ Address adds reusable country, region, and address data structures for Capell fo
 - Capell dependencies: `capell-app/admin`
 - Third-party dependencies: `stijnvanouplines/blade-country-flags`
 
+## Why It Helps Your Capell Workflow
+
+- Gives Capell packages one reusable country/address foundation instead of repeating selectors and storage rules in every form.
+- Helps editors and admins collect consistent address data across content, forms, events, and business records.
+- Keeps address UI and database ownership in one optional package so other packages can integrate without owning geography data.
+
+## Best Used With
+
+- [Form Builder](../form-builder/README.md)
+- [Events](../events/README.md)
+- [Content Sections](../content-sections/README.md)
+
 ## What It Adds
 
 Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.
 
 - Filament resources for countries and addresses.
 - Address, country, and flag form components for other packages.
+- Address validation and geocoding provider contracts for package integrations.
+- Address quality health reporting for country and coordinate coverage.
 - Site schema extension support where address details are needed.
 - Install, demo, and faker commands for local package data.
 
@@ -93,6 +107,8 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 - Deletion behaviour should be verified before documenting cascading rules.
 
 - Models: `Address`, `Country`.
+- Provider contracts: `AddressValidationProvider`, `AddressGeocodingProvider`.
+- Health: `AddressHealthCheck::qualityReport()` returns a typed address quality report.
 - Migrations: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`.
 - Data objects live in `src/Data/`; use them for payloads, form state, and view models.
 
@@ -130,6 +146,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 
 ## Docs
 
+- [docs index](docs/README.md)
 - [address-api.md](docs/address-api.md)
 - [address-database.md](docs/address-database.md)
 - [credits-and-acknowledgements.md](docs/credits-and-acknowledgements.md)

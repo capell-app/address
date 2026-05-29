@@ -7,8 +7,6 @@ use Capell\Address\Models\Country;
 use Capell\Core\Models\Language;
 use Capell\Core\Models\Site;
 
-use function Pest\Laravel\artisan;
-
 describe('capell:address-demo command', function (): void {
     it('creates demo address and links it to the site', function (): void {
         $languageModel = Language::class;
@@ -21,7 +19,7 @@ describe('capell:address-demo command', function (): void {
                 'name' => 'Demo Site',
             ]);
 
-        artisan('capell:address-demo', [
+        $this->artisan('capell:address-demo', [
             '--sites' => $site->name,
         ])
             ->expectsOutputToContain('Selected site: ' . $site->name)
@@ -44,7 +42,7 @@ describe('capell:address-demo command', function (): void {
         $languageModel = Language::class;
         $languageModel::factory()->english()->create();
 
-        artisan('capell:address-demo')
+        $this->artisan('capell:address-demo')
             ->expectsOutputToContain('No sites found. Created reusable demo address content without linking it to a site.')
             ->expectsOutputToContain('Address demo content inserted successfully.')
             ->assertExitCode(0);
@@ -59,14 +57,81 @@ describe('capell:address-demo command', function (): void {
             ))->not->toBeNull();
     });
 
+    it('creates english language when demo address content is installed without one', function (): void {
+        $this->artisan('capell:address-demo')
+            ->expectsOutputToContain('Address demo content inserted successfully.')
+            ->assertExitCode(0);
+
+        $language = Language::query()->firstWhere('code', 'en');
+        $country = Country::query()->firstWhere('iso2', 'US');
+
+        expect($language)->not->toBeNull()
+            ->and($language->default)->toBeTrue()
+            ->and($country)->not->toBeNull()
+            ->and($country->language_id)->toBe($language->id);
+    });
+
+    it('uses the existing english language when available', function (): void {
+        $languageModel = Language::class;
+        $french = $languageModel::factory()->french(isDefault: true, order: 1)->create();
+        $english = $languageModel::factory()->english(isDefault: false, order: 2)->create();
+
+        $this->artisan('capell:address-demo')
+            ->expectsOutputToContain('Address demo content inserted successfully.')
+            ->assertExitCode(0);
+
+        $country = Country::query()->firstWhere('iso2', 'US');
+
+        expect($country)->not->toBeNull()
+            ->and($country->language_id)->toBe($english->id)
+            ->and($french->refresh()->default)->toBeTrue();
+    });
+
+    it('uses the default language when english does not exist', function (): void {
+        $languageModel = Language::class;
+        $french = $languageModel::factory()->french(isDefault: true, order: 2)->create();
+        $german = $languageModel::factory()->german(isDefault: false, order: 1)->create();
+
+        $this->artisan('capell:address-demo')
+            ->expectsOutputToContain('Address demo content inserted successfully.')
+            ->assertExitCode(0);
+
+        $country = Country::query()->firstWhere('iso2', 'US');
+
+        expect(Language::query()->where('code', 'en')->exists())->toBeFalse()
+            ->and($country)->not->toBeNull()
+            ->and($country->language_id)->toBe($french->id)
+            ->and($german->refresh()->default)->toBeFalse();
+    });
+
+    it('uses the first ordered language when english and default languages do not exist', function (): void {
+        $languageModel = Language::class;
+        $german = $languageModel::factory()->german(isDefault: false, order: 2)->create();
+        $french = $languageModel::factory()->french(isDefault: false, order: 1)->create();
+
+        $this->artisan('capell:address-demo')
+            ->expectsOutputToContain('Address demo content inserted successfully.')
+            ->assertExitCode(0);
+
+        $country = Country::query()->firstWhere('iso2', 'US');
+
+        expect(Language::query()->where('code', 'en')->exists())->toBeFalse()
+            ->and($country)->not->toBeNull()
+            ->and($country->language_id)->toBe($french->id)
+            ->and($german->refresh()->order)->toBe(2);
+    });
+
     it('fails when explicitly selected sites cannot be found', function (): void {
         $languageModel = Language::class;
         $languageModel::factory()->english()->create();
 
-        artisan('capell:address-demo', [
+        $this->artisan('capell:address-demo', [
             '--sites' => 'Missing Site',
         ])
             ->expectsOutputToContain('Unable to find any sites for: Missing Site')
             ->assertExitCode(1);
+
+        expect(Country::query()->count())->toBe(0)
+            ->and(Address::query()->count())->toBe(0);
     });
 });
