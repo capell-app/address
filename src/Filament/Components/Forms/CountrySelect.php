@@ -9,6 +9,7 @@ use Capell\Address\Models\Country;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Override;
 
@@ -75,7 +76,7 @@ class CountrySelect extends Select
                     ->successNotificationTitle(
                         fn (Action $action): string => __(
                             'capell-admin::notification.created_successfully',
-                            ['name' => (string) $action->getModalHeading()],
+                            ['name' => $this->modalHeadingText($action)],
                         ),
                     )
                     ->after(function (Action $action): void {
@@ -99,12 +100,19 @@ class CountrySelect extends Select
                     ->successNotificationTitle(
                         fn (Action $action): string => __(
                             'capell-admin::notification.updated_successfully',
-                            ['name' => (string) $action->getModalHeading()],
+                            ['name' => $this->modalHeadingText($action)],
                         ),
                     )
                     ->after(function (Action $action): void {
                         $action->success();
                     }),
             );
+    }
+
+    private function modalHeadingText(Action $action): string
+    {
+        $heading = $action->getModalHeading();
+
+        return $heading instanceof Htmlable ? $heading->toHtml() : $heading;
     }
 }

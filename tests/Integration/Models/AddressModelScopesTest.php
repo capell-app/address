@@ -17,7 +17,7 @@ describe('Address model scopes', function (): void {
         $defaults = Address::query()->default()->get();
 
         expect($defaults)->toHaveCount(2);
-        expect($defaults->every(fn (Address $a) => $a->default))->toBeTrue();
+        expect($defaults->every(fn (Address $a): bool => (bool) $a->default))->toBeTrue();
     });
 
     it('can query non-default addresses', function (): void {
@@ -39,7 +39,7 @@ describe('Address model scopes', function (): void {
         $enabled = Address::query()->enabled()->get();
 
         expect($enabled)->toHaveCount(2);
-        expect($enabled->every(fn (Address $a) => $a->status))->toBeTrue();
+        expect($enabled->every(fn (Address $a): bool => (bool) $a->status))->toBeTrue();
     });
 
     it('can query disabled addresses', function (): void {
@@ -83,7 +83,7 @@ describe('Address model scopes', function (): void {
 
         $ordered = Address::query()->ordered()->get();
 
-        expect($ordered->first()->line1)->toBe('Apple Ave');
-        expect($ordered->last()->line1)->toBe('Zebra Lane');
+        expect($ordered->first()?->line1)->toBe('Apple Ave');
+        expect($ordered->last()?->line1)->toBe('Zebra Lane');
     });
 });

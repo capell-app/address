@@ -10,6 +10,7 @@ use Capell\Address\Filament\Resources\Addresses\Schemas\AddressForm;
 use Capell\Address\Filament\Resources\Addresses\Tables\AddressesTable;
 use Capell\Address\Models\Address;
 use Capell\Address\Providers\AddressServiceProvider;
+use Capell\Address\Support\AddressSiteScope;
 use Capell\Admin\Filament\Concerns\HasConfiguredForm;
 use Capell\Admin\Filament\Concerns\HasConfiguredTable;
 use Capell\Admin\Filament\Concerns\HasNavigationBadge;
@@ -19,6 +20,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Override;
 
@@ -87,7 +89,11 @@ class AddressResource extends Resource
     #[Override]
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        /** @var Builder<Address> $query */
+        $query = parent::getEloquentQuery();
+
+        /** @var Builder<Model> $scopedQuery */
+        $scopedQuery = AddressSiteScope::applyForCurrentActor($query)
             ->with([
                 'creator',
                 'editor',
@@ -96,6 +102,8 @@ class AddressResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+
+        return $scopedQuery;
     }
 
     #[Override]

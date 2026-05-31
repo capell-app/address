@@ -142,11 +142,25 @@ final class BuildAddressQualityHealthReportAction
      */
     private function availableProviderKeys(string $tag): array
     {
-        return collect(app()->tagged($tag))
-            ->filter(fn (object $provider): bool => method_exists($provider, 'isAvailable') && $provider->isAvailable())
-            ->map(fn (object $provider): string => method_exists($provider, 'key') ? (string) $provider->key() : $provider::class)
-            ->values()
-            ->all();
+        $keys = [];
+
+        foreach (app()->tagged($tag) as $provider) {
+            if (! is_object($provider)) {
+                continue;
+            }
+
+            if (! method_exists($provider, 'isAvailable')) {
+                continue;
+            }
+
+            if (! $provider->isAvailable()) {
+                continue;
+            }
+
+            $keys[] = method_exists($provider, 'key') ? (string) $provider->key() : $provider::class;
+        }
+
+        return $keys;
     }
 
     /**

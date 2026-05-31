@@ -6,11 +6,14 @@ namespace Capell\Address\Filament\Components\Forms;
 
 use Capell\Address\Filament\Resources\Addresses\Schemas\AddressForm;
 use Capell\Address\Models\Address;
+use Capell\Address\Support\AddressSiteScope;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Gate;
 use Override;
 
 class AddressSelect extends Select
@@ -27,7 +30,8 @@ class AddressSelect extends Select
                     /** @var class-string<Address> $model */
                     $model = Address::class;
 
-                    return $model::query()
+                    return AddressSiteScope::applyForCurrentActor($model::query())
+                        ->with(['country'])
                         ->limit($component->getOptionsLimit())
                         ->ordered()
                         ->get()
@@ -40,8 +44,9 @@ class AddressSelect extends Select
                     /** @var class-string<Address> $model */
                     $model = Address::class;
 
-                    return $model::query()
-                        ->find($state);
+                    return AddressSiteScope::applyForCurrentActor($model::query())
+                        ->whereKey($state)
+                        ->firstOrFail();
                 },
             )
             ->getOptionLabelUsing(
@@ -49,7 +54,7 @@ class AddressSelect extends Select
                     /** @var class-string<Address> $model */
                     $model = Address::class;
 
-                    return $model::query()
+                    return AddressSiteScope::applyForCurrentActor($model::query())
                         ->whereKey($value)
                         ->value('name');
                 },
@@ -59,7 +64,7 @@ class AddressSelect extends Select
                     /** @var class-string<Address> $model */
                     $model = Address::class;
 
-                    return $model::query()
+                    return AddressSiteScope::applyForCurrentActor($model::query())
                         ->where(fn (Builder $query): Builder => $query->where('line1', 'like', sprintf('%%%s%%', $search))
                             ->orWhere('line2', 'like', sprintf('%%%s%%', $search))
                             ->orWhere('city', 'like', sprintf('%%%s%%', $search))
@@ -84,7 +89,7 @@ class AddressSelect extends Select
                     ->successNotificationTitle(
                         fn (Action $action): string => __(
                             'capell-admin::notification.created_successfully',
-                            ['name' => (string) $action->getModalHeading()],
+                            ['name' => $this->modalHeadingText($action)],
                         ),
                     ),
             );
@@ -99,7 +104,13 @@ class AddressSelect extends Select
         })
             ->editOptionForm(fn (Schema $configurator): Schema => AddressForm::configure($configurator))
             ->updateOptionUsing(static function (array $data, Schema $configurator): void {
-                $configurator->getRecord()->update($data);
+                $record = $configurator->getRecord();
+
+                if ($record instanceof Address) {
+                    Gate::authorize('update', $record);
+
+                    $record->update($data);
+                }
             })
             ->editOptionAction(
                 fn (Action $action): Action => $action
@@ -109,12 +120,19 @@ class AddressSelect extends Select
                     ->successNotificationTitle(
                         fn (Action $action): string => __(
                             'capell-admin::notification.updated_successfully',
-                            ['name' => (string) $action->getModalHeading()],
+                            ['name' => $this->modalHeadingText($action)],
                         ),
                     )
                     ->after(function (Action $action): void {
                         $action->success();
                     }),
             );
+    }
+
+    private function modalHeadingText(Action $action): string
+    {
+        $heading = $action->getModalHeading();
+
+        return $heading instanceof Htmlable ? $heading->toHtml() : $heading;
     }
 }

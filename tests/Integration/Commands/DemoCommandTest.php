@@ -26,13 +26,17 @@ describe('capell:address-demo command', function (): void {
             ->expectsOutputToContain('Demo address content has been successfully created for site: ' . $site->name)
             ->assertExitCode(0);
 
-        $country = Country::query()->firstWhere('iso2', 'US');
+        $country = Country::query()->where('iso2', 'US')->firstOrFail();
 
         $address = Address::findAddress(
             line1: '123 Main St',
             postalCode: '12345',
             countryId: $country->id,
         );
+
+        expect($address)->not->toBeNull();
+
+        throw_unless($address instanceof Address, RuntimeException::class, 'Expected demo address to exist.');
 
         expect($site->refresh())
             ->meta->address_id->toBe($address->id);
@@ -47,7 +51,7 @@ describe('capell:address-demo command', function (): void {
             ->expectsOutputToContain('Address demo content inserted successfully.')
             ->assertExitCode(0);
 
-        $country = Country::query()->firstWhere('iso2', 'US');
+        $country = Country::query()->where('iso2', 'US')->firstOrFail();
 
         expect($country)->not->toBeNull()
             ->and(Address::findAddress(
@@ -62,8 +66,8 @@ describe('capell:address-demo command', function (): void {
             ->expectsOutputToContain('Address demo content inserted successfully.')
             ->assertExitCode(0);
 
-        $language = Language::query()->firstWhere('code', 'en');
-        $country = Country::query()->firstWhere('iso2', 'US');
+        $language = Language::query()->where('code', 'en')->firstOrFail();
+        $country = Country::query()->where('iso2', 'US')->firstOrFail();
 
         expect($language)->not->toBeNull()
             ->and($language->default)->toBeTrue()
@@ -80,7 +84,7 @@ describe('capell:address-demo command', function (): void {
             ->expectsOutputToContain('Address demo content inserted successfully.')
             ->assertExitCode(0);
 
-        $country = Country::query()->firstWhere('iso2', 'US');
+        $country = Country::query()->where('iso2', 'US')->firstOrFail();
 
         expect($country)->not->toBeNull()
             ->and($country->language_id)->toBe($english->id)
@@ -96,7 +100,7 @@ describe('capell:address-demo command', function (): void {
             ->expectsOutputToContain('Address demo content inserted successfully.')
             ->assertExitCode(0);
 
-        $country = Country::query()->firstWhere('iso2', 'US');
+        $country = Country::query()->where('iso2', 'US')->firstOrFail();
 
         expect(Language::query()->where('code', 'en')->exists())->toBeFalse()
             ->and($country)->not->toBeNull()
@@ -113,7 +117,7 @@ describe('capell:address-demo command', function (): void {
             ->expectsOutputToContain('Address demo content inserted successfully.')
             ->assertExitCode(0);
 
-        $country = Country::query()->firstWhere('iso2', 'US');
+        $country = Country::query()->where('iso2', 'US')->firstOrFail();
 
         expect(Language::query()->where('code', 'en')->exists())->toBeFalse()
             ->and($country)->not->toBeNull()
