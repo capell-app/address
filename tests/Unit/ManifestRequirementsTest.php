@@ -47,7 +47,7 @@ describe('address capell.json manifest', function (): void {
 
         $composerPackageRequirements = array_values(array_filter(
             array_keys($composer['require'] ?? []),
-            fn (string $packageName): bool => str_starts_with($packageName, 'capell-app/'),
+            fn (int|string $packageName): bool => is_string($packageName) && str_starts_with($packageName, 'capell-app/'),
         ));
 
         sort($composerPackageRequirements);

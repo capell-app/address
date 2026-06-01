@@ -17,6 +17,8 @@ describe('Address model methods', function (): void {
         $found = Address::findAddress('123 Main St', '12345', $country->id);
 
         expect($found)->not()->toBeNull();
+        throw_unless($found instanceof Address, RuntimeException::class, 'Expected address lookup to return an address.');
+
         expect($found->id)->toBe($address->id);
     });
 
@@ -42,6 +44,8 @@ describe('Address model methods', function (): void {
         ]);
 
         $found = Address::findAddress('123 Main St', '54321', $country->id);
+
+        throw_unless($found instanceof Address, RuntimeException::class, 'Expected address lookup to return the target address.');
 
         expect($found->id)->toBe($target->id);
     });

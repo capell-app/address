@@ -39,7 +39,7 @@ class FlagSelect extends Select
 
         $primary = collect(self::PRIMARY_FLAGS)
             ->filter(fn (string $flag): bool => $labels->has($flag))
-            ->mapWithKeys(fn (string $flag): array => [$flag => $labels[$flag]]);
+            ->mapWithKeys(fn (string $flag): array => [$flag => (string) $labels->get($flag, '')]);
 
         $remaining = $labels
             ->except(self::PRIMARY_FLAGS)
