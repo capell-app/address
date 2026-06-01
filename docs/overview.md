@@ -50,11 +50,11 @@ Keeps location data consistent across structured websites instead of duplicating
 
 ## Screenshots
 
-![Countries admin index](../../../public/docs/screenshots/packages/address/countries-admin-index.png)
+![Countries admin index](screenshots/countries-admin-index.png)
 
-![Addresses admin index](../../../public/docs/screenshots/packages/address/addresses-admin-index.png)
+![Addresses admin index](screenshots/addresses-admin-index.png)
 
-![Address fields injected into the site form](../../../public/docs/screenshots/packages/address/site-settings-fields-where-address-data-is-injected.png)
+![Address fields injected into the site form](screenshots/site-settings-fields-where-address-data-is-injected.png)
 
 Country and address records are managed through Filament table actions in the current app, so the manifest keeps create/edit form entries as capture targets but the overview avoids publishing duplicate index screenshots for them.
 
@@ -135,7 +135,7 @@ erDiagram
 
 ## Screenshot Automation
 
-Deployment should read [screenshots.json](screenshots.json), install the package with demo data, resolve each admin surface or frontend URL, and write images to `public/docs/screenshots/packages/address`.
+Deployment should read [screenshots.json](screenshots.json), install the package with demo data, resolve each admin surface or frontend URL, and write images to `packages/address/docs/screenshots`.
 
 - Countries admin index.
 - Addresses admin index.
