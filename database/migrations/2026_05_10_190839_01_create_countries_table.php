@@ -22,6 +22,9 @@ return new class extends Migration
             $table->softDeletes();
             $table->userstamps();
             $table->timestamps();
+
+            $table->unique('iso2');
+            $table->unique('iso3');
         });
     }
 

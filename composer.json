@@ -1,12 +1,18 @@
 {
     "name": "capell-app/address",
-    "description": "Address for Capell",
+    "description": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
     "keywords": [
         "capell",
         "address",
-        "laravel",
-        "filamentphp",
-        "cms"
+        "country",
+        "iso-3166",
+        "postal-address",
+        "country-selector",
+        "flags",
+        "filament",
+        "multi-site",
+        "cms",
+        "location-data"
     ],
     "homepage": "https://github.com/capell-app/address",
     "license": "proprietary",

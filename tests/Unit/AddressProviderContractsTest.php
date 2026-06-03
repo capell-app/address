@@ -136,6 +136,37 @@ it('builds address quality health reports for country and coordinate coverage', 
         ->invalidCoordinates->toBe(1)
         ->validationProviders->toBe(['fake-validation'])
         ->geocodingProviders->toBe(['fake-geocoding'])
-        ->and($report->issues)->toContain('Address #2 is missing an enabled country.')
-        ->and(AddressHealthCheck::qualityReport())->toBeInstanceOf(AddressQualityHealthReportData::class);
+        ->and($report->issues)->toContain('1 address(es) missing an enabled country.')
+        ->and($report->issues)->toContain('1 address(es) with invalid latitude or longitude metadata.')
+        ->and(AddressHealthCheck::report())->toBeInstanceOf(AddressQualityHealthReportData::class);
+
+    $collectionReport = BuildAddressQualityHealthReportAction::run(
+        Address::query()->with('country')->get(),
+    );
+
+    expect($collectionReport)
+        ->toBeInstanceOf(AddressQualityHealthReportData::class)
+        ->status->toBe('failed')
+        ->checkedAddresses->toBe(2)
+        ->missingCountries->toBe(1)
+        ->invalidCoordinates->toBe(1)
+        ->and($collectionReport->issues)->toContain('Address #2 is missing an enabled country.');
+});
+
+it('does not report missing optional providers as health issues', function (): void {
+    $country = Country::factory()->create(['status' => true]);
+
+    Address::factory()->create([
+        'country_id' => $country->getKey(),
+        'meta' => [
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+        ],
+    ]);
+
+    expect(BuildAddressQualityHealthReportAction::run())
+        ->status->toBe('passed')
+        ->validationProviders->toBe([])
+        ->geocodingProviders->toBe([])
+        ->issues->toBe([]);
 });
