@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use Capell\Address\Filament\Resources\Addresses\AddressResource;
+use Capell\Address\Filament\Resources\Addresses\Pages\ManageAddresses;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
 
 use function Pest\Laravel\get;
+use function Pest\Livewire\livewire;
 
 uses(CreatesAdminUser::class)
     ->group('address');
@@ -13,8 +15,8 @@ uses(CreatesAdminUser::class)
 test('admin can see addresses', function (): void {
     test()->actingAsAdmin();
 
-    get(AddressResource::getUrl())
-        ->assertOk();
+    livewire(ManageAddresses::class)
+        ->assertSuccessful();
 });
 
 test('cannot see addresses', function (): void {
