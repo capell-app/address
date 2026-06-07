@@ -6,23 +6,29 @@
     "kind": "package",
     "capellApiVersion": "^4.0",
     "version": "4.x-dev",
-    "description": "Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.",
+    "description": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
     "product": {
-        "group": "Capell Content",
-        "tier": "premium",
-        "bundle": "content-product"
+        "group": "Capell Foundation",
+        "tier": "free",
+        "bundle": "foundation"
     },
     "namespace": "Capell\\Address",
-    "surfaces": ["admin"],
+    "surfaces": [
+        "admin"
+    ],
     "dependencies": {
-        "requires": ["capell-app/admin"],
+        "requires": [
+            "capell-app/admin"
+        ],
         "supports": [],
         "conflicts": []
     },
     "providers": {
         "metadata": [],
         "install": [],
-        "runtime": ["Capell\\Address\\Providers\\AddressServiceProvider"],
+        "runtime": [
+            "Capell\\Address\\Providers\\AddressServiceProvider"
+        ],
         "admin": [],
         "frontend": []
     },
@@ -36,7 +42,9 @@
         "install": null,
         "setup": null,
         "demo": "capell:address-demo",
-        "demoParams": ["sites"],
+        "demoParams": [
+            "sites"
+        ],
         "doctor": null
     },
     "actions": {
@@ -44,7 +52,10 @@
     },
     "settings": [],
     "permissions": [],
-    "capabilities": ["address", "address-admin"],
+    "capabilities": [
+        "address",
+        "address-admin"
+    ],
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
@@ -67,21 +78,74 @@
         }
     ],
     "commercial": {
-        "proposedLicense": "paid",
+        "proposedLicense": "free",
         "requestedCertification": "first-party",
-        "supportPolicy": "priority",
-        "privateDocsRequested": true
+        "supportPolicy": "capell-first-party",
+        "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.",
+        "summary": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",
-                "alt": "Address extension preview image",
-                "caption": "Address extension preview"
+                "alt": "Address extension card",
+                "caption": "Address extension card"
+            },
+            {
+                "path": "docs/screenshots/countries-admin-index.png",
+                "alt": "Countries admin index",
+                "caption": "Countries admin index"
+            },
+            {
+                "path": "docs/screenshots/countries-admin-index-dark.png",
+                "alt": "Countries admin index (dark mode)",
+                "caption": "Countries admin index (dark mode)"
+            },
+            {
+                "path": "docs/screenshots/addresses-admin-index.png",
+                "alt": "Addresses admin index",
+                "caption": "Addresses admin index"
+            },
+            {
+                "path": "docs/screenshots/addresses-admin-index-dark.png",
+                "alt": "Addresses admin index (dark mode)",
+                "caption": "Addresses admin index (dark mode)"
+            },
+            {
+                "path": "docs/screenshots/create-edit-country-form.png",
+                "alt": "Create or edit country form",
+                "caption": "Create or edit country form"
+            },
+            {
+                "path": "docs/screenshots/create-edit-country-form-dark.png",
+                "alt": "Create or edit country form (dark mode)",
+                "caption": "Create or edit country form (dark mode)"
+            },
+            {
+                "path": "docs/screenshots/create-edit-address-form.png",
+                "alt": "Create or edit address form",
+                "caption": "Create or edit address form"
+            },
+            {
+                "path": "docs/screenshots/create-edit-address-form-dark.png",
+                "alt": "Create or edit address form (dark mode)",
+                "caption": "Create or edit address form (dark mode)"
+            },
+            {
+                "path": "docs/screenshots/site-settings-fields-where-address-data-is-injected.png",
+                "alt": "Address field injected into site settings",
+                "caption": "Address field injected into site settings"
+            },
+            {
+                "path": "docs/screenshots/site-settings-fields-where-address-data-is-injected-dark.png",
+                "alt": "Address field injected into site settings (dark mode)",
+                "caption": "Address field injected into site settings (dark mode)"
             }
         ],
-        "categories": ["admin", "content-product"]
+        "categories": [
+            "admin",
+            "foundation"
+        ]
     },
     "contributionTraceability": {
         "deferredContributions": [

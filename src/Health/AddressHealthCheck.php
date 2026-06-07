@@ -15,7 +15,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
         return '^4.0';
     }
 
-    public static function qualityReport(): AddressQualityHealthReportData
+    public static function report(): AddressQualityHealthReportData
     {
         return BuildAddressQualityHealthReportAction::run();
     }

@@ -6,7 +6,7 @@ This page is the consolidated implementation overview for the Address package. I
 
 ## What This Package Adds
 
-Address adds reusable countries, address records, address selectors, country selectors, and flag rendering to the Capell admin surface.
+Address gives Capell a shared country list and reusable postal address records for admin surfaces and package forms.
 
 - Filament resources for countries and addresses.
 - Address, country, and flag form components for other packages.
@@ -15,7 +15,7 @@ Address adds reusable countries, address records, address selectors, country sel
 
 ## Developer Notes
 
-Provides Country and Address models, typed address metadata, Filament configurators, observers, and support classes for URL and flag rendering.
+Provides Country and Address models, typed address metadata, Filament configurators, observers, and support classes for flag rendering.
 
 - AddressServiceProvider registers the package.
 - Migrations create countries and addresses.
@@ -47,6 +47,7 @@ Keeps location data consistent across structured websites instead of duplicating
 - Create/edit country form.
 - Create/edit address form.
 - Site settings fields where address data is injected.
+- Dark mode variants for the country index, address index, country form, address form, and site settings field.
 
 ## Screenshots
 
@@ -56,12 +57,12 @@ Keeps location data consistent across structured websites instead of duplicating
 
 ![Address fields injected into the site form](screenshots/site-settings-fields-where-address-data-is-injected.png)
 
-Country and address records are managed through Filament table actions in the current app, so the manifest keeps create/edit form entries as capture targets but the overview avoids publishing duplicate index screenshots for them.
+Country and address records are managed through Filament table actions in the current app. The full screenshot manifest also captures create/edit modals and dark mode variants for marketplace galleries.
 
 ## Pitfalls
 
 - Run migrations before opening the resources.
-- Seed or import countries before expecting useful address form-builder.
+- Seed or import countries before expecting useful address selectors.
 - Check language records before relying on localized country names.
 
 ## Verification
@@ -104,8 +105,8 @@ Country and address records are managed through Filament table actions in the cu
 
 ## Migrations
 
-- Migration: 2026_04_20_000001_create_countries_table.php
-- Migration: 2026_04_20_000002_create_addresses_table.php
+- Migration: 2026_05_10_190839_01_create_countries_table.php
+- Migration: 2026_05_10_190839_02_create_addresses_table.php
 
 ## ERD Excerpt
 
@@ -142,3 +143,4 @@ Deployment should read [screenshots.json](screenshots.json), install the package
 - Create/edit country form.
 - Create/edit address form.
 - Site settings fields where address data is injected.
+- Dark mode variants for all captured Address admin workflows.

@@ -3,9 +3,11 @@
 declare(strict_types=1);
 
 use Capell\Address\Filament\Resources\Countries\CountryResource;
+use Capell\Address\Filament\Resources\Countries\Pages\ManageCountries;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
 
 use function Pest\Laravel\get;
+use function Pest\Livewire\livewire;
 
 uses(CreatesAdminUser::class)
     ->group('country');
@@ -13,8 +15,8 @@ uses(CreatesAdminUser::class)
 test('admin can see countries', function (): void {
     test()->actingAsAdmin();
 
-    get(CountryResource::getUrl())
-        ->assertOk();
+    livewire(ManageCountries::class)
+        ->assertSuccessful();
 });
 
 test('cannot see countries', function (): void {

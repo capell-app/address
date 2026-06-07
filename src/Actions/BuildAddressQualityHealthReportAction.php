@@ -8,6 +8,7 @@ use Capell\Address\Contracts\AddressGeocodingProvider;
 use Capell\Address\Contracts\AddressValidationProvider;
 use Capell\Address\Data\AddressQualityHealthReportData;
 use Capell\Address\Models\Address;
+use Capell\Address\Models\Country;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Lorisleiva\Actions\Concerns\AsAction;
 
@@ -23,7 +24,78 @@ final class BuildAddressQualityHealthReportAction
      */
     public function handle(?iterable $addresses = null): AddressQualityHealthReportData
     {
-        $addresses = $this->addresses($addresses);
+        if ($addresses === null) {
+            return $this->buildFromQueryScan();
+        }
+
+        return $this->buildFromCollection($this->resolveCollection($addresses));
+    }
+
+    private function buildFromQueryScan(): AddressQualityHealthReportData
+    {
+        $enabledCountryIds = Country::query()
+            ->where('status', true)
+            ->pluck('id')
+            ->all();
+
+        $totalAddresses = 0;
+        $missingCountries = 0;
+        $missingCoordinates = 0;
+        $invalidCoordinates = 0;
+
+        Address::query()
+            ->select(['id', 'country_id', 'meta'])
+            ->cursor()
+            ->each(function (Address $address) use ($enabledCountryIds, &$totalAddresses, &$missingCountries, &$missingCoordinates, &$invalidCoordinates): void {
+                $totalAddresses++;
+
+                if ($address->country_id === null || ! in_array($address->country_id, $enabledCountryIds, true)) {
+                    $missingCountries++;
+                }
+
+                $coordinates = $this->coordinates($address);
+
+                if ($coordinates === null) {
+                    $missingCoordinates++;
+
+                    return;
+                }
+
+                if (! $this->coordinatesAreValid($coordinates['latitude'], $coordinates['longitude'])) {
+                    $invalidCoordinates++;
+                }
+            });
+
+        $issues = [];
+
+        if ($missingCountries > 0) {
+            $issues[] = sprintf('%d address(es) missing an enabled country.', $missingCountries);
+        }
+
+        if ($invalidCoordinates > 0) {
+            $issues[] = sprintf('%d address(es) with invalid latitude or longitude metadata.', $invalidCoordinates);
+        }
+
+        $validationProviders = $this->availableProviderKeys(AddressValidationProvider::TAG);
+        $geocodingProviders = $this->availableProviderKeys(AddressGeocodingProvider::TAG);
+
+        return new AddressQualityHealthReportData(
+            status: $this->status(invalidCoordinates: $invalidCoordinates, missingCountries: $missingCountries, issues: $issues),
+            checkedAddresses: $totalAddresses,
+            missingCountries: $missingCountries,
+            missingCoordinates: $missingCoordinates,
+            invalidCoordinates: $invalidCoordinates,
+            validationProviders: $validationProviders,
+            geocodingProviders: $geocodingProviders,
+            issues: array_values(array_unique($issues)),
+        );
+    }
+
+    /**
+     * @param  EloquentCollection<int, Address>  $addresses
+     */
+    private function buildFromCollection(EloquentCollection $addresses): AddressQualityHealthReportData
+    {
         $issues = [];
         $missingCountries = 0;
         $missingCoordinates = 0;
@@ -52,14 +124,6 @@ final class BuildAddressQualityHealthReportAction
         $validationProviders = $this->availableProviderKeys(AddressValidationProvider::TAG);
         $geocodingProviders = $this->availableProviderKeys(AddressGeocodingProvider::TAG);
 
-        if ($validationProviders === []) {
-            $issues[] = 'No available address validation provider is registered.';
-        }
-
-        if ($geocodingProviders === []) {
-            $issues[] = 'No available address geocoding provider is registered.';
-        }
-
         return new AddressQualityHealthReportData(
             status: $this->status($invalidCoordinates, $missingCountries, $issues),
             checkedAddresses: $addresses->count(),
@@ -73,17 +137,11 @@ final class BuildAddressQualityHealthReportAction
     }
 
     /**
-     * @param  iterable<int, Address>|null  $addresses
+     * @param  iterable<int, Address>  $addresses
      * @return EloquentCollection<int, Address>
      */
-    private function addresses(?iterable $addresses): EloquentCollection
+    private function resolveCollection(iterable $addresses): EloquentCollection
     {
-        if ($addresses === null) {
-            return Address::query()
-                ->with('country')
-                ->get();
-        }
-
         if ($addresses instanceof EloquentCollection) {
             $addresses->loadMissing('country');
 

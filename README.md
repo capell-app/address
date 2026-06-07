@@ -108,7 +108,7 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 
 - Models: `Address`, `Country`.
 - Provider contracts: `AddressValidationProvider`, `AddressGeocodingProvider`.
-- Health: `AddressHealthCheck::qualityReport()` returns a typed address quality report.
+- Health: `AddressHealthCheck::report()` returns a typed address quality report.
 - Migrations: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`.
 - Data objects live in `src/Data/`; use them for payloads, form state, and view models.
 
