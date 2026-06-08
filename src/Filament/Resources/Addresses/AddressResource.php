@@ -30,6 +30,8 @@ class AddressResource extends Resource
     use HasConfiguredTable;
     use HasNavigationBadge;
 
+    protected static ?string $slug = 'address/addresses';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMapPin;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::MapPin;
