@@ -16,7 +16,11 @@
     "surfaces": ["admin"],
     "dependencies": {
         "requires": ["capell-app/admin"],
-        "supports": [],
+        "supports": [
+            "capell-app/bookings",
+            "capell-app/events",
+            "capell-app/theme-local-services"
+        ],
         "conflicts": []
     },
     "providers": {
