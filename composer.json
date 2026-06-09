@@ -39,6 +39,9 @@
             "providers": [
                 "Capell\\Address\\Providers\\AddressServiceProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "4.x-dev"
         }
     },
     "config": {

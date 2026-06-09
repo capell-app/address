@@ -13,22 +13,20 @@
         "bundle": "foundation"
     },
     "namespace": "Capell\\Address",
-    "surfaces": [
-        "admin"
-    ],
+    "surfaces": ["admin"],
     "dependencies": {
-        "requires": [
-            "capell-app/admin"
+        "requires": ["capell-app/admin"],
+        "supports": [
+            "capell-app/bookings",
+            "capell-app/events",
+            "capell-app/theme-local-services"
         ],
-        "supports": [],
         "conflicts": []
     },
     "providers": {
         "metadata": [],
         "install": [],
-        "runtime": [
-            "Capell\\Address\\Providers\\AddressServiceProvider"
-        ],
+        "runtime": ["Capell\\Address\\Providers\\AddressServiceProvider"],
         "admin": [],
         "frontend": []
     },
@@ -42,9 +40,7 @@
         "install": null,
         "setup": null,
         "demo": "capell:address-demo",
-        "demoParams": [
-            "sites"
-        ],
+        "demoParams": ["sites"],
         "doctor": null
     },
     "actions": {
@@ -52,10 +48,7 @@
     },
     "settings": [],
     "permissions": [],
-    "capabilities": [
-        "address",
-        "address-admin"
-    ],
+    "capabilities": ["address", "address-admin"],
     "performance": {
         "frontendRenderBudgetMs": 0,
         "adminQueryBudget": 40,
@@ -142,10 +135,7 @@
                 "caption": "Address field injected into site settings (dark mode)"
             }
         ],
-        "categories": [
-            "admin",
-            "foundation"
-        ]
+        "categories": ["admin", "foundation"]
     },
     "contributionTraceability": {
         "deferredContributions": [

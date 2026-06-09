@@ -28,6 +28,8 @@ class CountryResource extends Resource
     use HasConfiguredTable;
     use HasNavigationBadge;
 
+    protected static ?string $slug = 'address/countries';
+
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedFlag;
 
     protected static string|BackedEnum|null $activeNavigationIcon = Heroicon::Flag;
