@@ -147,8 +147,6 @@ Screenshots are generated from [docs/screenshots.json](docs/screenshots.json) du
 ## Docs
 
 - [docs index](docs/README.md)
-- [address-api.md](docs/address-api.md)
-- [address-database.md](docs/address-database.md)
 - [credits-and-acknowledgements.md](docs/credits-and-acknowledgements.md)
 - [overview.md](docs/overview.md)
 
