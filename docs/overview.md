@@ -1,146 +1,100 @@
 # Address
 
-Status: **Available, schema-owning** · Kind: **package** · Tier: **free** · Bundle: **foundation** · Contexts: **admin** · Product group: **Capell Foundation**
+<!-- prettier-ignore-start -->
 
-This page is the consolidated implementation overview for the Address package. It is extracted from the package README, service providers, migrations, config files, routes, resources, models, actions, and the shared Capell ERD notes where available.
+## What This Plugin Adds
 
-## What This Package Adds
+Address is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/address` and extends these surfaces: admin.
 
-Address gives Capell a shared country list and reusable postal address records for admin surfaces and package forms.
+Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.
 
-- Filament resources for countries and addresses.
-- Address, country, and flag form components for other packages.
-- Site schema extension support where address details are needed.
-- Install, demo, and faker commands for local package data.
+After install, admins get package-owned management or reporting surfaces inside Capell.
 
-## Developer Notes
+Status details:
 
-Provides Country and Address models, typed address metadata, Filament configurators, observers, and support classes for flag rendering.
-
-- AddressServiceProvider registers the package.
-- Migrations create countries and addresses.
-- Models: Country and Address.
-- Filament resources: CountryResource and AddressResource.
-- Form components: AddressSelect, CountrySelect, FlagSelect.
-- Observers keep model state consistent.
-
-## Operational Notes
-
-Keeps location data consistent across structured websites instead of duplicating country and address fields in separate features.
-
-- Adds country and address admin navigation.
-- Adds database tables for countries and addresses.
-- Adds address/country form components for package developers.
-- No public route is registered by this package.
-
-## Data And Retention
-
-- countries stores localized country names with iso2 and iso3 codes.
-- addresses stores line, city, state, postal code, and country relationship data.
-- Countries connect to core languages.
-- Deletion behaviour should be verified before documenting cascading rules.
-
-## Screenshot Plan
-
-- Countries admin index.
-- Addresses admin index.
-- Create/edit country form.
-- Create/edit address form.
-- Site settings fields where address data is injected.
-- Dark mode variants for the country index, address index, country form, address form, and site settings field.
-
-## Screenshots
-
-![Countries admin index](screenshots/countries-admin-index.png)
-
-![Addresses admin index](screenshots/addresses-admin-index.png)
-
-![Address fields injected into the site form](screenshots/site-settings-fields-where-address-data-is-injected.png)
-
-Country and address records are managed through Filament table actions in the current app. The full screenshot manifest also captures create/edit modals and dark mode variants for marketplace galleries.
-
-## Pitfalls
-
-- Run migrations before opening the resources.
-- Seed or import countries before expecting useful address selectors.
-- Check language records before relying on localized country names.
-
-## Verification
-
-- Run `vendor/bin/pest packages/address/tests` when package tests exist.
-- Run the relevant host-app migration or package install flow in a disposable database.
-- Open the listed admin or frontend surface and compare it with the screenshot plan.
-
-## Package Manifest
-
-- Composer name: `capell-app/address`
-- Product group: Capell Foundation
-- Kind: package
+- Status: Available
 - Tier: free
 - Bundle: foundation
-- Contexts: `admin`
-- Requires: `capell-app/admin`
-- Optional dependencies: None listed.
+- Composer package: `capell-app/address`
+- Namespace: `Capell\Address`
+- Theme key: not applicable
 
-## Admin Surfaces
+## Why It Matters
 
-- AddressResource (packages/address/src/Filament/Resources/Addresses/AddressResource.php)
-- ManageAddresses (packages/address/src/Filament/Resources/Addresses/Pages/ManageAddresses.php)
-- CountryResource (packages/address/src/Filament/Resources/Countries/CountryResource.php)
-- ManageCountries (packages/address/src/Filament/Resources/Countries/Pages/ManageCountries.php)
+**For developers:** The package gives developers package-owned service providers, Actions, Data objects, models, Filament classes, and Blade views instead of pushing this behaviour into core or application code.
 
-## Commands
+**For teams:** Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.
 
-- `capell:address-demo {--sites=}` (packages/address/src/Console/Commands/DemoCommand.php)
-- `capell:address-faker {--count=25} {--force}` (packages/address/src/Console/Commands/FakerCommand.php)
-- `capell:address-install` (packages/address/src/Console/Commands/InstallCommand.php)
+## Screens And Workflow
 
-## Routes And Config
+Screenshot contract: `screenshots.json`.
 
-- None proven in this package directory.
+- Countries admin index (admin, required).
+- Addresses admin index (admin, required).
+- Create/edit country form (admin, required).
+- Create/edit address form (admin, required).
+- Site settings fields where address data is injected (admin, required).
 
-## Permissions And Gates
+## Technical Shape
 
-- None proven in this package directory.
+- Service providers: `Capell\Address\Providers\AddressServiceProvider`.
+- Migrations: `packages/address/database/migrations/2026_05_10_190839_01_create_countries_table.php`, `packages/address/database/migrations/2026_05_10_190839_02_create_addresses_table.php`.
+- Models: `Address`, `Country`.
+- Filament classes: `AddressSelect`, `CountrySelect`, `FlagSelect`, `DefaultAddressConfigurator`, `DefaultCountryConfigurator`, `DefaultLanguageConfigurator`, `AddressResource`, `ManageAddresses`, `AddressForm`, `AddressesTable`, `CountryResource`, `ManageCountries`, `and 3 more`.
+- Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
+- Actions: `BuildAddressQualityHealthReportAction`, `InstallAddressPackageAction`.
+- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`.
+- Command signatures: `capell:address-demo`.
+- Console command classes: `DemoCommand`, `FakerCommand`, `InstallCommand`.
+- Health checks: `Capell\Address\Health\AddressHealthCheck`.
+- Blade views: `packages/address/resources/views/components/flag-icon.blade.php`.
 
-## Migrations
+## Data Model
 
-- Migration: 2026_05_10_190839_01_create_countries_table.php
-- Migration: 2026_05_10_190839_02_create_addresses_table.php
+- Models: `Address`, `Country`.
+- Migration files: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`.
+- Migration impact: run host migrations through the package install flow before opening package surfaces.
+- Deletion/retention behaviour: Docs gap unless the package has an explicit pruning command, retention setting, or tested cascade path.
 
-## ERD Excerpt
+## Install Impact
 
-```mermaid
-erDiagram
-    COUNTRIES ||--o{ ADDRESSES : contains
-    LANGUAGES ||--o{ COUNTRIES : localizes
+- Admin navigation: adds package-owned Filament classes when registered.
+- Permissions: none declared in `capell.json`.
+- Public routes: none detected in package route files.
+- Database changes: package migrations are declared.
+- Settings: no package settings declared.
+- Queues or schedules: none detected in standard package paths.
+- Cache tags: none declared.
+- Commands: `capell:address-demo`.
 
-    COUNTRIES {
-        bigint id PK
-        bigint language_id FK
-        string name
-        string iso2
-        string iso3
-    }
+## Common Pitfalls
 
-    ADDRESSES {
-        bigint id PK
-        bigint country_id FK
-        string line1
-        string line2
-        string city
-        string state
-        string postal_code
-    }
-```
+- Run migrations before opening package resources or public routes.
+- Keep `composer.json`, `composer.local.json`, `capell.json`, docs, screenshots, and tests aligned when the package surface changes.
 
-## Screenshot Automation
+## Troubleshooting
 
-Deployment should read [screenshots.json](screenshots.json), install the package with demo data, resolve each admin surface or frontend URL, and write images to `packages/address/docs/screenshots`.
+| Symptom | Likely cause | Check | Fix |
+| --- | --- | --- | --- |
+| Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
+| Admin screen or command fails on missing table | Package migrations have not run | Check the tables listed in `Data Model` | Run host migrations and rerun the focused package test |
+| Background work does not run | Queue worker or scheduled command is not active | Check package jobs, commands, and host scheduler configuration | Start the queue or scheduler, then run the focused command or package test |
 
-- Countries admin index.
-- Addresses admin index.
-- Create/edit country form.
-- Create/edit address form.
-- Site settings fields where address data is injected.
-- Dark mode variants for all captured Address admin workflows.
+## Quick Start
+
+1. Install the package: `composer require capell-app/address`.
+2. Run the required setup: `php artisan capell:address-demo`.
+3. Open the related Capell admin surface and verify Address appears.
+
+## Next Steps
+
+- [Package docs index](README.md)
+- [Screenshot contract](screenshots.json)
+- [Marketplace assets](assets/marketplace/)
+- [Capell content language plan](../../../docs/CONTENT_LANGUAGE_PLAN.md)
+- [Capell documentation design system](../../../docs/DESIGN_SYSTEM.md)
+- [Capell and package ERD notes](../../../docs/erd/capell-and-package-erds.md)
+- Related packages: [Bookings](../../bookings/README.md), [Events](../../events/README.md), [Theme Local Services](../../theme-local-services/README.md).
+- Focused tests: `vendor/bin/pest packages/address/tests --configuration=phpunit.xml`.
+
+<!-- prettier-ignore-end -->
