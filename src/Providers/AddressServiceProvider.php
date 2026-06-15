@@ -8,6 +8,7 @@ use Capell\Address\Console\Commands\DemoCommand;
 use Capell\Address\Console\Commands\FakerCommand;
 use Capell\Address\Console\Commands\ImportCountriesCommand;
 use Capell\Address\Console\Commands\InstallCommand;
+use Capell\Address\Console\Commands\NormalizeAddressGeocodingCommand;
 use Capell\Address\Enums\ConfiguratorTypeEnum;
 use Capell\Address\Enums\ResourceEnum;
 use Capell\Address\Filament\Configurators\Languages\DefaultLanguageConfigurator;
@@ -51,6 +52,7 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
                 FakerCommand::class,
                 ImportCountriesCommand::class,
                 InstallCommand::class,
+                NormalizeAddressGeocodingCommand::class,
             ])
             ->hasMigrations([
                 '2026_05_10_190839_01_create_countries_table',

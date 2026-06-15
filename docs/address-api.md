@@ -64,6 +64,12 @@ Do not include raw API secrets, signed URLs, provider request payloads, model ID
 
 Provider absence is not a health failure. Address health fails for data quality problems such as missing enabled countries or invalid coordinates, and warns for likely duplicate address groups. Optional providers make the report more informative without becoming a required dependency.
 
+## Geocoding Normalization
+
+`NormalizeAddressGeocodingAction::run($address, providerKey: null, dryRun: false)` calls the first available tagged geocoding provider that returns valid latitude and longitude values. When coordinates change, Address stores `latitude`, `longitude`, `geocoding_provider`, `geocoding_confidence`, and `geocoded_at` in address metadata.
+
+Operators can run `capell:address-geocode-normalize` to normalize batches. Use `--dry-run` to count changes without writing, `--limit=100` to cap a batch, and `--provider=provider-key` to force one available provider. The command is optional infrastructure: if no geocoding providers are tagged and available, it scans safely and writes nothing.
+
 ## Privacy Export And Erasure Guidance
 
 Postal addresses are personal data when they identify a person, household, order, booking, attendee, customer, or site contact. Consuming packages own the subject relationship, so they should include address fields in their own subject export rather than asking Address to guess which person owns a shared record.

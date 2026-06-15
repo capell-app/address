@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Address\Actions\BuildAddressQualityHealthReportAction;
 use Capell\Address\Actions\FindDuplicateAddressGroupsAction;
+use Capell\Address\Actions\NormalizeAddressGeocodingAction;
 use Capell\Address\Contracts\AddressGeocodingProvider;
 use Capell\Address\Contracts\AddressValidationProvider;
 use Capell\Address\Data\AddressGeocodingResultData;
@@ -315,4 +316,31 @@ it('documents PII export and erasure responsibilities for consuming packages', f
         ->toContain('Treat latitude and longitude as precise location data')
         ->toContain('detach the relationship instead of deleting a shared address')
         ->toContain('Countries are reference data and should not be deleted for subject erasure');
+});
+
+it('normalizes address coordinates through an available geocoding provider', function (): void {
+    app()->bind(
+        'address.geocoding.fixture.available',
+        fn (): AddressGeocodingProvider => new FakeAvailableAddressGeocodingProvider,
+    );
+    app()->tag(['address.geocoding.fixture.available'], AddressGeocodingProvider::TAG);
+
+    $address = Address::factory()->create([
+        'meta' => [],
+    ]);
+
+    $result = NormalizeAddressGeocodingAction::run($address, providerKey: 'fixture-geocoding');
+
+    expect($result)
+        ->updated->toBeTrue()
+        ->provider->toBe('fixture-geocoding')
+        ->latitude->toBe('51.5074')
+        ->longitude->toBe('-0.1278')
+        ->and($address->refresh()->meta)
+        ->toMatchArray([
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+            'geocoding_provider' => 'fixture-geocoding',
+            'geocoding_confidence' => 0.8,
+        ]);
 });

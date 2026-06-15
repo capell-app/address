@@ -42,11 +42,11 @@ Screenshot contract: `docs/screenshots.json`.
 - Models: `Address`, `Country`.
 - Filament classes: `AddressSelect`, `CountrySelect`, `FlagSelect`, `DefaultAddressConfigurator`, `DefaultCountryConfigurator`, `DefaultLanguageConfigurator`, `AddressResource`, `ManageAddresses`, `AddressForm`, `AddressesTable`, `CountryResource`, `ManageCountries`, `and 3 more`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
-- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `ImportCountriesAction`, `InstallAddressPackageAction`.
-- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`, `ImportCountriesResultData`.
+- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `ImportCountriesAction`, `InstallAddressPackageAction`, `NormalizeAddressGeocodingAction`.
+- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`, `ImportCountriesResultData`, `NormalizeAddressGeocodingResultData`.
 - Provider contracts: `AddressValidationProvider::TAG` and `AddressGeocodingProvider::TAG` let companion packages register optional validation and geocoding providers; available provider keys appear in address quality reports.
-- Command signatures: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
-- Console command classes: `DemoCommand`, `FakerCommand`, `ImportCountriesCommand`, `InstallCommand`.
+- Command signatures: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
+- Console command classes: `DemoCommand`, `FakerCommand`, `ImportCountriesCommand`, `InstallCommand`, `NormalizeAddressGeocodingCommand`.
 - Manifest contributions: `admin-resource: Capell\Address\Manifest\AddressResourceContribution`, `admin-resource: Capell\Address\Manifest\CountryResourceContribution`, `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`, `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`, `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`, `health-check: Capell\Address\Health\AddressHealthCheck`, `migration: Capell\Address\Manifest\AddressMigrationsContribution`, `model: Capell\Address\Manifest\AddressModelsContribution`, `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`.
 - Health checks: `Capell\Address\Health\AddressHealthCheck`.
 - Blade views: `packages/address/resources/views/components/flag-icon.blade.php`.
@@ -68,11 +68,13 @@ Screenshot contract: `docs/screenshots.json`.
 - Settings: no package settings declared.
 - Queues or schedules: none detected in standard package paths.
 - Cache tags: none declared.
-- Commands: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
+- Commands: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
 
 Country datasets can be refreshed with `capell:address-countries-import /path/to/countries.json` or a CSV file with `name`, `iso2`, and `iso3` columns. Use `--dry-run` before changing production data, `--restore` to restore soft-deleted ISO matches, and `--disable-missing` only when the dataset is authoritative for the installation.
 
 Address records can be personal data. Consuming packages should include the address fields they use in their own subject exports, treat coordinates as precise location data, and detach rather than delete shared address records during erasure. The package docs include the full export/erase guidance.
+
+Optional geocoding providers can normalize coordinates with `capell:address-geocode-normalize`. Use `--dry-run`, `--limit`, and `--provider=provider-key` to review or narrow a batch before writing latitude, longitude, provider key, confidence, and timestamp metadata.
 
 ## Common Pitfalls
 
