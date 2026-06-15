@@ -30,18 +30,83 @@
         "admin": [],
         "frontend": []
     },
-    "contributes": [],
+    "contributes": [
+        {
+            "type": "admin-resource",
+            "class": "Capell\\Address\\Manifest\\AddressResourceContribution",
+            "resourceClass": "Capell\\Address\\Filament\\Resources\\Addresses\\AddressResource"
+        },
+        {
+            "type": "admin-resource",
+            "class": "Capell\\Address\\Manifest\\CountryResourceContribution",
+            "resourceClass": "Capell\\Address\\Filament\\Resources\\Countries\\CountryResource"
+        },
+        {
+            "type": "configurator",
+            "class": "Capell\\Address\\Manifest\\AddressConfiguratorsContribution",
+            "configuratorClasses": [
+                "Capell\\Address\\Filament\\Configurators\\Addresses\\DefaultAddressConfigurator",
+                "Capell\\Address\\Filament\\Configurators\\Countries\\DefaultCountryConfigurator",
+                "Capell\\Address\\Filament\\Configurators\\Languages\\DefaultLanguageConfigurator"
+            ],
+            "groups": ["Addresses", "Countries", "Language"]
+        },
+        {
+            "type": "schema-extender",
+            "class": "Capell\\Address\\Manifest\\AddressSiteSchemaExtenderContribution",
+            "extenderClass": "Capell\\Address\\Filament\\Resources\\Sites\\Schemas\\Extenders\\SiteSchemaExtender",
+            "tag": "Site"
+        },
+        {
+            "type": "model",
+            "class": "Capell\\Address\\Manifest\\AddressModelsContribution",
+            "modelClasses": [
+                "Capell\\Address\\Models\\Address",
+                "Capell\\Address\\Models\\Country"
+            ]
+        },
+        {
+            "type": "asset",
+            "class": "Capell\\Address\\Manifest\\AddressAdminAssetsContribution",
+            "surface": "admin",
+            "assets": ["capell-address", "blade-country-flags"]
+        },
+        {
+            "type": "migration",
+            "class": "Capell\\Address\\Manifest\\AddressMigrationsContribution",
+            "tables": ["countries", "addresses"]
+        },
+        {
+            "type": "console-command",
+            "class": "Capell\\Address\\Manifest\\AddressConsoleCommandsContribution",
+            "commands": [
+                "capell:address-install",
+                "capell:address-faker",
+                "capell:address-demo"
+            ],
+            "commandClasses": [
+                "Capell\\Address\\Console\\Commands\\InstallCommand",
+                "Capell\\Address\\Console\\Commands\\FakerCommand",
+                "Capell\\Address\\Console\\Commands\\DemoCommand"
+            ]
+        },
+        {
+            "type": "health-check",
+            "class": "Capell\\Address\\Health\\AddressHealthCheck"
+        }
+    ],
     "database": {
         "migrations": true,
         "settings": false,
-        "requiredTables": []
+        "requiredTables": ["countries", "addresses"]
     },
     "commands": {
-        "install": null,
+        "install": "capell:address-install",
         "setup": null,
         "demo": "capell:address-demo",
         "demoParams": ["sites"],
-        "doctor": null
+        "doctor": null,
+        "faker": "capell:address-faker"
     },
     "actions": {
         "install": "Capell\\Address\\Actions\\InstallAddressPackageAction"
@@ -171,11 +236,6 @@
         "categories": ["admin", "foundation"]
     },
     "contributionTraceability": {
-        "deferredContributions": [
-            "admin-resource",
-            "configurator",
-            "model",
-            "schema-extender"
-        ]
+        "deferredContributions": []
     }
 }
