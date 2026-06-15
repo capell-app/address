@@ -72,6 +72,8 @@ Screenshot contract: `screenshots.json`.
 
 Country datasets can be refreshed with `capell:address-countries-import /path/to/countries.json` or a CSV file with `name`, `iso2`, and `iso3` columns. Use `--dry-run` before changing production data, `--restore` to restore soft-deleted ISO matches, and `--disable-missing` only when the dataset is authoritative for the installation.
 
+Address records can be personal data. Consuming packages should include the address fields they use in their own subject exports, treat coordinates as precise location data, and detach rather than delete shared address records during erasure. See [Address API](address-api.md) for the full export/erase guidance.
+
 ## Common Pitfalls
 
 - Run migrations before opening package resources or public routes.

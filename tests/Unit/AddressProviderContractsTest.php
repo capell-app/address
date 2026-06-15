@@ -18,6 +18,7 @@ use Capell\Address\Tests\Fixtures\FakeAvailableAddressValidationProvider;
 use Capell\Address\Tests\Fixtures\FakeUnavailableAddressGeocodingProvider;
 use Capell\Address\Tests\Fixtures\FakeUnavailableAddressValidationProvider;
 use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
+use Illuminate\Support\Facades\File;
 
 it('defines validation and geocoding provider result contracts', function (): void {
     $validationProvider = new class implements AddressValidationProvider
@@ -303,4 +304,15 @@ it('documents provider registration by reporting only available tagged provider 
         ->passed->toBeTrue()
         ->message->toContain('1 validation provider(s)')
         ->message->toContain('1 geocoding provider(s)');
+});
+
+it('documents PII export and erasure responsibilities for consuming packages', function (): void {
+    $documentation = File::get(__DIR__ . '/../../docs/address-api.md');
+
+    expect($documentation)
+        ->toContain('Privacy Export And Erasure Guidance')
+        ->toContain('Consuming packages own the subject relationship')
+        ->toContain('Treat latitude and longitude as precise location data')
+        ->toContain('detach the relationship instead of deleting a shared address')
+        ->toContain('Countries are reference data and should not be deleted for subject erasure');
 });
