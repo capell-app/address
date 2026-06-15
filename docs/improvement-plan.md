@@ -12,7 +12,7 @@ Address provides reusable, site-scoped countries and postal addresses for Capell
 
 2. **Align manifest contributions with provider behavior.** The provider contributes Address/Country resources, configurators, language configurator, schema extender, and assets, but `capell.json contributes` is empty. Add manifest entries or tests that intentionally document why these are provider-only. Evidence: `capell.json`, `AddressServiceProvider::registerResources()`, `registerConfigurators()`, `registerSchemaExtenders()`. - **S**
 
-3. **Add duplicate-address quality tooling.** The package has shared address records but no obvious dedupe/merge report. Add an Action that groups likely duplicates by normalized country, postal code, and address lines, then surfaces counts in health/docs before adding destructive merge behavior. Evidence: `src/Models/Address.php`, `src/Data/AddressMetaData.php`, `BuildAddressQualityHealthReportAction`. - **M**
+3. **Add duplicate-address quality tooling.** The package now ships `FindDuplicateAddressGroupsAction`, `DuplicateAddressGroupData`, health report counts, and a dedicated duplicate-address diagnostic so likely duplicates are visible before any destructive merge behavior exists. Evidence: `src/Actions/FindDuplicateAddressGroupsAction.php`, `src/Data/DuplicateAddressGroupData.php`, `src/Actions/BuildAddressQualityHealthReportAction.php`, `src/Health/AddressHealthCheck.php`. - **Done**
 
 4. **Document provider contract expectations.** Validation and geocoding providers are tagged extension points, but README/overview should show how a package registers one, what `isAvailable()` means, and how provider keys appear in the quality report. Evidence: `src/Contracts/AddressValidationProvider.php`, `src/Contracts/AddressGeocodingProvider.php`, `docs/address-api.md`. - **S**
 
@@ -51,10 +51,10 @@ Address is a foundational data package. For teams, the value is consistency: one
 
 | Item                                                               | Bucket | Effort | Impact | Section ref |
 | ------------------------------------------------------------------ | ------ | ------ | ------ | ----------- |
-| Add actionable health diagnostics and pass/fail coverage           | Now    | M      | High   | §2.1, §4.1  |
-| Align `capell.json` contributions with admin/configurator surfaces | Now    | S      | Medium | §2.2, §4.2  |
-| Add non-destructive duplicate address quality report               | Now    | M      | Medium | §2.3, §4.3  |
-| Document validation/geocoding provider registration contracts      | Now    | S      | Medium | §2.4, §4.4  |
+| Add actionable health diagnostics and pass/fail coverage           | Done   | M      | High   | §2.1, §4.1  |
+| Align `capell.json` contributions with admin/configurator surfaces | Done   | S      | Medium | §2.2, §4.2  |
+| Add non-destructive duplicate address quality report               | Done   | M      | Medium | §2.3, §4.3  |
+| Document validation/geocoding provider registration contracts      | Done   | S      | Medium | §2.4, §4.4  |
 | Add country dataset refresh/import command                         | Next   | M      | Medium | §3          |
 | Add PII export/erase guidance for consuming packages               | Next   | S      | Medium | §3          |
 | Add optional geocoding normalization workflow                      | Next   | M      | Medium | §3, §5      |
@@ -63,7 +63,11 @@ Address is a foundational data package. For teams, the value is consistency: one
 
 ## 7. Verification
 
-Implementation slice 1 exposed the shipped admin resources, configurators, site schema extender, models, admin assets, migrations, console commands, and health check as manifest contributions. It also registered package migrations with Laravel Package Tools and made `AddressHealthCheck` return actionable diagnostics. Verify with:
+Implementation slice 1 exposed the shipped admin resources, configurators, site schema extender, models, admin assets, migrations, console commands, and health check as manifest contributions. It also registered package migrations with Laravel Package Tools and made `AddressHealthCheck` return actionable diagnostics.
+
+Implementation slice 2 added non-destructive duplicate-address quality reporting with normalized grouping by country, postal code, and address lines. Duplicate groups are surfaced through `BuildAddressQualityHealthReportAction`, `AddressHealthCheck::runDiagnostics()`, and package docs.
+
+Verify with:
 
 ```bash
 vendor/bin/pest packages/address/tests --configuration=phpunit.xml
@@ -81,6 +85,7 @@ vendor/bin/pest packages/address/tests/Unit/ManifestRequirementsTest.php package
 - [x] Comprehensive local review pass completed for provider, health, models, policies, docs, and provider contracts.
 - [x] Capell audience pass completed for package consumers and site operators.
 - [x] Approved implementation slice 1 shipped: manifest contribution metadata, migration registration, and health diagnostics.
-- [ ] Focused Address verification passed.
-- [ ] Package tests passed.
-- [ ] Repo preflight passed for changed files.
+- [x] Approved implementation slice 2 shipped: non-destructive duplicate-address quality report and diagnostics.
+- [x] Focused Address verification passed.
+- [x] Package tests passed.
+- [x] Repo preflight passed for changed files.

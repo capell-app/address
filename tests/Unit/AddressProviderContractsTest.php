@@ -3,14 +3,20 @@
 declare(strict_types=1);
 
 use Capell\Address\Actions\BuildAddressQualityHealthReportAction;
+use Capell\Address\Actions\FindDuplicateAddressGroupsAction;
 use Capell\Address\Contracts\AddressGeocodingProvider;
 use Capell\Address\Contracts\AddressValidationProvider;
 use Capell\Address\Data\AddressGeocodingResultData;
 use Capell\Address\Data\AddressQualityHealthReportData;
 use Capell\Address\Data\AddressValidationResultData;
+use Capell\Address\Data\DuplicateAddressGroupData;
 use Capell\Address\Health\AddressHealthCheck;
 use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
+use Capell\Address\Tests\Fixtures\FakeAvailableAddressGeocodingProvider;
+use Capell\Address\Tests\Fixtures\FakeAvailableAddressValidationProvider;
+use Capell\Address\Tests\Fixtures\FakeUnavailableAddressGeocodingProvider;
+use Capell\Address\Tests\Fixtures\FakeUnavailableAddressValidationProvider;
 use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
 
 it('defines validation and geocoding provider result contracts', function (): void {
@@ -144,7 +150,7 @@ it('builds address quality health reports for country and coordinate coverage', 
 
     $diagnostics = AddressHealthCheck::runDiagnostics();
 
-    expect($diagnostics)->toHaveCount(3)
+    expect($diagnostics)->toHaveCount(4)
         ->and($diagnostics->every(fn (DoctorCheckResultData $result): bool => $result->label !== ''))->toBeTrue()
         ->and($diagnostics->firstWhere('label', 'Address data quality')?->passed)->toBeFalse();
 
@@ -159,6 +165,68 @@ it('builds address quality health reports for country and coordinate coverage', 
         ->missingCountries->toBe(1)
         ->invalidCoordinates->toBe(1)
         ->and($collectionReport->issues)->toContain('Address #2 is missing an enabled country.');
+});
+
+it('reports likely duplicate address groups without merging records', function (): void {
+    $country = Country::factory()->create(['status' => true]);
+
+    $firstAddress = Address::factory()->create([
+        'country_id' => $country->getKey(),
+        'line1' => '10 Downing Street',
+        'line2' => 'Flat 1',
+        'postal_code' => 'SW1A 2AA',
+        'meta' => [
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+        ],
+    ]);
+    $secondAddress = Address::factory()->create([
+        'country_id' => $country->getKey(),
+        'line1' => ' 10 downing street ',
+        'line2' => 'flat 1',
+        'postal_code' => 'sw1a2aa',
+        'meta' => [
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+        ],
+    ]);
+    Address::factory()->create([
+        'country_id' => $country->getKey(),
+        'line1' => '11 Downing Street',
+        'line2' => 'Flat 1',
+        'postal_code' => 'SW1A 2AA',
+        'meta' => [
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+        ],
+    ]);
+
+    $groups = FindDuplicateAddressGroupsAction::run();
+
+    expect($groups)->toHaveCount(1)
+        ->and($groups->first())->toBeInstanceOf(DuplicateAddressGroupData::class)
+        ->and($groups->first()?->count)->toBe(2)
+        ->and($groups->first()?->addressIds)->toBe([
+            $firstAddress->getKey(),
+            $secondAddress->getKey(),
+        ]);
+
+    $report = BuildAddressQualityHealthReportAction::run();
+
+    expect($report)
+        ->status->toBe('warning')
+        ->duplicateAddresses->toBe(2)
+        ->duplicateGroups->toHaveCount(1)
+        ->and($report->issues)->toContain('2 address(es) appear in 1 likely duplicate group(s).');
+
+    $duplicateCheck = AddressHealthCheck::runDiagnostics()
+        ->firstWhere('label', 'Duplicate address quality');
+
+    expect($duplicateCheck)
+        ->toBeInstanceOf(DoctorCheckResultData::class)
+        ->passed->toBeFalse()
+        ->message->toBe('Checked 3 address(es); 2 address(es) appear in 1 likely duplicate group(s).')
+        ->remediation->toBe('Review duplicate address groups before adding merge or cleanup workflows.');
 });
 
 it('does not report missing optional providers as health issues', function (): void {
@@ -180,4 +248,59 @@ it('does not report missing optional providers as health issues', function (): v
 
     expect(AddressHealthCheck::passed())->toBeTrue()
         ->and(AddressHealthCheck::runDiagnostics()->every(fn (DoctorCheckResultData $result): bool => $result->passed))->toBeTrue();
+});
+
+it('documents provider registration by reporting only available tagged provider keys', function (): void {
+    $country = Country::factory()->create(['status' => true]);
+
+    Address::factory()->create([
+        'country_id' => $country->getKey(),
+        'line1' => '10 Downing Street',
+        'postal_code' => 'SW1A 2AA',
+        'meta' => [
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+        ],
+    ]);
+
+    app()->bind(
+        'address.validation.fixture.available',
+        fn (): AddressValidationProvider => new FakeAvailableAddressValidationProvider,
+    );
+    app()->bind(
+        'address.validation.fixture.unavailable',
+        fn (): AddressValidationProvider => new FakeUnavailableAddressValidationProvider,
+    );
+    app()->tag(
+        ['address.validation.fixture.available', 'address.validation.fixture.unavailable'],
+        AddressValidationProvider::TAG,
+    );
+
+    app()->bind(
+        'address.geocoding.fixture.available',
+        fn (): AddressGeocodingProvider => new FakeAvailableAddressGeocodingProvider,
+    );
+    app()->bind(
+        'address.geocoding.fixture.unavailable',
+        fn (): AddressGeocodingProvider => new FakeUnavailableAddressGeocodingProvider,
+    );
+    app()->tag(
+        ['address.geocoding.fixture.available', 'address.geocoding.fixture.unavailable'],
+        AddressGeocodingProvider::TAG,
+    );
+
+    expect(BuildAddressQualityHealthReportAction::run())
+        ->status->toBe('passed')
+        ->validationProviders->toBe(['fixture-validation'])
+        ->geocodingProviders->toBe(['fixture-geocoding'])
+        ->issues->toBe([]);
+
+    $providerCheck = AddressHealthCheck::runDiagnostics()
+        ->firstWhere('label', 'Address validation and geocoding providers');
+
+    expect($providerCheck)
+        ->toBeInstanceOf(DoctorCheckResultData::class)
+        ->passed->toBeTrue()
+        ->message->toContain('1 validation provider(s)')
+        ->message->toContain('1 geocoding provider(s)');
 });
