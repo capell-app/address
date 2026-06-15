@@ -98,7 +98,7 @@ final class BuildAddressQualityHealthReportAction
             geocodingProviders: $this->availableProviderKeys(AddressGeocodingProvider::TAG),
             issues: array_values(array_unique($issues)),
             duplicateAddresses: $this->duplicateAddressCount($duplicateGroups),
-            duplicateGroups: $duplicateGroups->values()->all(),
+            duplicateGroups: $this->duplicateGroupsList($duplicateGroups),
         );
     }
 
@@ -152,7 +152,7 @@ final class BuildAddressQualityHealthReportAction
             geocodingProviders: $this->availableProviderKeys(AddressGeocodingProvider::TAG),
             issues: array_values(array_unique($issues)),
             duplicateAddresses: $this->duplicateAddressCount($duplicateGroups),
-            duplicateGroups: $duplicateGroups->values()->all(),
+            duplicateGroups: $this->duplicateGroupsList($duplicateGroups),
         );
     }
 
@@ -268,5 +268,14 @@ final class BuildAddressQualityHealthReportAction
     private function duplicateAddressCount(Collection $duplicateGroups): int
     {
         return (int) $duplicateGroups->sum(static fn (DuplicateAddressGroupData $group): int => $group->count);
+    }
+
+    /**
+     * @param  Collection<int, DuplicateAddressGroupData>  $duplicateGroups
+     * @return list<DuplicateAddressGroupData>
+     */
+    private function duplicateGroupsList(Collection $duplicateGroups): array
+    {
+        return array_values($duplicateGroups->all());
     }
 }
