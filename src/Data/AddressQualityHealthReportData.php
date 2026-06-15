@@ -12,6 +12,7 @@ final class AddressQualityHealthReportData extends Data
      * @param  list<string>  $validationProviders
      * @param  list<string>  $geocodingProviders
      * @param  list<string>  $issues
+     * @param  list<DuplicateAddressGroupData>  $duplicateGroups
      */
     public function __construct(
         public readonly string $status,
@@ -22,5 +23,7 @@ final class AddressQualityHealthReportData extends Data
         public readonly array $validationProviders,
         public readonly array $geocodingProviders,
         public readonly array $issues,
+        public readonly int $duplicateAddresses = 0,
+        public readonly array $duplicateGroups = [],
     ) {}
 }

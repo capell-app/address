@@ -42,8 +42,8 @@ Screenshot contract: `docs/screenshots.json`.
 - Models: `Address`, `Country`.
 - Filament classes: `AddressSelect`, `CountrySelect`, `FlagSelect`, `DefaultAddressConfigurator`, `DefaultCountryConfigurator`, `DefaultLanguageConfigurator`, `AddressResource`, `ManageAddresses`, `AddressForm`, `AddressesTable`, `CountryResource`, `ManageCountries`, `and 3 more`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
-- Actions: `BuildAddressQualityHealthReportAction`, `InstallAddressPackageAction`.
-- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`.
+- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `InstallAddressPackageAction`.
+- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`.
 - Command signatures: `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
 - Console command classes: `DemoCommand`, `FakerCommand`, `InstallCommand`.
 - Manifest contributions: `admin-resource: Capell\Address\Manifest\AddressResourceContribution`, `admin-resource: Capell\Address\Manifest\CountryResourceContribution`, `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`, `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`, `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`, `health-check: Capell\Address\Health\AddressHealthCheck`, `migration: Capell\Address\Manifest\AddressMigrationsContribution`, `model: Capell\Address\Manifest\AddressModelsContribution`, `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`.
@@ -72,6 +72,7 @@ Screenshot contract: `docs/screenshots.json`.
 ## Common Pitfalls
 
 - Run migrations before opening package resources or public routes.
+- Treat duplicate address diagnostics as a non-destructive report: review the grouped record IDs before introducing package-specific merge or cleanup behavior.
 - Keep `composer.json`, `composer.local.json`, `capell.json`, docs, screenshots, and tests aligned when the package surface changes.
 
 ## Troubleshooting
@@ -80,6 +81,7 @@ Screenshot contract: `docs/screenshots.json`.
 | --- | --- | --- | --- |
 | Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
 | Admin screen or command fails on missing table | Package migrations have not run | Check the tables listed in `Data Model` | Run host migrations and rerun the focused package test |
+| Address health reports duplicate groups | Multiple records normalize to the same country, postal code, and address lines | Call `FindDuplicateAddressGroupsAction` or inspect `AddressHealthCheck::report()` | Review the grouped record IDs and decide whether the consuming workflow needs a merge, disable, or manual cleanup path |
 | Background work does not run | Queue worker or scheduled command is not active | Check package jobs, commands, and host scheduler configuration | Start the queue or scheduler, then run the focused command or package test |
 
 ## Quick Start

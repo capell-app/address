@@ -35,6 +35,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
         return collect([
             $check->storageTablesCheck(),
             $check->dataQualityCheck(),
+            $check->duplicateAddressQualityCheck(),
             $check->providerExtensionPointCheck(),
         ]);
     }
@@ -50,14 +51,14 @@ final class AddressHealthCheck implements ChecksExtensionHealth
         $missingTables = $this->missingTables();
 
         return new DoctorCheckResultData(
-            label: 'Address storage tables',
+            label: (string) __('capell-address::health.storage_tables_label'),
             passed: $missingTables === [],
             message: $missingTables === []
-                ? 'The countries and addresses tables are present.'
-                : 'Missing tables: ' . implode(', ', $missingTables) . '.',
+                ? (string) __('capell-address::health.storage_tables_passed')
+                : (string) __('capell-address::health.storage_tables_failed', ['tables' => implode(', ', $missingTables)]),
             remediation: $missingTables === []
                 ? null
-                : 'Run the Address package migrations before using address records.',
+                : (string) __('capell-address::health.storage_tables_remediation'),
         );
     }
 
@@ -67,10 +68,10 @@ final class AddressHealthCheck implements ChecksExtensionHealth
 
         if ($missingTables !== []) {
             return new DoctorCheckResultData(
-                label: 'Address data quality',
+                label: (string) __('capell-address::health.data_quality_label'),
                 passed: false,
-                message: 'Address data quality could not be checked because storage tables are missing.',
-                remediation: 'Run the Address package migrations, then rerun diagnostics.',
+                message: (string) __('capell-address::health.data_quality_missing_tables'),
+                remediation: (string) __('capell-address::health.data_quality_missing_tables_remediation'),
             );
         }
 
@@ -78,32 +79,62 @@ final class AddressHealthCheck implements ChecksExtensionHealth
         $passed = $report->status !== 'failed';
 
         return new DoctorCheckResultData(
-            label: 'Address data quality',
+            label: (string) __('capell-address::health.data_quality_label'),
             passed: $passed,
             message: $passed
-                ? sprintf('Checked %d address(es); no blocking country or coordinate issues were found.', $report->checkedAddresses)
-                : sprintf(
-                    'Checked %d address(es); %d missing enabled country and %d invalid coordinate issue(s) were found.',
-                    $report->checkedAddresses,
-                    $report->missingCountries,
-                    $report->invalidCoordinates,
-                ),
+                ? (string) __('capell-address::health.data_quality_passed', ['addresses' => $report->checkedAddresses])
+                : (string) __('capell-address::health.data_quality_failed', [
+                    'addresses' => $report->checkedAddresses,
+                    'countries' => $report->missingCountries,
+                    'coordinates' => $report->invalidCoordinates,
+                ]),
             remediation: $passed
                 ? null
-                : 'Review Address records with missing countries or invalid latitude/longitude metadata.',
+                : (string) __('capell-address::health.data_quality_remediation'),
+        );
+    }
+
+    public function duplicateAddressQualityCheck(): DoctorCheckResultData
+    {
+        $missingTables = $this->missingTables();
+
+        if ($missingTables !== []) {
+            return new DoctorCheckResultData(
+                label: (string) __('capell-address::health.duplicate_addresses_label'),
+                passed: false,
+                message: (string) __('capell-address::health.duplicate_addresses_missing_tables'),
+                remediation: (string) __('capell-address::health.data_quality_missing_tables_remediation'),
+            );
+        }
+
+        $report = self::report();
+        $passed = $report->duplicateGroups === [];
+
+        return new DoctorCheckResultData(
+            label: (string) __('capell-address::health.duplicate_addresses_label'),
+            passed: $passed,
+            message: $passed
+                ? (string) __('capell-address::health.duplicate_addresses_passed', ['addresses' => $report->checkedAddresses])
+                : (string) __('capell-address::health.duplicate_addresses_failed', [
+                    'addresses' => $report->checkedAddresses,
+                    'duplicates' => $report->duplicateAddresses,
+                    'groups' => count($report->duplicateGroups),
+                ]),
+            remediation: $passed
+                ? null
+                : (string) __('capell-address::health.duplicate_addresses_remediation'),
         );
     }
 
     public function providerExtensionPointCheck(): DoctorCheckResultData
     {
         return new DoctorCheckResultData(
-            label: 'Address validation and geocoding providers',
+            label: (string) __('capell-address::health.providers_label'),
             passed: true,
-            message: sprintf(
-                'Detected %d validation provider(s) and %d geocoding provider(s). Providers are optional extension points.',
-                $this->availableProviderCount(AddressValidationProvider::TAG),
-                $this->availableProviderCount(AddressGeocodingProvider::TAG),
-            ),
+            message: (string) __('capell-address::health.providers_message', [
+                'validation' => $this->availableProviderCount(AddressValidationProvider::TAG),
+                'geocoding' => $this->availableProviderCount(AddressGeocodingProvider::TAG),
+            ]),
         );
     }
 

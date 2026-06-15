@@ -7,9 +7,11 @@ namespace Capell\Address\Actions;
 use Capell\Address\Contracts\AddressGeocodingProvider;
 use Capell\Address\Contracts\AddressValidationProvider;
 use Capell\Address\Data\AddressQualityHealthReportData;
+use Capell\Address\Data\DuplicateAddressGroupData;
 use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
+use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsAction;
 
 /**
@@ -76,8 +78,15 @@ final class BuildAddressQualityHealthReportAction
             $issues[] = sprintf('%d address(es) with invalid latitude or longitude metadata.', $invalidCoordinates);
         }
 
-        $validationProviders = $this->availableProviderKeys(AddressValidationProvider::TAG);
-        $geocodingProviders = $this->availableProviderKeys(AddressGeocodingProvider::TAG);
+        $duplicateGroups = FindDuplicateAddressGroupsAction::run();
+
+        if ($duplicateGroups->isNotEmpty()) {
+            $issues[] = sprintf(
+                '%d address(es) appear in %d likely duplicate group(s).',
+                $this->duplicateAddressCount($duplicateGroups),
+                $duplicateGroups->count(),
+            );
+        }
 
         return new AddressQualityHealthReportData(
             status: $this->status(invalidCoordinates: $invalidCoordinates, missingCountries: $missingCountries, issues: $issues),
@@ -85,9 +94,11 @@ final class BuildAddressQualityHealthReportAction
             missingCountries: $missingCountries,
             missingCoordinates: $missingCoordinates,
             invalidCoordinates: $invalidCoordinates,
-            validationProviders: $validationProviders,
-            geocodingProviders: $geocodingProviders,
+            validationProviders: $this->availableProviderKeys(AddressValidationProvider::TAG),
+            geocodingProviders: $this->availableProviderKeys(AddressGeocodingProvider::TAG),
             issues: array_values(array_unique($issues)),
+            duplicateAddresses: $this->duplicateAddressCount($duplicateGroups),
+            duplicateGroups: $duplicateGroups->all(),
         );
     }
 
@@ -121,8 +132,15 @@ final class BuildAddressQualityHealthReportAction
             }
         }
 
-        $validationProviders = $this->availableProviderKeys(AddressValidationProvider::TAG);
-        $geocodingProviders = $this->availableProviderKeys(AddressGeocodingProvider::TAG);
+        $duplicateGroups = FindDuplicateAddressGroupsAction::run($addresses);
+
+        if ($duplicateGroups->isNotEmpty()) {
+            $issues[] = sprintf(
+                '%d address(es) appear in %d likely duplicate group(s).',
+                $this->duplicateAddressCount($duplicateGroups),
+                $duplicateGroups->count(),
+            );
+        }
 
         return new AddressQualityHealthReportData(
             status: $this->status($invalidCoordinates, $missingCountries, $issues),
@@ -130,9 +148,11 @@ final class BuildAddressQualityHealthReportAction
             missingCountries: $missingCountries,
             missingCoordinates: $missingCoordinates,
             invalidCoordinates: $invalidCoordinates,
-            validationProviders: $validationProviders,
-            geocodingProviders: $geocodingProviders,
+            validationProviders: $this->availableProviderKeys(AddressValidationProvider::TAG),
+            geocodingProviders: $this->availableProviderKeys(AddressGeocodingProvider::TAG),
             issues: array_values(array_unique($issues)),
+            duplicateAddresses: $this->duplicateAddressCount($duplicateGroups),
+            duplicateGroups: $duplicateGroups->all(),
         );
     }
 
@@ -240,5 +260,13 @@ final class BuildAddressQualityHealthReportAction
         }
 
         return trim($address->full_address) ?: 'unsaved';
+    }
+
+    /**
+     * @param  Collection<int, DuplicateAddressGroupData>  $duplicateGroups
+     */
+    private function duplicateAddressCount(Collection $duplicateGroups): int
+    {
+        return (int) $duplicateGroups->sum(static fn (DuplicateAddressGroupData $group): int => $group->count);
     }
 }
