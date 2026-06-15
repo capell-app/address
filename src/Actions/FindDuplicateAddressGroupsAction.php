@@ -49,7 +49,11 @@ final class FindDuplicateAddressGroupsAction
             }
 
             if ($address->getKey() !== null) {
-                $groups[$key]['addressIds'][] = (int) $address->getKey();
+                $addressId = $address->getKey();
+
+                if (is_numeric($addressId)) {
+                    $groups[$key]['addressIds'][] = (int) $addressId;
+                }
             }
         }
 

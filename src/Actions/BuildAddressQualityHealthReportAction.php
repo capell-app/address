@@ -98,7 +98,7 @@ final class BuildAddressQualityHealthReportAction
             geocodingProviders: $this->availableProviderKeys(AddressGeocodingProvider::TAG),
             issues: array_values(array_unique($issues)),
             duplicateAddresses: $this->duplicateAddressCount($duplicateGroups),
-            duplicateGroups: $duplicateGroups->all(),
+            duplicateGroups: $duplicateGroups->values()->all(),
         );
     }
 
@@ -152,7 +152,7 @@ final class BuildAddressQualityHealthReportAction
             geocodingProviders: $this->availableProviderKeys(AddressGeocodingProvider::TAG),
             issues: array_values(array_unique($issues)),
             duplicateAddresses: $this->duplicateAddressCount($duplicateGroups),
-            duplicateGroups: $duplicateGroups->all(),
+            duplicateGroups: $duplicateGroups->values()->all(),
         );
     }
 
