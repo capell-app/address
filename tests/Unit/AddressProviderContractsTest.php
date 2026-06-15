@@ -11,6 +11,7 @@ use Capell\Address\Data\AddressValidationResultData;
 use Capell\Address\Health\AddressHealthCheck;
 use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
+use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
 
 it('defines validation and geocoding provider result contracts', function (): void {
     $validationProvider = new class implements AddressValidationProvider
@@ -138,7 +139,14 @@ it('builds address quality health reports for country and coordinate coverage', 
         ->geocodingProviders->toBe(['fake-geocoding'])
         ->and($report->issues)->toContain('1 address(es) missing an enabled country.')
         ->and($report->issues)->toContain('1 address(es) with invalid latitude or longitude metadata.')
-        ->and(AddressHealthCheck::report())->toBeInstanceOf(AddressQualityHealthReportData::class);
+        ->and(AddressHealthCheck::report())->toBeInstanceOf(AddressQualityHealthReportData::class)
+        ->and(AddressHealthCheck::passed())->toBeFalse();
+
+    $diagnostics = AddressHealthCheck::runDiagnostics();
+
+    expect($diagnostics)->toHaveCount(3)
+        ->and($diagnostics->every(fn (DoctorCheckResultData $result): bool => $result->label !== ''))->toBeTrue()
+        ->and($diagnostics->firstWhere('label', 'Address data quality')?->passed)->toBeFalse();
 
     $collectionReport = BuildAddressQualityHealthReportAction::run(
         Address::query()->with('country')->get(),
@@ -169,4 +177,7 @@ it('does not report missing optional providers as health issues', function (): v
         ->validationProviders->toBe([])
         ->geocodingProviders->toBe([])
         ->issues->toBe([]);
+
+    expect(AddressHealthCheck::passed())->toBeTrue()
+        ->and(AddressHealthCheck::runDiagnostics()->every(fn (DoctorCheckResultData $result): bool => $result->passed))->toBeTrue();
 });

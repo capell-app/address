@@ -63,7 +63,7 @@ Address is a foundational data package. For teams, the value is consistency: one
 
 ## 7. Verification
 
-Plan-writing review only; no commands were run for this package in this pass. First implementation slice should start with:
+Implementation slice 1 exposed the shipped admin resources, configurators, site schema extender, models, admin assets, migrations, console commands, and health check as manifest contributions. It also registered package migrations with Laravel Package Tools and made `AddressHealthCheck` return actionable diagnostics. Verify with:
 
 ```bash
 vendor/bin/pest packages/address/tests --configuration=phpunit.xml
@@ -80,7 +80,7 @@ vendor/bin/pest packages/address/tests/Unit/ManifestRequirementsTest.php package
 - [x] Package plan created from current code, manifest, docs, screenshots, and tests.
 - [x] Comprehensive local review pass completed for provider, health, models, policies, docs, and provider contracts.
 - [x] Capell audience pass completed for package consumers and site operators.
-- [ ] Approved implementation slices shipped.
+- [x] Approved implementation slice 1 shipped: manifest contribution metadata, migration registration, and health diagnostics.
 - [ ] Focused Address verification passed.
 - [ ] Package tests passed.
 - [ ] Repo preflight passed for changed files.

@@ -50,6 +50,10 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
                 FakerCommand::class,
                 InstallCommand::class,
             ])
+            ->hasMigrations([
+                '2026_05_10_190839_01_create_countries_table',
+                '2026_05_10_190839_02_create_addresses_table',
+            ])
             ->hasTranslations();
     }
 
