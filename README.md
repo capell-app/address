@@ -44,13 +44,15 @@ Screenshot contract: `docs/screenshots.json`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
 - Actions: `BuildAddressQualityHealthReportAction`, `InstallAddressPackageAction`.
 - Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`.
-- Command signatures: `capell:address-demo`.
+- Command signatures: `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
 - Console command classes: `DemoCommand`, `FakerCommand`, `InstallCommand`.
+- Manifest contributions: `admin-resource: Capell\Address\Manifest\AddressResourceContribution`, `admin-resource: Capell\Address\Manifest\CountryResourceContribution`, `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`, `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`, `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`, `health-check: Capell\Address\Health\AddressHealthCheck`, `migration: Capell\Address\Manifest\AddressMigrationsContribution`, `model: Capell\Address\Manifest\AddressModelsContribution`, `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`.
 - Health checks: `Capell\Address\Health\AddressHealthCheck`.
 - Blade views: `packages/address/resources/views/components/flag-icon.blade.php`.
 
 ## Data Model
 
+- Required tables: `countries`, `addresses`.
 - Models: `Address`, `Country`.
 - Migration files: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`.
 - Migration impact: run host migrations through the package install flow before opening package surfaces.
@@ -65,7 +67,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Settings: no package settings declared.
 - Queues or schedules: none detected in standard package paths.
 - Cache tags: none declared.
-- Commands: `capell:address-demo`.
+- Commands: `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
 
 ## Common Pitfalls
 
@@ -83,7 +85,7 @@ Screenshot contract: `docs/screenshots.json`.
 ## Quick Start
 
 1. Install the package: `composer require capell-app/address`.
-2. Run the required setup: `php artisan capell:address-demo`.
+2. Run the required setup: `php artisan capell:address-install`.
 3. Open the related Capell admin surface and verify Address appears.
 
 ## Next Steps
