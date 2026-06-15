@@ -44,6 +44,7 @@ Screenshot contract: `screenshots.json`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
 - Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `InstallAddressPackageAction`.
 - Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`.
+- Provider contracts: `AddressValidationProvider::TAG` and `AddressGeocodingProvider::TAG` let companion packages register optional validation and geocoding providers; available provider keys appear in address quality reports.
 - Command signatures: `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
 - Console command classes: `DemoCommand`, `FakerCommand`, `InstallCommand`.
 - Manifest contributions: `admin-resource: Capell\Address\Manifest\AddressResourceContribution`, `admin-resource: Capell\Address\Manifest\CountryResourceContribution`, `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`, `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`, `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`, `health-check: Capell\Address\Health\AddressHealthCheck`, `migration: Capell\Address\Manifest\AddressMigrationsContribution`, `model: Capell\Address\Manifest\AddressModelsContribution`, `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`.
@@ -93,6 +94,7 @@ Screenshot contract: `screenshots.json`.
 ## Next Steps
 
 - [Package docs index](README.md)
+- [Address API](address-api.md)
 - [Screenshot contract](screenshots.json)
 - [Marketplace assets](assets/marketplace/)
 - [Capell content language plan](../../../docs/CONTENT_LANGUAGE_PLAN.md)

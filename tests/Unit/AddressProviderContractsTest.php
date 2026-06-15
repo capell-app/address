@@ -13,6 +13,10 @@ use Capell\Address\Data\DuplicateAddressGroupData;
 use Capell\Address\Health\AddressHealthCheck;
 use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
+use Capell\Address\Tests\Fixtures\FakeAvailableAddressGeocodingProvider;
+use Capell\Address\Tests\Fixtures\FakeAvailableAddressValidationProvider;
+use Capell\Address\Tests\Fixtures\FakeUnavailableAddressGeocodingProvider;
+use Capell\Address\Tests\Fixtures\FakeUnavailableAddressValidationProvider;
 use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
 
 it('defines validation and geocoding provider result contracts', function (): void {
@@ -244,4 +248,59 @@ it('does not report missing optional providers as health issues', function (): v
 
     expect(AddressHealthCheck::passed())->toBeTrue()
         ->and(AddressHealthCheck::runDiagnostics()->every(fn (DoctorCheckResultData $result): bool => $result->passed))->toBeTrue();
+});
+
+it('documents provider registration by reporting only available tagged provider keys', function (): void {
+    $country = Country::factory()->create(['status' => true]);
+
+    Address::factory()->create([
+        'country_id' => $country->getKey(),
+        'line1' => '10 Downing Street',
+        'postal_code' => 'SW1A 2AA',
+        'meta' => [
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+        ],
+    ]);
+
+    app()->bind(
+        'address.validation.fixture.available',
+        fn (): AddressValidationProvider => new FakeAvailableAddressValidationProvider,
+    );
+    app()->bind(
+        'address.validation.fixture.unavailable',
+        fn (): AddressValidationProvider => new FakeUnavailableAddressValidationProvider,
+    );
+    app()->tag(
+        ['address.validation.fixture.available', 'address.validation.fixture.unavailable'],
+        AddressValidationProvider::TAG,
+    );
+
+    app()->bind(
+        'address.geocoding.fixture.available',
+        fn (): AddressGeocodingProvider => new FakeAvailableAddressGeocodingProvider,
+    );
+    app()->bind(
+        'address.geocoding.fixture.unavailable',
+        fn (): AddressGeocodingProvider => new FakeUnavailableAddressGeocodingProvider,
+    );
+    app()->tag(
+        ['address.geocoding.fixture.available', 'address.geocoding.fixture.unavailable'],
+        AddressGeocodingProvider::TAG,
+    );
+
+    expect(BuildAddressQualityHealthReportAction::run())
+        ->status->toBe('passed')
+        ->validationProviders->toBe(['fixture-validation'])
+        ->geocodingProviders->toBe(['fixture-geocoding'])
+        ->issues->toBe([]);
+
+    $providerCheck = AddressHealthCheck::runDiagnostics()
+        ->firstWhere('label', 'Address validation and geocoding providers');
+
+    expect($providerCheck)
+        ->toBeInstanceOf(DoctorCheckResultData::class)
+        ->passed->toBeTrue()
+        ->message->toContain('1 validation provider(s)')
+        ->message->toContain('1 geocoding provider(s)');
 });
