@@ -94,7 +94,6 @@ Screenshot contract: `screenshots.json`.
 ## Next Steps
 
 - [Package docs index](README.md)
-- [Address API](address-api.md)
 - [Screenshot contract](screenshots.json)
 - [Marketplace assets](assets/marketplace/)
 - [Capell content language plan](../../../docs/CONTENT_LANGUAGE_PLAN.md)

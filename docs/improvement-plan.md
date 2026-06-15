@@ -51,10 +51,10 @@ Address is a foundational data package. For teams, the value is consistency: one
 
 | Item                                                               | Bucket | Effort | Impact | Section ref |
 | ------------------------------------------------------------------ | ------ | ------ | ------ | ----------- |
-| Add actionable health diagnostics and pass/fail coverage           | Now    | M      | High   | §2.1, §4.1  |
-| Align `capell.json` contributions with admin/configurator surfaces | Now    | S      | Medium | §2.2, §4.2  |
-| Add non-destructive duplicate address quality report               | Now    | M      | Medium | §2.3, §4.3  |
-| Document validation/geocoding provider registration contracts      | Now    | S      | Medium | §2.4, §4.4  |
+| Add actionable health diagnostics and pass/fail coverage           | Done   | M      | High   | §2.1, §4.1  |
+| Align `capell.json` contributions with admin/configurator surfaces | Done   | S      | Medium | §2.2, §4.2  |
+| Add non-destructive duplicate address quality report               | Done   | M      | Medium | §2.3, §4.3  |
+| Document validation/geocoding provider registration contracts      | Done   | S      | Medium | §2.4, §4.4  |
 | Add country dataset refresh/import command                         | Next   | M      | Medium | §3          |
 | Add PII export/erase guidance for consuming packages               | Next   | S      | Medium | §3          |
 | Add optional geocoding normalization workflow                      | Next   | M      | Medium | §3, §5      |
