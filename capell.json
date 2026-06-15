@@ -80,11 +80,13 @@
             "type": "console-command",
             "class": "Capell\\Address\\Manifest\\AddressConsoleCommandsContribution",
             "commands": [
+                "capell:address-countries-import",
                 "capell:address-install",
                 "capell:address-faker",
                 "capell:address-demo"
             ],
             "commandClasses": [
+                "Capell\\Address\\Console\\Commands\\ImportCountriesCommand",
                 "Capell\\Address\\Console\\Commands\\InstallCommand",
                 "Capell\\Address\\Console\\Commands\\FakerCommand",
                 "Capell\\Address\\Console\\Commands\\DemoCommand"
@@ -106,6 +108,7 @@
         "demo": "capell:address-demo",
         "demoParams": ["sites"],
         "doctor": null,
+        "countriesImport": "capell:address-countries-import",
         "faker": "capell:address-faker"
     },
     "actions": {

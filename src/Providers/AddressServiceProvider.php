@@ -6,6 +6,7 @@ namespace Capell\Address\Providers;
 
 use Capell\Address\Console\Commands\DemoCommand;
 use Capell\Address\Console\Commands\FakerCommand;
+use Capell\Address\Console\Commands\ImportCountriesCommand;
 use Capell\Address\Console\Commands\InstallCommand;
 use Capell\Address\Enums\ConfiguratorTypeEnum;
 use Capell\Address\Enums\ResourceEnum;
@@ -48,6 +49,7 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
             ->hasCommands([
                 DemoCommand::class,
                 FakerCommand::class,
+                ImportCountriesCommand::class,
                 InstallCommand::class,
             ])
             ->hasMigrations([

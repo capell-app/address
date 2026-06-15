@@ -4,7 +4,7 @@
 
 ## 1. Snapshot
 
-Address provides reusable, site-scoped countries and postal addresses for Capell. It owns address/country migrations, admin resources, model relations on `Site`, Filament field components/configurators, flag rendering, provider contracts for validation/geocoding, demo/faker/install commands, screenshot coverage, and a quality report Action. The package is a strong foundation layer, but its manifest and health surface understate what it contributes: `capell.json` lists no contributions, `AddressHealthCheck` only exposes a report method, and provider availability/quality issues are not surfaced as install health in the Marketplace.
+Address provides reusable, site-scoped countries and postal addresses for Capell. It owns address/country migrations, admin resources, model relations on `Site`, Filament field components/configurators, flag rendering, provider contracts for validation/geocoding, demo/faker/install/country-import commands, screenshot coverage, and quality report Actions. The package is a strong foundation layer, and the current improvement wave has closed manifest traceability, health diagnostics, duplicate detection, provider docs, and country dataset refresh/import coverage.
 
 ## 2. Improvements (existing functionality)
 
@@ -22,7 +22,7 @@ Capabilities declared: `address` and `address-admin`.
 
 - **No health pass/fail method.** Marketplace health cannot tell whether address data quality is acceptable.
 - **No dedupe workflow.** Shared foundational address data will drift without duplicate detection.
-- **No country dataset refresh path.** Countries can be managed, but the package does not document import/update strategy or ISO-code source maintenance.
+- **Done/Shipped: country dataset refresh path.** `capell:address-countries-import` imports JSON or CSV datasets with `name`, `iso2`, and `iso3`, supports dry-runs, restores soft-deleted ISO matches, and can disable enabled countries missing from an authoritative dataset.
 - **No first-class privacy/export helpers.** Address records are PII and should have clear consuming-package export/erase guidance.
 
 ## 4. Issues / Risks
@@ -55,7 +55,7 @@ Address is a foundational data package. For teams, the value is consistency: one
 | Align `capell.json` contributions with admin/configurator surfaces | Done   | S      | Medium | §2.2, §4.2  |
 | Add non-destructive duplicate address quality report               | Done   | M      | Medium | §2.3, §4.3  |
 | Document validation/geocoding provider registration contracts      | Done   | S      | Medium | §2.4, §4.4  |
-| Add country dataset refresh/import command                         | Next   | M      | Medium | §3          |
+| Add country dataset refresh/import command                         | Done   | M      | Medium | §3          |
 | Add PII export/erase guidance for consuming packages               | Next   | S      | Medium | §3          |
 | Add optional geocoding normalization workflow                      | Next   | M      | Medium | §3, §5      |
 | Add safe merge workflow for duplicate addresses                    | Later  | L      | Medium | §3          |
@@ -66,6 +66,8 @@ Address is a foundational data package. For teams, the value is consistency: one
 Implementation slice 1 exposed the shipped admin resources, configurators, site schema extender, models, admin assets, migrations, console commands, and health check as manifest contributions. It also registered package migrations with Laravel Package Tools and made `AddressHealthCheck` return actionable diagnostics.
 
 Implementation slice 2 added non-destructive duplicate-address quality reporting with normalized grouping by country, postal code, and address lines. Duplicate groups are surfaced through `BuildAddressQualityHealthReportAction`, `AddressHealthCheck::runDiagnostics()`, and package docs.
+
+Implementation slice 3 added `ImportCountriesAction` and `capell:address-countries-import` for JSON/CSV ISO country refreshes with dry-run, restore, and disable-missing modes.
 
 Verify with:
 

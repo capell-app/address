@@ -42,11 +42,11 @@ Screenshot contract: `screenshots.json`.
 - Models: `Address`, `Country`.
 - Filament classes: `AddressSelect`, `CountrySelect`, `FlagSelect`, `DefaultAddressConfigurator`, `DefaultCountryConfigurator`, `DefaultLanguageConfigurator`, `AddressResource`, `ManageAddresses`, `AddressForm`, `AddressesTable`, `CountryResource`, `ManageCountries`, `and 3 more`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
-- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `InstallAddressPackageAction`.
-- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`.
+- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `ImportCountriesAction`, `InstallAddressPackageAction`.
+- Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`, `ImportCountriesResultData`.
 - Provider contracts: `AddressValidationProvider::TAG` and `AddressGeocodingProvider::TAG` let companion packages register optional validation and geocoding providers; available provider keys appear in address quality reports.
-- Command signatures: `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
-- Console command classes: `DemoCommand`, `FakerCommand`, `InstallCommand`.
+- Command signatures: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
+- Console command classes: `DemoCommand`, `FakerCommand`, `ImportCountriesCommand`, `InstallCommand`.
 - Manifest contributions: `admin-resource: Capell\Address\Manifest\AddressResourceContribution`, `admin-resource: Capell\Address\Manifest\CountryResourceContribution`, `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`, `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`, `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`, `health-check: Capell\Address\Health\AddressHealthCheck`, `migration: Capell\Address\Manifest\AddressMigrationsContribution`, `model: Capell\Address\Manifest\AddressModelsContribution`, `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`.
 - Health checks: `Capell\Address\Health\AddressHealthCheck`.
 - Blade views: `packages/address/resources/views/components/flag-icon.blade.php`.
@@ -68,7 +68,9 @@ Screenshot contract: `screenshots.json`.
 - Settings: no package settings declared.
 - Queues or schedules: none detected in standard package paths.
 - Cache tags: none declared.
-- Commands: `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
+- Commands: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-install`.
+
+Country datasets can be refreshed with `capell:address-countries-import /path/to/countries.json` or a CSV file with `name`, `iso2`, and `iso3` columns. Use `--dry-run` before changing production data, `--restore` to restore soft-deleted ISO matches, and `--disable-missing` only when the dataset is authoritative for the installation.
 
 ## Common Pitfalls
 

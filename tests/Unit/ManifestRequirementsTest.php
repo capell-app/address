@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Address\Console\Commands\DemoCommand;
 use Capell\Address\Console\Commands\FakerCommand;
+use Capell\Address\Console\Commands\ImportCountriesCommand;
 use Capell\Address\Console\Commands\InstallCommand;
 use Capell\Address\Filament\Configurators\Addresses\DefaultAddressConfigurator;
 use Capell\Address\Filament\Configurators\Countries\DefaultCountryConfigurator;
@@ -80,6 +81,7 @@ describe('address capell.json manifest', function (): void {
             ->and(data_get($manifest, 'database.requiredTables', []))->toBe(['countries', 'addresses'])
             ->and(data_get($manifest, 'commands.install'))->toBe('capell:address-install')
             ->and(data_get($manifest, 'commands.faker'))->toBe('capell:address-faker')
+            ->and(data_get($manifest, 'commands.countriesImport'))->toBe('capell:address-countries-import')
             ->and(data_get($manifest, 'commands.demo'))->toBe('capell:address-demo')
             ->and(data_get($manifest, 'healthChecks.0.class'))->toBe(AddressHealthCheck::class)
             ->and(data_get($manifest, 'contributionTraceability.deferredContributions'))->toBe([]);
@@ -134,11 +136,13 @@ describe('address capell.json manifest', function (): void {
                 'type' => 'console-command',
                 'class' => AddressConsoleCommandsContribution::class,
                 'commands' => [
+                    'capell:address-countries-import',
                     'capell:address-install',
                     'capell:address-faker',
                     'capell:address-demo',
                 ],
                 'commandClasses' => [
+                    ImportCountriesCommand::class,
                     InstallCommand::class,
                     FakerCommand::class,
                     DemoCommand::class,
