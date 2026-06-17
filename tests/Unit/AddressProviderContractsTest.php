@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Address\Actions\BuildAddressQualityHealthReportAction;
 use Capell\Address\Actions\FindDuplicateAddressGroupsAction;
+use Capell\Address\Actions\NormalizeAddressGeocodingAction;
 use Capell\Address\Contracts\AddressGeocodingProvider;
 use Capell\Address\Contracts\AddressValidationProvider;
 use Capell\Address\Data\AddressGeocodingResultData;
@@ -18,6 +19,7 @@ use Capell\Address\Tests\Fixtures\FakeAvailableAddressValidationProvider;
 use Capell\Address\Tests\Fixtures\FakeUnavailableAddressGeocodingProvider;
 use Capell\Address\Tests\Fixtures\FakeUnavailableAddressValidationProvider;
 use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
+use Illuminate\Support\Facades\File;
 
 it('defines validation and geocoding provider result contracts', function (): void {
     $validationProvider = new class implements AddressValidationProvider
@@ -303,4 +305,42 @@ it('documents provider registration by reporting only available tagged provider 
         ->passed->toBeTrue()
         ->message->toContain('1 validation provider(s)')
         ->message->toContain('1 geocoding provider(s)');
+});
+
+it('documents PII export and erasure responsibilities for consuming packages', function (): void {
+    $documentation = File::get(__DIR__ . '/../../docs/address-api.md');
+
+    expect($documentation)
+        ->toContain('Privacy Export And Erasure Guidance')
+        ->toContain('Consuming packages own the subject relationship')
+        ->toContain('Treat latitude and longitude as precise location data')
+        ->toContain('detach the relationship instead of deleting a shared address')
+        ->toContain('Countries are reference data and should not be deleted for subject erasure');
+});
+
+it('normalizes address coordinates through an available geocoding provider', function (): void {
+    app()->bind(
+        'address.geocoding.fixture.available',
+        fn (): AddressGeocodingProvider => new FakeAvailableAddressGeocodingProvider,
+    );
+    app()->tag(['address.geocoding.fixture.available'], AddressGeocodingProvider::TAG);
+
+    $address = Address::factory()->create([
+        'meta' => [],
+    ]);
+
+    $result = NormalizeAddressGeocodingAction::run($address, providerKey: 'fixture-geocoding');
+
+    expect($result)
+        ->updated->toBeTrue()
+        ->provider->toBe('fixture-geocoding')
+        ->latitude->toBe('51.5074')
+        ->longitude->toBe('-0.1278')
+        ->and($address->refresh()->meta)
+        ->toMatchArray([
+            'latitude' => '51.5074',
+            'longitude' => '-0.1278',
+            'geocoding_provider' => 'fixture-geocoding',
+            'geocoding_confidence' => 0.8,
+        ]);
 });

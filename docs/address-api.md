@@ -63,3 +63,19 @@ Do not include raw API secrets, signed URLs, provider request payloads, model ID
 - `geocodingProviders`: keys from tagged geocoding providers where `isAvailable()` returns `true`.
 
 Provider absence is not a health failure. Address health fails for data quality problems such as missing enabled countries or invalid coordinates, and warns for likely duplicate address groups. Optional providers make the report more informative without becoming a required dependency.
+
+## Geocoding Normalization
+
+`NormalizeAddressGeocodingAction::run($address, providerKey: null, dryRun: false)` calls the first available tagged geocoding provider that returns valid latitude and longitude values. When coordinates change, Address stores `latitude`, `longitude`, `geocoding_provider`, `geocoding_confidence`, and `geocoded_at` in address metadata.
+
+Operators can run `capell:address-geocode-normalize` to normalize batches. Use `--dry-run` to count changes without writing, `--limit=100` to cap a batch, and `--provider=provider-key` to force one available provider. The command is optional infrastructure: if no geocoding providers are tagged and available, it scans safely and writes nothing.
+
+## Privacy Export And Erasure Guidance
+
+Postal addresses are personal data when they identify a person, household, order, booking, attendee, customer, or site contact. Consuming packages own the subject relationship, so they should include address fields in their own subject export rather than asking Address to guess which person owns a shared record.
+
+For subject exports, include the address values that were used by the consuming record: `line1`, `line2`, `city`, `county`, `postal_code`, country `name`, `iso2`, `iso3`, and relevant location metadata. Treat latitude and longitude as precise location data. Do not include provider API payloads, validation request bodies, unrelated address records, admin-only model IDs, or internal duplicate-quality diagnostics in customer-facing exports.
+
+For erasure, first decide whether the address is exclusive to the subject being erased. If it is exclusive, the consuming package may delete, anonymize, or null the address relationship according to its retention policy. If the address is shared by another customer, site, booking, invoice, legal record, or operational workflow, detach the relationship instead of deleting a shared address. Countries are reference data and should not be deleted for subject erasure.
+
+Validation and geocoding providers should keep export/erase workflows simple: store only normalized address fields and safe diagnostic messages in Address records, and keep raw provider payloads in the owning package only when that package has an explicit retention and erasure policy.
