@@ -16,7 +16,10 @@
             "notes": "Requires package migrations and seeded country rows with ISO2/ISO3 codes and language relationships.",
             "useCase": "An administrator reviews available countries before using country and address selectors elsewhere in Capell.",
             "screenshotPath": "packages/address/docs/screenshots/countries-admin-index.png",
-            "darkScreenshotPath": "packages/address/docs/screenshots/countries-admin-index-dark.png"
+            "darkScreenshotPath": "packages/address/docs/screenshots/countries-admin-index-dark.png",
+            "covers": [
+                "packages/address/src/Filament/Resources/Addresses/Pages/ManageAddresses.php"
+            ]
         },
         {
             "id": "addresses-admin-index",

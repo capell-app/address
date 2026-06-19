@@ -35,6 +35,50 @@ Screenshot contract: `screenshots.json`.
 - Create/edit address form (admin, required).
 - Site settings fields where address data is injected (admin, required).
 
+## Screenshot Evidence
+
+These captures are the package-owned visual contract for the admin pages, public pages, actions, workflows, and feature surfaces described above. Keep this section aligned with `docs/screenshots.json` whenever the package surface changes.
+
+### Countries admin index
+
+![Countries admin index](screenshots/countries-admin-index.png)
+
+- Surface: admin · Target: CountryResource.
+- Documents: An administrator reviews available countries before using country and address selectors elsewhere in Capell.
+- Capture notes: Requires package migrations and seeded country rows with ISO2/ISO3 codes and language relationships.
+
+### Addresses admin index
+
+![Addresses admin index](screenshots/addresses-admin-index.png)
+
+- Surface: admin · Target: AddressResource.
+- Documents: An administrator manages reusable postal addresses that other packages can reference instead of duplicating location fields.
+- Capture notes: Requires seeded addresses connected to seeded countries. Include at least one address with full line, city, state, postal code, and country data.
+
+### Create/edit country form
+
+![Create/edit country form](screenshots/create-edit-country-form.png)
+
+- Surface: admin · Target: CountryResource.
+- Documents: An administrator adds or corrects a country name, ISO code, and language mapping.
+- Capture notes: Open the create or edit modal from `CountryResource`; the current resource uses table actions rather than a separate create page.
+
+### Create/edit address form
+
+![Create/edit address form](screenshots/create-edit-address-form.png)
+
+- Surface: admin · Target: AddressResource.
+- Documents: An administrator creates a structured address with country, street, locality, region, and postal fields.
+- Capture notes: Open the create or edit modal from `AddressResource`; seed countries first so the country selector is meaningful.
+
+### Site settings fields where address data is injected
+
+![Site settings fields where address data is injected](screenshots/site-settings-fields-where-address-data-is-injected.png)
+
+- Surface: admin · Target: SiteSchemaExtender.
+- Documents: A site administrator selects reusable address data while editing site-level settings.
+- Capture notes: Requires the host admin site form that consumes `SiteSchemaExtender` plus seeded countries and addresses.
+
 ## Technical Shape
 
 - Service providers: `Capell\Address\Providers\AddressServiceProvider`.
