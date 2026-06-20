@@ -44,7 +44,6 @@ Screenshot contract: `screenshots.json`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
 - Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `ImportCountriesAction`, `InstallAddressPackageAction`, `NormalizeAddressGeocodingAction`.
 - Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`, `ImportCountriesResultData`, `NormalizeAddressGeocodingResultData`.
-- Provider contracts: `AddressValidationProvider::TAG` and `AddressGeocodingProvider::TAG` let companion packages register optional validation and geocoding providers; available provider keys appear in address quality reports.
 - Command signatures: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
 - Console command classes: `DemoCommand`, `FakerCommand`, `ImportCountriesCommand`, `InstallCommand`, `NormalizeAddressGeocodingCommand`.
 - Manifest contributions: `admin-resource: Capell\Address\Manifest\AddressResourceContribution`, `admin-resource: Capell\Address\Manifest\CountryResourceContribution`, `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`, `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`, `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`, `health-check: Capell\Address\Health\AddressHealthCheck`, `migration: Capell\Address\Manifest\AddressMigrationsContribution`, `model: Capell\Address\Manifest\AddressModelsContribution`, `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`.
@@ -70,16 +69,9 @@ Screenshot contract: `screenshots.json`.
 - Cache tags: none declared.
 - Commands: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
 
-Country datasets can be refreshed with `capell:address-countries-import /path/to/countries.json` or a CSV file with `name`, `iso2`, and `iso3` columns. Use `--dry-run` before changing production data, `--restore` to restore soft-deleted ISO matches, and `--disable-missing` only when the dataset is authoritative for the installation.
-
-Address records can be personal data. Consuming packages should include the address fields they use in their own subject exports, treat coordinates as precise location data, and detach rather than delete shared address records during erasure. See [Address API](address-api.md) for the full export/erase guidance.
-
-Optional geocoding providers can normalize coordinates with `capell:address-geocode-normalize`. Use `--dry-run`, `--limit`, and `--provider=provider-key` to review or narrow a batch before writing latitude, longitude, provider key, confidence, and timestamp metadata.
-
 ## Common Pitfalls
 
 - Run migrations before opening package resources or public routes.
-- Treat duplicate address diagnostics as a non-destructive report: review the grouped record IDs before introducing package-specific merge or cleanup behavior.
 - Keep `composer.json`, `composer.local.json`, `capell.json`, docs, screenshots, and tests aligned when the package surface changes.
 
 ## Troubleshooting
@@ -88,7 +80,6 @@ Optional geocoding providers can normalize coordinates with `capell:address-geoc
 | --- | --- | --- | --- |
 | Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
 | Admin screen or command fails on missing table | Package migrations have not run | Check the tables listed in `Data Model` | Run host migrations and rerun the focused package test |
-| Address health reports duplicate groups | Multiple records normalize to the same country, postal code, and address lines | Call `FindDuplicateAddressGroupsAction` or inspect `AddressHealthCheck::report()` | Review the grouped record IDs and decide whether the consuming workflow needs a merge, disable, or manual cleanup path |
 | Background work does not run | Queue worker or scheduled command is not active | Check package jobs, commands, and host scheduler configuration | Start the queue or scheduler, then run the focused command or package test |
 
 ## Quick Start
