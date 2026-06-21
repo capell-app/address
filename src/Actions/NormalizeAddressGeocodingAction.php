@@ -20,6 +20,8 @@ final class NormalizeAddressGeocodingAction
 
     public function handle(Address $address, ?string $providerKey = null, bool $dryRun = false): NormalizeAddressGeocodingResultData
     {
+        $addressId = $address->getKey();
+
         foreach ($this->providers($providerKey) as $provider) {
             $result = $provider->geocode($address);
 
@@ -46,7 +48,7 @@ final class NormalizeAddressGeocodingAction
             }
 
             return new NormalizeAddressGeocodingResultData(
-                addressId: $address->getKey(),
+                addressId: is_int($addressId) || is_string($addressId) ? $addressId : null,
                 updated: $updated,
                 provider: $result->provider,
                 latitude: $result->latitude,
@@ -56,7 +58,7 @@ final class NormalizeAddressGeocodingAction
         }
 
         return new NormalizeAddressGeocodingResultData(
-            addressId: $address->getKey(),
+            addressId: is_int($addressId) || is_string($addressId) ? $addressId : null,
             updated: false,
             messages: ['No available geocoding provider returned valid coordinates.'],
         );
