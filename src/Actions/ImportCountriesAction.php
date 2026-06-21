@@ -33,6 +33,7 @@ final class ImportCountriesAction
         $updated = 0;
         $skipped = 0;
         $restored = 0;
+        /** @var list<string> $importedIso2 */
         $importedIso2 = [];
 
         foreach ($this->rows($path) as $row) {
@@ -60,7 +61,7 @@ final class ImportCountriesAction
                 continue;
             }
 
-            $wasTrashed = method_exists($country, 'trashed') && $country->trashed();
+            $wasTrashed = $country->trashed();
             $country->forceFill($countryData + [
                 'status' => true,
             ]);
@@ -86,7 +87,7 @@ final class ImportCountriesAction
             }
         }
 
-        $disabled = $this->disableMissingCountries(array_unique($importedIso2), $dryRun, $disableMissing);
+        $disabled = $this->disableMissingCountries(array_values(array_unique($importedIso2)), $dryRun, $disableMissing);
 
         return new ImportCountriesResultData(
             created: $created,
@@ -121,7 +122,11 @@ final class ImportCountriesAction
             throw new InvalidArgumentException('Country JSON dataset could not be decoded.', previous: $exception);
         }
 
-        if (isset($data['countries']) && is_array($data['countries'])) {
+        if (
+            is_array($data)
+            && array_key_exists('countries', $data)
+            && is_array($data['countries'])
+        ) {
             $data = $data['countries'];
         }
 
@@ -129,7 +134,13 @@ final class ImportCountriesAction
             throw new InvalidArgumentException('Country JSON dataset must contain an array of country rows.');
         }
 
-        return array_values(array_filter($data, is_array(...)));
+        return array_values(array_map(
+            static fn (array $row): array => $row,
+            array_filter(
+                $data,
+                static fn (mixed $row): bool => is_array($row),
+            ),
+        ));
     }
 
     /**
@@ -150,7 +161,7 @@ final class ImportCountriesAction
         }
 
         $headers = array_map(
-            static fn (string $header): string => strtolower(trim($header)),
+            static fn (?string $header): string => strtolower(trim((string) $header)),
             $headers,
         );
         $rows = [];
