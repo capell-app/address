@@ -1,7 +1,3 @@
-# Address
-
-<!-- prettier-ignore-start -->
-
 ## What it does for you
 
 Address gives you one shared list of countries and one shared list of postal addresses. Instead of typing the same location into every form, other parts of Capell can point at an address you have already entered.
@@ -26,10 +22,3 @@ Both **Countries** and **Addresses** live under the **Web Pages** group in the a
 
 - Add the **Countries** you need first, so the **Country** picker on an address is meaningful.
 - One saved address can be reused in many places, so a correction in one spot keeps everything in step.
-
----
-
-For how to use Address, see the [admin guide](admin-guide.md).
-For developers: see the [README](../README.md), [address-api.md](address-api.md), [address-database.md](address-database.md).
-
-<!-- prettier-ignore-end -->
