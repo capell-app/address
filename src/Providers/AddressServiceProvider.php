@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Gate;
 use Override;
 use Spatie\LaravelPackageTools\Package;
 
-class AddressServiceProvider extends AbstractPackageServiceProvider
+final class AddressServiceProvider extends AbstractPackageServiceProvider
 {
     private const string ADMIN_FLAG_ICON_RENDERER_CONTRACT = \Capell\Admin\Contracts\Support\FlagIconRenderer::class;
 
@@ -81,7 +81,7 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
     #[Override]
     protected function isPackageInstalled(): bool
     {
-        return CapellCore::getPackage(static::$packageName)->isInstalled();
+        return CapellCore::getPackage(self::$packageName)->isInstalled();
     }
 
     private function bootInstalledPackage(): self
@@ -102,7 +102,7 @@ class AddressServiceProvider extends AbstractPackageServiceProvider
     private function registerPackageAssets(): self
     {
         CapellCore::registerVendorAsset(
-            VendorAssetData::tailwindSource('resources/views/**/*.blade.php', static::$packageName),
+            VendorAssetData::tailwindSource('resources/views/**/*.blade.php', self::$packageName),
         );
 
         return $this;
