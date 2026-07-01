@@ -18,8 +18,7 @@
         "requires": ["capell-app/admin"],
         "supports": [
             "capell-app/bookings",
-            "capell-app/events",
-            "capell-app/theme-local-services"
+            "capell-app/events"
         ],
         "conflicts": []
     },
