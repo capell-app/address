@@ -4,13 +4,14 @@ declare(strict_types=1);
 
 namespace Capell\Address\Filament\Components\Forms;
 
+use Capell\Address\Actions\GetCountryNameAction;
+use Capell\Address\Actions\ListCountryOptionsAction;
 use Capell\Address\Filament\Resources\Countries\Schemas\CountryForm;
 use Capell\Address\Models\Country;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
 use Override;
 
 class CountrySelect extends Select
@@ -23,45 +24,13 @@ class CountrySelect extends Select
         $this->label(__('capell-address::form.country'))
             ->searchable()
             ->options(
-                function (self $component): array {
-                    /** @var class-string<Country> $model */
-                    $model = Country::class;
-
-                    return $model::query()
-                        ->limit($component->getOptionsLimit())
-                        ->ordered()
-                        ->get()
-                        ->mapWithKeys(fn (Country $country): array => [$country->getKey() => $country->name])
-                        ->all();
-                },
+                fn (self $component): array => ListCountryOptionsAction::run(null, $component->getOptionsLimit()),
             )
             ->getOptionLabelUsing(
-                function (?string $value): ?string {
-                    /** @var class-string<Country> $model */
-                    $model = Country::class;
-
-                    return $model::query()
-                        ->whereKey($value)
-                        ->value('name');
-                },
+                fn (?string $value): ?string => GetCountryNameAction::run($value),
             )
             ->getSearchResultsUsing(
-                function (self $component, string $search): array {
-                    /** @var class-string<Country> $model */
-                    $model = Country::class;
-
-                    return $model::query()
-                        ->where(
-                            fn (Builder $query): Builder => $query->where('name', 'like', sprintf('%%%s%%', $search))
-                                ->orWhere('iso2', 'like', $search)
-                                ->orWhere('iso3', 'like', $search),
-                        )
-                        ->limit($component->getOptionsLimit())
-                        ->ordered()
-                        ->get()
-                        ->mapWithKeys(fn (Country $country): array => [$country->getKey() => $country->name])
-                        ->all();
-                },
+                fn (self $component, string $search): array => ListCountryOptionsAction::run($search, $component->getOptionsLimit()),
             );
     }
 
