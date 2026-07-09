@@ -2,7 +2,7 @@
 
 <!-- prettier-ignore-start -->
 
-## What This Plugin Adds
+## What This Extension Adds
 
 Address is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/address` and extends these surfaces: admin.
 
