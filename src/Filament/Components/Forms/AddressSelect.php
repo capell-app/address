@@ -4,15 +4,16 @@ declare(strict_types=1);
 
 namespace Capell\Address\Filament\Components\Forms;
 
+use Capell\Address\Actions\GetAddressNameAction;
+use Capell\Address\Actions\GetAddressSelectRecordAction;
+use Capell\Address\Actions\ListAddressOptionsAction;
 use Capell\Address\Filament\Resources\Addresses\Schemas\AddressForm;
 use Capell\Address\Models\Address;
-use Capell\Address\Support\AddressSiteScope;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\Width;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Gate;
 use Override;
 
@@ -26,56 +27,23 @@ class AddressSelect extends Select
         $this->label(__('capell-address::form.address'))
             ->searchable()
             ->options(
-                function (self $component): array {
-                    /** @var class-string<Address> $model */
-                    $model = Address::class;
-
-                    return AddressSiteScope::applyForCurrentActor($model::query())
-                        ->with(['country'])
-                        ->limit($component->getOptionsLimit())
-                        ->ordered()
-                        ->get()
-                        ->mapWithKeys(fn (Address $address): array => [$address->getKey() => $address->full_address])
-                        ->all();
-                },
+                fn (self $component): array => ListAddressOptionsAction::run(
+                    search: null,
+                    limit: $component->getOptionsLimit(),
+                    fullAddressLabels: true,
+                ),
             )
             ->getSelectedRecordUsing(
-                function (int $state): Address {
-                    /** @var class-string<Address> $model */
-                    $model = Address::class;
-
-                    return AddressSiteScope::applyForCurrentActor($model::query())
-                        ->whereKey($state)
-                        ->firstOrFail();
-                },
+                fn (int $state): Address => GetAddressSelectRecordAction::run($state),
             )
             ->getOptionLabelUsing(
-                function (?string $value): ?string {
-                    /** @var class-string<Address> $model */
-                    $model = Address::class;
-
-                    return AddressSiteScope::applyForCurrentActor($model::query())
-                        ->whereKey($value)
-                        ->value('name');
-                },
+                fn (?string $value): ?string => GetAddressNameAction::run($value),
             )
             ->getSearchResultsUsing(
-                function (self $component, string $search): array {
-                    /** @var class-string<Address> $model */
-                    $model = Address::class;
-
-                    return AddressSiteScope::applyForCurrentActor($model::query())
-                        ->where(fn (Builder $query): Builder => $query->where('line1', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('line2', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('city', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('state', 'like', sprintf('%%%s%%', $search))
-                            ->orWhere('postal_code', 'like', sprintf('%%%s%%', $search))
-                            ->orWhereRelation('country', 'name', 'like', sprintf('%%%s%%', $search)))
-                        ->limit($component->getOptionsLimit())
-                        ->ordered()
-                        ->pluck('name', 'id')
-                        ->all();
-                },
+                fn (self $component, string $search): array => ListAddressOptionsAction::run(
+                    search: $search,
+                    limit: $component->getOptionsLimit(),
+                ),
             );
     }
 

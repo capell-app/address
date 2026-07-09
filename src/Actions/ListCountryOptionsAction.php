@@ -23,10 +23,7 @@ class ListCountryOptionsAction
      */
     public function handle(?string $search, int $limit): array
     {
-        /** @var class-string<Country> $model */
-        $model = Country::class;
-
-        return $model::query()
+        return Country::query()
             ->when(
                 $search !== null && $search !== '',
                 fn (Builder $query): Builder => $query->where(
