@@ -34,6 +34,11 @@
             "Capell\\Address\\Database\\Factories\\": "database/factories"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Capell\\Address\\Tests\\": "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
