@@ -19,10 +19,7 @@ class GetCountryNameAction
 
     public function handle(?string $key): ?string
     {
-        /** @var class-string<Country> $model */
-        $model = Country::class;
-
-        return $model::query()
+        return Country::query()
             ->whereKey($key)
             ->first(['name'])?->name;
     }

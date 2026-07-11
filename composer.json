@@ -25,13 +25,18 @@
     ],
     "require": {
         "php": "^8.4",
-        "capell-app/admin": "^4.0 || 4.x-dev",
+        "capell-app/admin": "^1.0 || 1.x-dev",
         "stijnvanouplines/blade-country-flags": "^1.0"
     },
     "autoload": {
         "psr-4": {
             "Capell\\Address\\": "src/",
             "Capell\\Address\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Capell\\Address\\Tests\\": "tests/"
         }
     },
     "extra": {
@@ -41,7 +46,7 @@
             ]
         },
         "branch-alias": {
-            "dev-main": "4.x-dev"
+            "dev-main": "1.x-dev"
         }
     },
     "config": {

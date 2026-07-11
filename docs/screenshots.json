@@ -42,8 +42,8 @@
             "url": "/countries",
             "click": "[wire\\:click*=\"mountAction('create')\"]",
             "waitFor": "[role=\"dialog\"] form, .fi-modal-window form",
-            "required": true,
-            "notes": "Open the create or edit modal from `CountryResource`; the current resource uses table actions rather than a separate create page.",
+            "required": false,
+            "notes": "Optional Beta evidence target. The current file duplicates the country index capture; replace it with an independently captured create or edit modal before using it as release or Marketplace evidence.",
             "useCase": "An administrator adds or corrects a country name, ISO code, and language mapping.",
             "screenshotPath": "packages/address/docs/screenshots/create-edit-country-form.png",
             "darkScreenshotPath": "packages/address/docs/screenshots/create-edit-country-form-dark.png"
@@ -59,8 +59,8 @@
             "url": "/addresses",
             "click": "[wire\\:click*=\"mountAction('create')\"]",
             "waitFor": "[role=\"dialog\"] form, .fi-modal-window form",
-            "required": true,
-            "notes": "Open the create or edit modal from `AddressResource`; seed countries first so the country selector is meaningful.",
+            "required": false,
+            "notes": "Optional Beta evidence target. The current file duplicates the address index capture; replace it with an independently captured create or edit modal before using it as release or Marketplace evidence.",
             "useCase": "An administrator creates a structured address with country, street, locality, region, and postal fields.",
             "screenshotPath": "packages/address/docs/screenshots/create-edit-address-form.png",
             "darkScreenshotPath": "packages/address/docs/screenshots/create-edit-address-form-dark.png"
@@ -72,8 +72,8 @@
             "surface": "admin",
             "targetType": "admin-surface",
             "target": "SiteSchemaExtender",
-            "required": true,
-            "notes": "Requires the host admin site form that consumes `SiteSchemaExtender` plus seeded countries and addresses.",
+            "required": false,
+            "notes": "Optional Beta evidence target. The current file is a shared host Site screen rather than proof of the injected Address fields; replace it with an independently captured populated Address section before using it as release or Marketplace evidence.",
             "useCase": "A site administrator selects reusable address data while editing site-level settings.",
             "screenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected.png",
             "darkScreenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected-dark.png"

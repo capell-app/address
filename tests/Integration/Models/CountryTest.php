@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Capell\Address\Actions\GetCountryNameAction;
 use Capell\Address\Models\Country;
 use Capell\Core\Models\Language;
 
@@ -36,5 +37,12 @@ describe('Country model', function (): void {
         expect($languages)->toHaveCount(2);
         expect($languages->pluck('name'))->toContain('English');
         expect($languages->pluck('name'))->toContain('French');
+    });
+
+    it('resolves names through the country lookup action', function (): void {
+        $country = Country::factory()->create(['name' => 'United Kingdom']);
+
+        expect(GetCountryNameAction::run((string) $country->getKey()))->toBe('United Kingdom')
+            ->and(GetCountryNameAction::run(null))->toBeNull();
     });
 });
