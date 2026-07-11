@@ -26,7 +26,7 @@
     "require": {
         "php": "^8.4",
         "capell-app/admin": "^0.0.1 || 0.0.x-dev",
-        "stijnvanouplines/blade-country-flags": "^0.0.1"
+        "stijnvanouplines/blade-country-flags": "^1.0"
     },
     "autoload": {
         "psr-4": {
