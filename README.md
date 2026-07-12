@@ -2,7 +2,7 @@
 
 <!-- prettier-ignore-start -->
 
-## What This Extension Adds
+## What This Plugin Adds
 
 Address is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/address` and extends these surfaces: admin.
 
@@ -29,11 +29,15 @@ Status details:
 
 Screenshot contract: `docs/screenshots.json`.
 
+![Countries admin index](docs/screenshots/countries-admin-index.png)
+
+![Addresses admin index](docs/screenshots/addresses-admin-index.png)
+
 - Countries admin index (admin, required).
 - Addresses admin index (admin, required).
-- Create/edit country form (admin, required).
-- Create/edit address form (admin, required).
-- Site settings fields where address data is injected (admin, required).
+- Create/edit country form (admin, optional).
+- Create/edit address form (admin, optional).
+- Site settings fields where address data is injected (admin, optional).
 
 ## Technical Shape
 
@@ -42,7 +46,7 @@ Screenshot contract: `docs/screenshots.json`.
 - Models: `Address`, `Country`.
 - Filament classes: `AddressSelect`, `CountrySelect`, `FlagSelect`, `DefaultAddressConfigurator`, `DefaultCountryConfigurator`, `DefaultLanguageConfigurator`, `AddressResource`, `ManageAddresses`, `AddressForm`, `AddressesTable`, `CountryResource`, `ManageCountries`, `and 3 more`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
-- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `ImportCountriesAction`, `InstallAddressPackageAction`, `NormalizeAddressGeocodingAction`.
+- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `GetAddressNameAction`, `GetAddressSelectRecordAction`, `GetCountryNameAction`, `ImportCountriesAction`, `InstallAddressPackageAction`, `ListAddressOptionsAction`, `ListCountryOptionsAction`, `NormalizeAddressGeocodingAction`.
 - Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`, `ImportCountriesResultData`, `NormalizeAddressGeocodingResultData`.
 - Command signatures: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
 - Console command classes: `DemoCommand`, `FakerCommand`, `ImportCountriesCommand`, `InstallCommand`, `NormalizeAddressGeocodingCommand`.
@@ -97,6 +101,7 @@ Screenshot contract: `docs/screenshots.json`.
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
 - [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
+- Related packages: [Bookings](../bookings/README.md), [Events](../events/README.md).
 - Focused tests: `vendor/bin/pest packages/address/tests --configuration=phpunit.xml`.
 
 <!-- prettier-ignore-end -->
