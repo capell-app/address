@@ -1,0 +1,82 @@
+{
+    "package": "address",
+    "composerName": "capell-app/address",
+    "generatedFor": "deployment-screenshot-runner",
+    "requiresInstalledPackage": true,
+    "outputDirectory": "packages/address/docs/screenshots",
+    "entries": [
+        {
+            "id": "countries-admin-index",
+            "title": "Countries admin index.",
+            "package": "address",
+            "surface": "admin",
+            "targetType": "admin-surface",
+            "target": "CountryResource",
+            "required": true,
+            "notes": "Requires package migrations and seeded country rows with ISO2/ISO3 codes and language relationships.",
+            "useCase": "An administrator reviews available countries before using country and address selectors elsewhere in Capell.",
+            "screenshotPath": "packages/address/docs/screenshots/countries-admin-index.png",
+            "darkScreenshotPath": "packages/address/docs/screenshots/countries-admin-index-dark.png"
+        },
+        {
+            "id": "addresses-admin-index",
+            "title": "Addresses admin index.",
+            "package": "address",
+            "surface": "admin",
+            "targetType": "admin-surface",
+            "target": "AddressResource",
+            "required": true,
+            "notes": "Requires seeded addresses connected to seeded countries. Include at least one address with full line, city, state, postal code, and country data.",
+            "useCase": "An administrator manages reusable postal addresses that other packages can reference instead of duplicating location fields.",
+            "screenshotPath": "packages/address/docs/screenshots/addresses-admin-index.png",
+            "darkScreenshotPath": "packages/address/docs/screenshots/addresses-admin-index-dark.png"
+        },
+        {
+            "id": "create-edit-country-form",
+            "title": "Create/edit country form.",
+            "package": "address",
+            "surface": "admin",
+            "targetType": "admin-surface",
+            "target": "CountryResource",
+            "scenario": "admin-index",
+            "url": "/countries",
+            "click": "[wire\\:click*=\"mountAction('create')\"]",
+            "waitFor": "[role=\"dialog\"] form, .fi-modal-window form",
+            "required": false,
+            "notes": "Optional Beta evidence target. The current file duplicates the country index capture; replace it with an independently captured create or edit modal before using it as release or Marketplace evidence.",
+            "useCase": "An administrator adds or corrects a country name, ISO code, and language mapping.",
+            "screenshotPath": "packages/address/docs/screenshots/create-edit-country-form.png",
+            "darkScreenshotPath": "packages/address/docs/screenshots/create-edit-country-form-dark.png"
+        },
+        {
+            "id": "create-edit-address-form",
+            "title": "Create/edit address form.",
+            "package": "address",
+            "surface": "admin",
+            "targetType": "admin-surface",
+            "target": "AddressResource",
+            "scenario": "admin-index",
+            "url": "/addresses",
+            "click": "[wire\\:click*=\"mountAction('create')\"]",
+            "waitFor": "[role=\"dialog\"] form, .fi-modal-window form",
+            "required": false,
+            "notes": "Optional Beta evidence target. The current file duplicates the address index capture; replace it with an independently captured create or edit modal before using it as release or Marketplace evidence.",
+            "useCase": "An administrator creates a structured address with country, street, locality, region, and postal fields.",
+            "screenshotPath": "packages/address/docs/screenshots/create-edit-address-form.png",
+            "darkScreenshotPath": "packages/address/docs/screenshots/create-edit-address-form-dark.png"
+        },
+        {
+            "id": "site-settings-fields-where-address-data-is-injected",
+            "title": "Site settings fields where address data is injected.",
+            "package": "address",
+            "surface": "admin",
+            "targetType": "admin-surface",
+            "target": "SiteSchemaExtender",
+            "required": false,
+            "notes": "Optional Beta evidence target. The current file is a shared host Site screen rather than proof of the injected Address fields; replace it with an independently captured populated Address section before using it as release or Marketplace evidence.",
+            "useCase": "A site administrator selects reusable address data while editing site-level settings.",
+            "screenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected.png",
+            "darkScreenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected-dark.png"
+        }
+    ]
+}

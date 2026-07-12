@@ -1,0 +1,67 @@
+<?php
+
+declare(strict_types=1);
+
+use Capell\Core\Models\Theme;
+use Capell\Core\Support\Migration\MigrationFilesystemInterface;
+use Capell\Tests\Fixtures\FakeMigrationFileManager;
+use Illuminate\Contracts\Events\Dispatcher;
+use Illuminate\Database\Console\Migrations\MigrateCommand;
+use Illuminate\Database\Migrations\Migrator;
+use Illuminate\Support\Facades\DB;
+
+afterEach(function (): void {
+    Mockery::close();
+});
+
+it('runs install command and does not publish files for capell:publish-migrations', function (): void {
+    $fakeFileManager = new FakeMigrationFileManager([
+        'fileExists' => [],
+        'isDir' => [],
+    ]);
+    $fakeMigrationAssistant = Mockery::mock(Migrator::class);
+    $fakeDispatcher = Mockery::mock(Dispatcher::class);
+    test()->instance(
+        MigrateCommand::class,
+        Mockery::mock(new MigrateCommand($fakeMigrationAssistant, $fakeDispatcher))
+            ->makePartial()
+            ->shouldReceive('run')->once()->andReturn(0)->getMock(),
+    );
+    // If Filament AssetsCommand is not available, skip this mock
+    if (class_exists('Filament\\Commands\\AssetsCommand')) {
+        test()->instance(
+            'Filament\\Commands\\AssetsCommand',
+            Mockery::mock('Filament\\Commands\\AssetsCommand', [])->makePartial()
+                ->shouldReceive('run')->once()->andReturn(0)->getMock(),
+        );
+    }
+
+    app()->instance(MigrationFilesystemInterface::class, $fakeFileManager);
+
+    $theme = Theme::factory()->create();
+
+    $this->artisan('capell:address-install')
+        ->doesntExpectOutput('Publishing migrations')
+        ->doesntExpectOutput('Migrating')
+        ->doesntExpectOutput('Building assets')
+        ->assertExitCode(0);
+
+    // Assert no migration files are published
+    expect($fakeFileManager->calls)
+        ->not()->toContain(fn (array $call): bool => $call[0] === 'copy')
+        ->toBeArray();
+
+    // Assert migrations directory was checked
+    expect(collect($fakeFileManager->calls)->contains(
+        fn (array $call): bool => $call[0] === 'isDir' && str_contains((string) $call[1], 'database/migrations'),
+    ))->toBeTrue();
+
+    // Assert makeDir was not called (no directory creation)
+    expect(collect($fakeFileManager->calls)->contains(
+        fn (array $call): bool => $call[0] === 'makeDir',
+    ))->toBeFalse();
+
+    // Assert theme exists and has expected attributes
+    $themeRow = DB::table('themes')->where('id', $theme->id)->first();
+    expect($themeRow)->not()->toBeNull();
+});

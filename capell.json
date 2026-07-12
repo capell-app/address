@@ -1,0 +1,213 @@
+{
+    "manifest-version": 3,
+    "name": "capell-app/address",
+    "slug": "address",
+    "displayName": "Address",
+    "kind": "package",
+    "capellApiVersion": "^0.0.1",
+    "version": "0.0.x-dev",
+    "description": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
+    "product": {
+        "group": "Capell Foundation",
+        "tier": "free",
+        "bundle": "foundation"
+    },
+    "namespace": "Capell\\Address",
+    "surfaces": ["admin"],
+    "dependencies": {
+        "requires": ["capell-app/admin"],
+        "supports": ["capell-app/bookings", "capell-app/events"],
+        "conflicts": []
+    },
+    "providers": {
+        "metadata": [],
+        "install": [],
+        "runtime": ["Capell\\Address\\Providers\\AddressServiceProvider"],
+        "admin": [],
+        "frontend": []
+    },
+    "contributes": [
+        {
+            "type": "admin-resource",
+            "class": "Capell\\Address\\Manifest\\AddressResourceContribution",
+            "resourceClass": "Capell\\Address\\Filament\\Resources\\Addresses\\AddressResource"
+        },
+        {
+            "type": "admin-resource",
+            "class": "Capell\\Address\\Manifest\\CountryResourceContribution",
+            "resourceClass": "Capell\\Address\\Filament\\Resources\\Countries\\CountryResource"
+        },
+        {
+            "type": "configurator",
+            "class": "Capell\\Address\\Manifest\\AddressConfiguratorsContribution",
+            "configuratorClasses": [
+                "Capell\\Address\\Filament\\Configurators\\Addresses\\DefaultAddressConfigurator",
+                "Capell\\Address\\Filament\\Configurators\\Countries\\DefaultCountryConfigurator",
+                "Capell\\Address\\Filament\\Configurators\\Languages\\DefaultLanguageConfigurator"
+            ],
+            "groups": ["Addresses", "Countries", "Language"]
+        },
+        {
+            "type": "schema-extender",
+            "class": "Capell\\Address\\Manifest\\AddressSiteSchemaExtenderContribution",
+            "extenderClass": "Capell\\Address\\Filament\\Resources\\Sites\\Schemas\\Extenders\\SiteSchemaExtender",
+            "tag": "Site"
+        },
+        {
+            "type": "model",
+            "class": "Capell\\Address\\Manifest\\AddressModelsContribution",
+            "modelClasses": [
+                "Capell\\Address\\Models\\Address",
+                "Capell\\Address\\Models\\Country"
+            ]
+        },
+        {
+            "type": "asset",
+            "class": "Capell\\Address\\Manifest\\AddressAdminAssetsContribution",
+            "surface": "admin",
+            "assets": ["capell-address", "blade-country-flags"]
+        },
+        {
+            "type": "migration",
+            "class": "Capell\\Address\\Manifest\\AddressMigrationsContribution",
+            "tables": ["countries", "addresses"]
+        },
+        {
+            "type": "console-command",
+            "class": "Capell\\Address\\Manifest\\AddressConsoleCommandsContribution",
+            "commands": [
+                "capell:address-countries-import",
+                "capell:address-geocode-normalize",
+                "capell:address-install",
+                "capell:address-faker",
+                "capell:address-demo"
+            ],
+            "commandClasses": [
+                "Capell\\Address\\Console\\Commands\\ImportCountriesCommand",
+                "Capell\\Address\\Console\\Commands\\NormalizeAddressGeocodingCommand",
+                "Capell\\Address\\Console\\Commands\\InstallCommand",
+                "Capell\\Address\\Console\\Commands\\FakerCommand",
+                "Capell\\Address\\Console\\Commands\\DemoCommand"
+            ]
+        },
+        {
+            "type": "health-check",
+            "class": "Capell\\Address\\Health\\AddressHealthCheck"
+        }
+    ],
+    "database": {
+        "migrations": true,
+        "settings": false,
+        "requiredTables": ["countries", "addresses"]
+    },
+    "commands": {
+        "install": "capell:address-install",
+        "setup": null,
+        "demo": "capell:address-demo",
+        "demoParams": ["sites"],
+        "doctor": null,
+        "countriesImport": "capell:address-countries-import",
+        "geocodeNormalize": "capell:address-geocode-normalize",
+        "faker": "capell:address-faker"
+    },
+    "actions": {
+        "install": "Capell\\Address\\Actions\\InstallAddressPackageAction"
+    },
+    "settings": [],
+    "permissions": [],
+    "capabilities": ["address", "address-admin"],
+    "security": {
+        "riskTier": "standard",
+        "publicSurface": {
+            "routeNames": [],
+            "auth": "none",
+            "csrfExemptRoutes": [],
+            "signedRoutes": [],
+            "tokenizedRoutes": [],
+            "webhookRoutes": [],
+            "throttledRoutes": []
+        },
+        "sensitiveData": {
+            "encryptedFields": [],
+            "hashedTokenFields": [],
+            "redactedOutputClasses": [],
+            "plaintextJustifications": []
+        },
+        "publicOutput": {
+            "cacheSafe": true,
+            "forbidAuthoringSurface": true,
+            "forbidSecrets": true,
+            "forbidPublicBladeQueries": true
+        },
+        "externalHttpClients": {
+            "requiresTimeouts": false,
+            "requiresSecretRedaction": false,
+            "clients": []
+        },
+        "adminSurface": {
+            "authorization": "policies",
+            "permissions": []
+        }
+    },
+    "performance": {
+        "frontendRenderBudgetMs": 0,
+        "adminQueryBudget": 40,
+        "cacheTags": [],
+        "cacheSafety": {
+            "cacheable": false,
+            "variesBy": [],
+            "sensitiveOutput": false,
+            "invalidationSources": [],
+            "queueInvalidation": false
+        }
+    },
+    "healthChecks": [
+        {
+            "key": "address.package-health",
+            "label": "Address package surfaces, providers, and install health are discoverable by Diagnostics.",
+            "class": "Capell\\Address\\Health\\AddressHealthCheck",
+            "severity": "critical",
+            "surface": "admin"
+        }
+    ],
+    "commercial": {
+        "proposedLicense": "free",
+        "requestedCertification": "first-party",
+        "supportPolicy": "capell-first-party",
+        "privateDocsRequested": false
+    },
+    "marketplace": {
+        "summary": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
+        "screenshots": [
+            {
+                "path": "docs/assets/marketplace/extension-card.jpg",
+                "alt": "Address extension card",
+                "caption": "Address extension card"
+            },
+            {
+                "path": "docs/screenshots/countries-admin-index.png",
+                "alt": "Countries admin index",
+                "caption": "Countries admin index"
+            },
+            {
+                "path": "docs/screenshots/countries-admin-index-dark.png",
+                "alt": "Countries admin index (dark mode)",
+                "caption": "Countries admin index (dark mode)"
+            },
+            {
+                "path": "docs/screenshots/addresses-admin-index.png",
+                "alt": "Addresses admin index",
+                "caption": "Addresses admin index"
+            },
+            {
+                "path": "docs/screenshots/addresses-admin-index-dark.png",
+                "alt": "Addresses admin index (dark mode)",
+                "caption": "Addresses admin index (dark mode)"
+            }
+        ],
+        "categories": ["admin", "foundation"]
+    },
+    "contributionTraceability": {
+        "deferredContributions": []
+    }
+}

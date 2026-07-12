@@ -1,0 +1,61 @@
+{
+    "name": "capell-app/address",
+    "description": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
+    "keywords": [
+        "capell",
+        "address",
+        "country",
+        "iso-3166",
+        "postal-address",
+        "country-selector",
+        "flags",
+        "filament",
+        "multi-site",
+        "cms",
+        "location-data"
+    ],
+    "homepage": "https://github.com/capell-app/address",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Howdu",
+            "email": "capell.app26@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "capell-app/admin": "^0.0.4 || 0.0.x-dev",
+        "stijnvanouplines/blade-country-flags": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Capell\\Address\\": "src/",
+            "Capell\\Address\\Database\\Factories\\": "database/factories"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Capell\\Address\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Capell\\Address\\Providers\\AddressServiceProvider"
+            ]
+        },
+        "branch-alias": {
+            "dev-main": "0.0.x-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "prefer-stable": true,
+    "type": "library",
+    "support": {
+        "source": "https://github.com/capell-app/capell-packages",
+        "docs": "https://docs.capell.app/packages/address"
+    }
+}
