@@ -4,7 +4,7 @@
     "slug": "address",
     "displayName": "Address",
     "kind": "package",
-    "capellApiVersion": "^1.0",
+    "capellApiVersion": "^4.0",
     "version": "1.x-dev",
     "description": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
     "product": {
