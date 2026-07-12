@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\Address\Filament\Components\Forms;
 
+use Capell\Address\Actions\CloneSharedAddressForMutationAction;
 use Capell\Address\Actions\GetAddressNameAction;
 use Capell\Address\Actions\GetAddressSelectRecordAction;
 use Capell\Address\Actions\ListAddressOptionsAction;
@@ -71,14 +72,16 @@ class AddressSelect extends Select
             return $record?->attributesToArray() ?? [];
         })
             ->editOptionForm(fn (Schema $configurator): Schema => AddressForm::configure($configurator))
-            ->updateOptionUsing(static function (array $data, Schema $configurator): void {
+            ->updateOptionUsing(static function (array $data, Schema $configurator): ?int {
                 $record = $configurator->getRecord();
 
                 if ($record instanceof Address) {
                     Gate::authorize('update', $record);
 
-                    $record->update($data);
+                    return (int) CloneSharedAddressForMutationAction::run($record, $data)->getKey();
                 }
+
+                return null;
             })
             ->editOptionAction(
                 fn (Action $action): Action => $action

@@ -23,6 +23,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 use Override;
+use RuntimeException;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 /**
@@ -63,6 +64,7 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
  * @mixin Model
  *
  * @property int $id
+ * @property int|null $site_id
  * @property CarbonImmutable|null $deleted_at
  * @property int|null $created_by
  * @property int|null $updated_by
@@ -109,6 +111,7 @@ class Address extends Model implements Defaultable, Userstampable
 
     protected $fillable = [
         'city',
+        'site_id',
         'country_id',
         'default',
         'line1',
@@ -125,8 +128,8 @@ class Address extends Model implements Defaultable, Userstampable
     public static function findAddress(string $line1, string $postalCode, int $countryId): ?self
     {
         return self::query()
-            ->where('line1', $line1)
-            ->where('postal_code', $postalCode)
+            ->where('line1_hash', self::blindIndex($line1))
+            ->where('postal_code_hash', self::blindIndex($postalCode))
             ->where('country_id', $countryId)
             ->first();
     }
@@ -147,6 +150,14 @@ class Address extends Model implements Defaultable, Userstampable
         return $this->hasMany(Site::class, 'meta->address_id');
     }
 
+    protected static function booted(): void
+    {
+        static::saving(static function (Address $address): void {
+            $address->setAttribute('line1_hash', self::blindIndex($address->line1));
+            $address->setAttribute('postal_code_hash', self::blindIndex($address->postal_code));
+        });
+    }
+
     /**
      * @param  Builder<Model>  $query
      * @return Builder<Model>
@@ -154,12 +165,8 @@ class Address extends Model implements Defaultable, Userstampable
     protected function scopeOrdered(Builder $query): Builder
     {
         return $query
-            ->orderBy('line1')
-            ->orderBy('line2')
-            ->orderBy('city')
-            ->orderBy('state')
-            ->orderBy('postal_code')
-            ->orderBy('country_id');
+            ->orderBy('country_id')
+            ->orderBy('id');
     }
 
     protected function getFullAddressAttribute(): string
@@ -180,9 +187,27 @@ class Address extends Model implements Defaultable, Userstampable
     protected function casts(): array
     {
         return [
-            'meta' => 'json',
+            'name' => 'encrypted',
+            'line1' => 'encrypted',
+            'line2' => 'encrypted',
+            'city' => 'encrypted',
+            'state' => 'encrypted',
+            'postal_code' => 'encrypted',
+            'meta' => 'encrypted:array',
             'default' => 'boolean',
             'status' => 'boolean',
         ];
+    }
+
+    private static function blindIndex(?string $value): ?string
+    {
+        if (! is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        $secret = config('app.key');
+        throw_unless(is_string($secret) && $secret !== '', RuntimeException::class, 'Address blind-index secret is unavailable.');
+
+        return hash_hmac('sha256', mb_strtolower(trim($value)), $secret);
     }
 }

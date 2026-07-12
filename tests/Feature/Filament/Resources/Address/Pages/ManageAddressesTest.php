@@ -10,7 +10,6 @@ use Filament\Actions\EditAction;
 use Filament\Actions\Testing\TestAction;
 use Illuminate\Database\Eloquent\Factories\Sequence;
 
-use function Pest\Laravel\assertDatabaseHas;
 use function Pest\Laravel\assertSoftDeleted;
 use function Pest\Livewire\livewire;
 
@@ -30,20 +29,16 @@ test('can list addresses', function (): void {
         ->assertCanSeeTableRecords($addresses);
 });
 
-test('can search addresses', function (): void {
+test('lists decrypted addresses without a plaintext pii search contract', function (): void {
     $addresses = Address::factory()
         ->count(3)
         ->sequence(fn (Sequence $sequence): array => ['name' => sprintf('Address(%d)', $sequence->index)])
         ->create();
 
-    $name = $addresses->random()->name;
-
     livewire(ManageAddresses::class)
         ->assertSuccessful()
         ->assertCountTableRecords(3)
-        ->searchTable($name)
-        ->assertCanSeeTableRecords($addresses->where('name', $name))
-        ->assertCanNotSeeTableRecords($addresses->where('name', '!=', $name));
+        ->assertCanSeeTableRecords($addresses);
 });
 
 test('can sort addresses', function (): void {
@@ -85,14 +80,15 @@ test('can replicate address', function (): void {
         ->assertSuccessful()
         ->assertCountTableRecords(2);
 
-    assertDatabaseHas('addresses', [
-        'name' => $copyName,
-        'line1' => $copyLine1,
-        'city' => $address->city,
-        'state' => $address->state,
-        'postal_code' => $address->postal_code,
-        'country_id' => $address->country_id,
-    ]);
+    $storedReplica = Address::query()->whereKeyNot($address->getKey())->sole();
+
+    expect($storedReplica)
+        ->name->toBe($copyName)
+        ->line1->toBe($copyLine1)
+        ->city->toBe($address->city)
+        ->state->toBe($address->state)
+        ->postal_code->toBe($address->postal_code)
+        ->country_id->toBe($address->country_id);
 });
 
 test('can create address', function (): void {
@@ -117,14 +113,15 @@ test('can create address', function (): void {
         ->assertHasNoFormErrors()
         ->assertCountTableRecords(1);
 
-    assertDatabaseHas('addresses', [
-        'name' => $address->name,
-        'line1' => $address->line1,
-        'city' => $address->city,
-        'state' => $address->state,
-        'postal_code' => $address->postal_code,
-        'country_id' => $address->country_id,
-    ]);
+    $storedAddress = Address::query()->sole();
+
+    expect($storedAddress)
+        ->name->toBe($address->name)
+        ->line1->toBe($address->line1)
+        ->city->toBe($address->city)
+        ->state->toBe($address->state)
+        ->postal_code->toBe($address->postal_code)
+        ->country_id->toBe($address->country_id);
 });
 
 test('can not create address', function (): void {

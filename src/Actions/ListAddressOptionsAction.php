@@ -6,7 +6,7 @@ namespace Capell\Address\Actions;
 
 use Capell\Address\Models\Address;
 use Capell\Address\Support\AddressSiteScope;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
@@ -23,22 +23,24 @@ class ListAddressOptionsAction
      */
     public function handle(?string $search, int $limit, bool $fullAddressLabels = false): array
     {
+        $candidateLimit = max($limit, min(500, $limit * 10));
+        $normalizedSearch = mb_strtolower(trim((string) $search));
+
         return AddressSiteScope::applyForCurrentActor(Address::query())
-            ->when(
-                $search !== null && $search !== '',
-                fn (Builder $query): Builder => $query->where(
-                    fn (Builder $query): Builder => $query->where('line1', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('line2', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('city', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('state', 'like', sprintf('%%%s%%', $search))
-                        ->orWhere('postal_code', 'like', sprintf('%%%s%%', $search))
-                        ->orWhereRelation('country', 'name', 'like', sprintf('%%%s%%', $search)),
-                ),
-            )
             ->with(['country'])
-            ->limit($limit)
+            ->limit($candidateLimit)
             ->ordered()
             ->get()
+            ->when(
+                $normalizedSearch !== '',
+                static fn (Collection $addresses): Collection => $addresses->filter(
+                    static fn (Address $address): bool => str_contains(
+                        mb_strtolower($address->full_address . ' ' . (string) $address->name),
+                        $normalizedSearch,
+                    ),
+                ),
+            )
+            ->take($limit)
             ->mapWithKeys(static fn (Address $address): array => [
                 $address->getKey() => $fullAddressLabels ? $address->full_address : (string) $address->name,
             ])

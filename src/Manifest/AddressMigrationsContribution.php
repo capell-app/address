@@ -11,6 +11,6 @@ final class AddressMigrationsContribution implements ExtensionContribution, Runs
 {
     public static function compatibleCapellApiVersion(): string
     {
-        return '^0.0';
+        return '^4.0';
     }
 }

@@ -63,8 +63,8 @@ describe('Address model scopes', function (): void {
         expect($statusTrue)->toHaveCount(2);
     });
 
-    it('returns ordered addresses', function (): void {
-        Address::factory()->create([
+    it('returns addresses in a stable non-PII database order', function (): void {
+        $first = Address::factory()->create([
             'line1' => 'Zebra Lane',
             'line2' => null,
             'city' => 'Austin',
@@ -72,7 +72,7 @@ describe('Address model scopes', function (): void {
             'postal_code' => '78701',
             'country_id' => null,
         ]);
-        Address::factory()->create([
+        $second = Address::factory()->create([
             'line1' => 'Apple Ave',
             'line2' => null,
             'city' => 'Boston',
@@ -83,7 +83,6 @@ describe('Address model scopes', function (): void {
 
         $ordered = Address::query()->ordered()->get();
 
-        expect($ordered->first()?->line1)->toBe('Apple Ave');
-        expect($ordered->last()?->line1)->toBe('Zebra Lane');
+        expect($ordered->modelKeys())->toBe([$first->getKey(), $second->getKey()]);
     });
 });

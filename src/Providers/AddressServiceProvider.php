@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Capell\Address\Providers;
 
+use Capell\Address\Actions\BuildAddressPrivacyExportAction;
+use Capell\Address\Actions\EnsureSiteOwnsAddressAction;
+use Capell\Address\Actions\EraseAddressPrivacyDataAction;
 use Capell\Address\Console\Commands\DemoCommand;
 use Capell\Address\Console\Commands\FakerCommand;
 use Capell\Address\Console\Commands\ImportCountriesCommand;
@@ -28,6 +31,7 @@ use Capell\Core\Data\VendorAssetData;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Site;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Support\Facades\Blade;
@@ -57,6 +61,7 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
             ->hasMigrations([
                 '2026_05_10_190839_01_create_countries_table',
                 '2026_05_10_190839_02_create_addresses_table',
+                '2026_07_12_000001_add_address_ownership_and_encrypt_meta',
             ])
             ->hasTranslations();
     }
@@ -96,6 +101,7 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
             ->registerConfigurators()
             ->registerLanguageConfigurator()
             ->registerSchemaExtenders()
+            ->registerPrivacyCenterContributors()
             ->registerBladeComponents();
     }
 
@@ -198,6 +204,8 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     private function registerRelationships(): self
     {
+        Site::saved(static fn (Site $site): ?Address => EnsureSiteOwnsAddressAction::run($site));
+
         Site::resolveRelationUsing(
             'address',
             fn (Site $model): BelongsTo => $model->belongsTo(Address::class, 'meta->address_id'),
@@ -214,6 +222,21 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
                 'country_id',
             ),
         );
+
+        return $this;
+    }
+
+    private function registerPrivacyCenterContributors(): self
+    {
+        $eraser = 'Capell\\PrivacyCenter\\Support\\PrivacySubjectEraserRegistry';
+        $exporter = 'Capell\\PrivacyCenter\\Support\\PrivacySubjectExporterRegistry';
+
+        if ($this->app->bound($eraser)) {
+            $this->app->make($eraser)->register('address', static fn (Model $subject): int => EraseAddressPrivacyDataAction::run($subject));
+        }
+        if ($this->app->bound($exporter)) {
+            $this->app->make($exporter)->register('address', static fn (Model $subject): array => BuildAddressPrivacyExportAction::run($subject));
+        }
 
         return $this;
     }

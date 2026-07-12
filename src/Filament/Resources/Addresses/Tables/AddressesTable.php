@@ -67,22 +67,13 @@ class AddressesTable implements TableConfigurator
                 ->defaultBadge(),
             TextColumn::make('address')
                 ->getStateUsing(fn (Address $record): string => $record->full_address)
-                ->searchable([
-                    'line1',
-                    'line2',
-                    'city',
-                    'state',
-                    'postal_code',
-                ])
                 ->wrap(),
             StatusIconColumn::make('status'),
             TextColumn::make('city')
                 ->label(__('capell-address::table.city'))
-                ->sortable()
                 ->toggleable(),
             TextColumn::make('postal_code')
                 ->label(__('capell-address::table.postal_code'))
-                ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
             TextColumn::make('country.name')
                 ->label(__('capell-address::table.country'))
