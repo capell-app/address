@@ -203,36 +203,6 @@
                 "path": "docs/screenshots/addresses-admin-index-dark.png",
                 "alt": "Addresses admin index (dark mode)",
                 "caption": "Addresses admin index (dark mode)"
-            },
-            {
-                "path": "docs/screenshots/create-edit-country-form.png",
-                "alt": "Create or edit country form",
-                "caption": "Create or edit country form"
-            },
-            {
-                "path": "docs/screenshots/create-edit-country-form-dark.png",
-                "alt": "Create or edit country form (dark mode)",
-                "caption": "Create or edit country form (dark mode)"
-            },
-            {
-                "path": "docs/screenshots/create-edit-address-form.png",
-                "alt": "Create or edit address form",
-                "caption": "Create or edit address form"
-            },
-            {
-                "path": "docs/screenshots/create-edit-address-form-dark.png",
-                "alt": "Create or edit address form (dark mode)",
-                "caption": "Create or edit address form (dark mode)"
-            },
-            {
-                "path": "docs/screenshots/site-settings-fields-where-address-data-is-injected.png",
-                "alt": "Address field injected into site settings",
-                "caption": "Address field injected into site settings"
-            },
-            {
-                "path": "docs/screenshots/site-settings-fields-where-address-data-is-injected-dark.png",
-                "alt": "Address field injected into site settings (dark mode)",
-                "caption": "Address field injected into site settings (dark mode)"
             }
         ],
         "categories": ["admin", "foundation"]
