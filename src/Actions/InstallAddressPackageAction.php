@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Capell\Address\Actions;
 
-use Capell\Address\Enums\ResourceEnum;
 use Capell\Address\Support\AddressModelRegistrar;
-use Capell\Admin\Actions\AssignPermissionsToRole;
 use Capell\Core\Actions\Install\PublishPackageMigrationsAction;
 use Capell\Core\Actions\Install\RunArtisanCommandAction;
 use Capell\Core\Actions\Install\RunMigrationsAction;
@@ -26,8 +24,6 @@ final class InstallAddressPackageAction implements PackageLifecycleAction
         $reporter ??= new NullProgressReporter;
 
         AddressModelRegistrar::register();
-
-        AssignPermissionsToRole::run(resources: array_map(fn (ResourceEnum $resourceEnum): string => $resourceEnum->value, ResourceEnum::cases()));
 
         PublishPackageMigrationsAction::run(new Collection([$package->name => $package]), $reporter, true, false);
         RunMigrationsAction::run($reporter);
