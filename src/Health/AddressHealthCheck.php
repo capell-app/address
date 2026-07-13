@@ -17,7 +17,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
 {
     public static function compatibleCapellApiVersion(): string
     {
-        return '^4.0';
+        return '^1.0';
     }
 
     public static function report(): AddressQualityHealthReportData
