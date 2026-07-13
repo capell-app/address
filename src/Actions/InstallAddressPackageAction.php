@@ -28,7 +28,7 @@ final class InstallAddressPackageAction implements PackageLifecycleAction
 
         AddressModelRegistrar::register();
 
-        Filament::getDefaultPanel()
+        Filament::getPanel('admin')
             ->resources(array_map(fn (ResourceEnum $resourceEnum): string => $resourceEnum->value, ResourceEnum::cases()));
 
         AssignPermissionsToRole::run(resources: array_map(fn (ResourceEnum $resourceEnum): string => $resourceEnum->value, ResourceEnum::cases()));
