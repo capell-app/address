@@ -29,11 +29,15 @@ Status details:
 
 Screenshot contract: `docs/screenshots.json`.
 
+![Countries admin index](docs/screenshots/countries-admin-index.png)
+
+![Addresses admin index](docs/screenshots/addresses-admin-index.png)
+
 - Countries admin index (admin, required).
 - Addresses admin index (admin, required).
-- Create/edit country form (admin, required).
-- Create/edit address form (admin, required).
-- Site settings fields where address data is injected (admin, required).
+- Create/edit country form (admin, optional).
+- Create/edit address form (admin, optional).
+- Site settings fields where address data is injected (admin, optional).
 
 ## Technical Shape
 
