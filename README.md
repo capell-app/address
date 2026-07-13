@@ -29,24 +29,20 @@ Status details:
 
 Screenshot contract: `docs/screenshots.json`.
 
-![Countries admin index](docs/screenshots/countries-admin-index.png)
-
-![Addresses admin index](docs/screenshots/addresses-admin-index.png)
-
 - Countries admin index (admin, required).
 - Addresses admin index (admin, required).
-- Create/edit country form (admin, optional).
-- Create/edit address form (admin, optional).
-- Site settings fields where address data is injected (admin, optional).
+- Create/edit country form (admin, required).
+- Create/edit address form (admin, required).
+- Site settings fields where address data is injected (admin, required).
 
 ## Technical Shape
 
 - Service providers: `Capell\Address\Providers\AddressServiceProvider`.
-- Migrations: `packages/address/database/migrations/2026_05_10_190839_01_create_countries_table.php`, `packages/address/database/migrations/2026_05_10_190839_02_create_addresses_table.php`.
+- Migrations: `packages/address/database/migrations/2026_05_10_190839_01_create_countries_table.php`, `packages/address/database/migrations/2026_05_10_190839_02_create_addresses_table.php`, `packages/address/database/migrations/2026_07_12_000001_add_address_ownership_and_encrypt_meta.php`.
 - Models: `Address`, `Country`.
 - Filament classes: `AddressSelect`, `CountrySelect`, `FlagSelect`, `DefaultAddressConfigurator`, `DefaultCountryConfigurator`, `DefaultLanguageConfigurator`, `AddressResource`, `ManageAddresses`, `AddressForm`, `AddressesTable`, `CountryResource`, `ManageCountries`, `and 3 more`.
 - Policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
-- Actions: `BuildAddressQualityHealthReportAction`, `FindDuplicateAddressGroupsAction`, `GetAddressNameAction`, `GetAddressSelectRecordAction`, `GetCountryNameAction`, `ImportCountriesAction`, `InstallAddressPackageAction`, `ListAddressOptionsAction`, `ListCountryOptionsAction`, `NormalizeAddressGeocodingAction`.
+- Actions: `BuildAddressPrivacyExportAction`, `BuildAddressQualityHealthReportAction`, `CloneSharedAddressForMutationAction`, `EnsureSiteOwnsAddressAction`, `EraseAddressPrivacyDataAction`, `FindDuplicateAddressGroupsAction`, `GetAddressNameAction`, `GetAddressSelectRecordAction`, `GetCountryNameAction`, `ImportCountriesAction`, `InstallAddressPackageAction`, `ListAddressOptionsAction`, `and 2 more`.
 - Data objects: `AddressGeocodingResultData`, `AddressMetaData`, `AddressQualityHealthReportData`, `AddressValidationResultData`, `DuplicateAddressGroupData`, `ImportCountriesResultData`, `NormalizeAddressGeocodingResultData`.
 - Command signatures: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
 - Console command classes: `DemoCommand`, `FakerCommand`, `ImportCountriesCommand`, `InstallCommand`, `NormalizeAddressGeocodingCommand`.
@@ -58,7 +54,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 - Required tables: `countries`, `addresses`.
 - Models: `Address`, `Country`.
-- Migration files: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`.
+- Migration files: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`, `2026_07_12_000001_add_address_ownership_and_encrypt_meta.php`.
 - Migration impact: run host migrations through the package install flow before opening package surfaces.
 - Deletion/retention behaviour: Docs gap unless the package has an explicit pruning command, retention setting, or tested cascade path.
 
