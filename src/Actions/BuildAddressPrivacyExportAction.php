@@ -9,6 +9,7 @@ use Capell\Core\Models\Site;
 use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+/** @method static array<string, mixed> run(Model $subject) */
 final class BuildAddressPrivacyExportAction
 {
     use AsAction;

@@ -23,8 +23,10 @@ class GetAddressNameAction
             return null;
         }
 
-        return AddressSiteScope::applyForCurrentActor(Address::query())
+        $name = AddressSiteScope::applyForCurrentActor(Address::query())
             ->whereKey($key)
             ->value('name');
+
+        return is_string($name) ? $name : null;
     }
 }

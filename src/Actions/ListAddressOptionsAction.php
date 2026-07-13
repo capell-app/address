@@ -41,9 +41,13 @@ class ListAddressOptionsAction
                 ),
             )
             ->take($limit)
-            ->mapWithKeys(static fn (Address $address): array => [
-                $address->getKey() => $fullAddressLabels ? $address->full_address : (string) $address->name,
-            ])
+            ->mapWithKeys(static function (Address $address) use ($fullAddressLabels): array {
+                $key = $address->getKey();
+
+                return is_int($key)
+                    ? [$key => $fullAddressLabels ? $address->full_address : (string) $address->name]
+                    : [];
+            })
             ->all();
     }
 }

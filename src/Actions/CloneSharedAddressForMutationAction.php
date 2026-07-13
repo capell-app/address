@@ -7,6 +7,7 @@ namespace Capell\Address\Actions;
 use Capell\Address\Models\Address;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+/** @method static Address run(Address $address, array<string, mixed> $attributes, ?int $siteId = null) */
 final class CloneSharedAddressForMutationAction
 {
     use AsAction;

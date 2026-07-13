@@ -8,6 +8,7 @@ use Capell\Address\Models\Address;
 use Capell\Core\Models\Site;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+/** @method static ?Address run(Site $site) */
 final class EnsureSiteOwnsAddressAction
 {
     use AsAction;
@@ -25,7 +26,13 @@ final class EnsureSiteOwnsAddressAction
             return null;
         }
 
-        $siteId = (int) $site->getKey();
+        $siteKey = $site->getKey();
+
+        if (! is_int($siteKey)) {
+            return null;
+        }
+
+        $siteId = $siteKey;
         if ($address->site_id === null) {
             $address->forceFill(['site_id' => $siteId])->save();
 

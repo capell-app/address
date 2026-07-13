@@ -9,12 +9,19 @@ use Capell\Core\Models\Site;
 use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsAction;
 
+/** @method static int run(Model $subject) */
 final class EraseAddressPrivacyDataAction
 {
     use AsAction;
 
     public function handle(Model $subject): int
     {
-        return $subject instanceof Site ? Address::query()->where('site_id', $subject->getKey())->delete() : 0;
+        if (! $subject instanceof Site) {
+            return 0;
+        }
+
+        $deleted = Address::query()->where('site_id', $subject->getKey())->delete();
+
+        return is_int($deleted) ? $deleted : 0;
     }
 }

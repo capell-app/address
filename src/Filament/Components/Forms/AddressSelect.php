@@ -78,7 +78,9 @@ class AddressSelect extends Select
                 if ($record instanceof Address) {
                     Gate::authorize('update', $record);
 
-                    return (int) CloneSharedAddressForMutationAction::run($record, $data)->getKey();
+                    $key = CloneSharedAddressForMutationAction::run($record, $data)->getKey();
+
+                    return is_int($key) ? $key : null;
                 }
 
                 return null;
