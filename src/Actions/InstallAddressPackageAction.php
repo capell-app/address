@@ -14,7 +14,6 @@ use Capell\Core\Contracts\PackageLifecycleAction;
 use Capell\Core\Contracts\ProgressReporter;
 use Capell\Core\Data\PackageData;
 use Capell\Core\Support\Install\NullProgressReporter;
-use Filament\Facades\Filament;
 use Illuminate\Support\Collection;
 use Lorisleiva\Actions\Concerns\AsObject;
 
@@ -27,9 +26,6 @@ final class InstallAddressPackageAction implements PackageLifecycleAction
         $reporter ??= new NullProgressReporter;
 
         AddressModelRegistrar::register();
-
-        Filament::getPanel('admin')
-            ->resources(array_map(fn (ResourceEnum $resourceEnum): string => $resourceEnum->value, ResourceEnum::cases()));
 
         AssignPermissionsToRole::run(resources: array_map(fn (ResourceEnum $resourceEnum): string => $resourceEnum->value, ResourceEnum::cases()));
 
