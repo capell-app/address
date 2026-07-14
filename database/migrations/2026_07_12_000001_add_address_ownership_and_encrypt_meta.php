@@ -15,7 +15,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('addresses', function (Blueprint $table): void {
-            foreach (['address_part_index', 'address_full_index', 'addresses_state_postal_code_country_id_index'] as $index) {
+            foreach ([
+                'address_part_index',
+                'address_full_index',
+                'addresses_city_state_country_id_index',
+                'addresses_state_postal_code_country_id_index',
+            ] as $index) {
                 if (Schema::hasIndex('addresses', $index)) {
                     $table->dropIndex($index);
                 }

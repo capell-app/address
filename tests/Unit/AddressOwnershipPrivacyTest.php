@@ -9,6 +9,16 @@ use Capell\Address\Actions\EraseAddressPrivacyDataAction;
 use Capell\Address\Models\Address;
 use Capell\Core\Models\Site;
 
+it('drops every plaintext composite index before encrypting address columns', function (): void {
+    $migration = file_get_contents(__DIR__ . '/../../database/migrations/2026_07_12_000001_add_address_ownership_and_encrypt_meta.php');
+
+    expect($migration)->toBeString()
+        ->toContain("'address_part_index'")
+        ->toContain("'address_full_index'")
+        ->toContain("'addresses_city_state_country_id_index'")
+        ->toContain("'addresses_state_postal_code_country_id_index'");
+});
+
 it('clones a cross-owner address before mutation and keeps the original unchanged', function (): void {
     $address = Address::factory()->create(['site_id' => 1, 'line1' => 'Original', 'meta' => ['latitude' => 51.5, 'longitude' => -0.1]]);
 
