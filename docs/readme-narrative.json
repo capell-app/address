@@ -1,0 +1,37 @@
+{
+    "whatThisPluginAdds": {
+        "text": "Address adds site-scoped country and postal-address records, admin resources, and shared address selectors for other Capell packages.",
+        "evidence": [
+            "capell.json",
+            "src/Models/Address.php",
+            "src/Models/Country.php"
+        ]
+    },
+    "surfaceOutcome": {
+        "text": "Admins manage countries and reusable addresses, then select saved address data while editing a site.",
+        "evidence": [
+            "docs/overview.admin.md",
+            "docs/screenshots.json",
+            "tests/Feature/Filament/Resources/Sites/Schemas/SiteSchemaExtenderTest.php"
+        ]
+    },
+    "whyItMatters": {
+        "developers": {
+            "text": "The package contributes AddressResource, CountryResource, reusable form fields, and a site schema extender instead of making each package model location fields again.",
+            "evidence": [
+                "capell.json",
+                "src/Providers/AddressServiceProvider.php",
+                "src/Filament/Resources/Sites/Schemas/Extenders/SiteSchemaExtender.php",
+                "tests/Unit/AddressProviderContractsTest.php"
+            ]
+        },
+        "teams": {
+            "text": "A postal address can be corrected once and reused wherever a Capell workflow references it.",
+            "evidence": [
+                "docs/overview.admin.md",
+                "docs/screenshots.json",
+                "tests/Feature/Filament/Resources/Address/AddressResourceTest.php"
+            ]
+        }
+    }
+}
