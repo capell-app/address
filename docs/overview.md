@@ -30,6 +30,6 @@ Both **Countries** and **Addresses** live under the **Web Pages** group in the a
 ---
 
 For how to use Address, see the [admin guide](admin-guide.md).
-For developers: see the [README](../README.md), [address-api.md](address-api.md), [address-database.md](address-database.md).
+For developers: see the [README](../README.md).
 
 <!-- prettier-ignore-end -->
