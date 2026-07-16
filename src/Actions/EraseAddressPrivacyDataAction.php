@@ -7,12 +7,14 @@ namespace Capell\Address\Actions;
 use Capell\Address\Models\Address;
 use Capell\Core\Models\Site;
 use Illuminate\Database\Eloquent\Model;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsFake;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 /** @method static int run(Model $subject) */
 final class EraseAddressPrivacyDataAction
 {
-    use AsAction;
+    use AsFake;
+    use AsObject;
 
     public function handle(Model $subject): int
     {

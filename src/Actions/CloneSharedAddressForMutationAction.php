@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace Capell\Address\Actions;
 
 use Capell\Address\Models\Address;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsFake;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 /** @method static Address run(Address $address, array<string, mixed> $attributes, ?int $siteId = null) */
 final class CloneSharedAddressForMutationAction
 {
-    use AsAction;
+    use AsFake;
+    use AsObject;
 
     /** @param array<string, mixed> $attributes */
     public function handle(Address $address, array $attributes, ?int $siteId = null): Address

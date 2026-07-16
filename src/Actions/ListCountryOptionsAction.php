@@ -6,6 +6,7 @@ namespace Capell\Address\Actions;
 
 use Capell\Address\Models\Country;
 use Illuminate\Database\Eloquent\Builder;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
@@ -16,6 +17,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
  */
 class ListCountryOptionsAction
 {
+    use AsFake;
     use AsObject;
 
     /**

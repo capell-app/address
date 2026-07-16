@@ -7,14 +7,16 @@ namespace Capell\Address\Actions;
 use Capell\Address\Data\DuplicateAddressGroupData;
 use Capell\Address\Models\Address;
 use Illuminate\Support\Collection;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsFake;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
  * @method static Collection<int, DuplicateAddressGroupData> run(iterable<int, Address>|null $addresses = null)
  */
 final class FindDuplicateAddressGroupsAction
 {
-    use AsAction;
+    use AsFake;
+    use AsObject;
 
     /**
      * @param  iterable<int, Address>|null  $addresses

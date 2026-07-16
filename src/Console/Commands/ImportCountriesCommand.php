@@ -30,7 +30,7 @@ final class ImportCountriesCommand extends Command
         }
 
         try {
-            $result = $importCountries->handle(
+            $result = ImportCountriesAction::run(
                 path: $path,
                 dryRun: (bool) $this->option('dry-run'),
                 disableMissing: (bool) $this->option('disable-missing'),

@@ -12,14 +12,16 @@ use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Support\Collection;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsFake;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
  * @method static AddressQualityHealthReportData run(iterable<int, Address>|null $addresses = null)
  */
 final class BuildAddressQualityHealthReportAction
 {
-    use AsAction;
+    use AsFake;
+    use AsObject;
 
     /**
      * @param  iterable<int, Address>|null  $addresses

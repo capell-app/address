@@ -7,6 +7,7 @@ namespace Capell\Address\Actions;
 use Capell\Address\Models\Address;
 use Capell\Address\Support\AddressSiteScope;
 use Illuminate\Support\Collection;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
@@ -16,6 +17,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
  */
 class ListAddressOptionsAction
 {
+    use AsFake;
     use AsObject;
 
     /**

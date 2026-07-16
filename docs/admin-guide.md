@@ -36,7 +36,7 @@ This guide is for admins who keep the shared list of countries and postal addres
 3. Fill in **Address Line 1** and, if needed, **Address Line 2**.
 4. Add the **City**, **State**, and **Postal Code**.
 5. Choose the **Country** from the picker.
-6. Save the address. It can now be reused anywhere that asks for an address.
+6. Save the address. It can now be selected anywhere that asks for an address.
 
 ![An administrator creates a structured address with country, street, city, region, and postal fields.](screenshots/create-edit-address-form.png)
 
@@ -44,7 +44,7 @@ This guide is for admins who keep the shared list of countries and postal addres
 
 1. Open your site settings in the admin.
 2. Find the address field and choose one of your saved addresses from the **Address** picker.
-3. Save the settings. The site now reuses that address instead of duplicating the location.
+3. Save the settings. The site now uses that address. If you edit the selected address from the site picker later, the package may create a site-specific copy to avoid changing a shared or other site's address.
 
 ![A site administrator selects reusable address data while editing site settings.](screenshots/site-settings-fields-where-address-data-is-injected.png)
 
@@ -55,4 +55,4 @@ This guide is for admins who keep the shared list of countries and postal addres
 | The country I need is missing from a picker      | That country has not been added yet    | Go to **Web Pages > Countries** and add it with its **Name** and ISO codes          |
 | The address picker is empty in site settings     | No addresses have been saved yet       | Go to **Web Pages > Addresses** and create one first                                |
 | A country shows zero **Addresses**               | No saved address uses that country     | This is fine; the country is still available to pick when you add an address        |
-| The same wrong address appears in several places | The shared address record is incorrect | Correct it once in **Web Pages > Addresses** and every place that reuses it updates |
+| The address changed for one site but not another | The site picker created a site-specific copy to protect a shared or other site's address | Check the selected address on each site, then update the intended address record in **Web Pages > Addresses** |

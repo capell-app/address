@@ -9,14 +9,16 @@ use Capell\Address\Data\AddressGeocodingResultData;
 use Capell\Address\Data\NormalizeAddressGeocodingResultData;
 use Capell\Address\Models\Address;
 use Illuminate\Support\Arr;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsFake;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
  * @method static NormalizeAddressGeocodingResultData run(Address $address, ?string $providerKey = null, bool $dryRun = false)
  */
 final class NormalizeAddressGeocodingAction
 {
-    use AsAction;
+    use AsFake;
+    use AsObject;
 
     public function handle(Address $address, ?string $providerKey = null, bool $dryRun = false): NormalizeAddressGeocodingResultData
     {

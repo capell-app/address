@@ -6,12 +6,14 @@ namespace Capell\Address\Actions;
 
 use Capell\Address\Models\Address;
 use Capell\Core\Models\Site;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsFake;
+use Lorisleiva\Actions\Concerns\AsObject;
 
 /** @method static ?Address run(Site $site) */
 final class EnsureSiteOwnsAddressAction
 {
-    use AsAction;
+    use AsFake;
+    use AsObject;
 
     public function handle(Site $site): ?Address
     {

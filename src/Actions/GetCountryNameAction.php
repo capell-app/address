@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Capell\Address\Actions;
 
 use Capell\Address\Models\Country;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
@@ -15,6 +16,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
  */
 class GetCountryNameAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(?string $key): ?string

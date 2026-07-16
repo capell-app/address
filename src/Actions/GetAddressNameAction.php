@@ -6,6 +6,7 @@ namespace Capell\Address\Actions;
 
 use Capell\Address\Models\Address;
 use Capell\Address\Support\AddressSiteScope;
+use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
 
 /**
@@ -15,6 +16,7 @@ use Lorisleiva\Actions\Concerns\AsObject;
  */
 class GetAddressNameAction
 {
+    use AsFake;
     use AsObject;
 
     public function handle(?string $key): ?string

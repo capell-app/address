@@ -35,7 +35,7 @@ final class NormalizeAddressGeocodingCommand extends Command
             }
 
             $scanned++;
-            $result = $normalizeGeocoding->handle($address, $provider, $dryRun);
+            $result = NormalizeAddressGeocodingAction::run($address, $provider, $dryRun);
 
             if ($result->updated) {
                 $updated++;

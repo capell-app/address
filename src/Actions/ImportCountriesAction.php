@@ -9,7 +9,8 @@ use Capell\Address\Models\Country;
 use Illuminate\Support\Facades\File;
 use InvalidArgumentException;
 use JsonException;
-use Lorisleiva\Actions\Concerns\AsAction;
+use Lorisleiva\Actions\Concerns\AsFake;
+use Lorisleiva\Actions\Concerns\AsObject;
 use RuntimeException;
 
 /**
@@ -17,7 +18,8 @@ use RuntimeException;
  */
 final class ImportCountriesAction
 {
-    use AsAction;
+    use AsFake;
+    use AsObject;
 
     public function handle(
         string $path,

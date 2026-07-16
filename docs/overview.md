@@ -25,7 +25,7 @@ Both **Countries** and **Addresses** live under the **Web Pages** group in the a
 ## Good to know
 
 - Add the **Countries** you need first, so the **Country** picker on an address is meaningful.
-- One saved address can be reused in many places, so a correction in one spot keeps everything in step.
+- An address can be reused, but editing it through a site address picker may create a site-specific copy when the current record is shared or belongs to another site.
 
 ---
 
