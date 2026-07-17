@@ -128,8 +128,19 @@
             "throttledRoutes": []
         },
         "sensitiveData": {
-            "encryptedFields": [],
-            "hashedTokenFields": [],
+            "encryptedFields": [
+                "Capell\\Address\\Models\\Address::$city",
+                "Capell\\Address\\Models\\Address::$line1",
+                "Capell\\Address\\Models\\Address::$line2",
+                "Capell\\Address\\Models\\Address::$meta",
+                "Capell\\Address\\Models\\Address::$name",
+                "Capell\\Address\\Models\\Address::$postal_code",
+                "Capell\\Address\\Models\\Address::$state"
+            ],
+            "hashedTokenFields": [
+                "addresses.line1_hash",
+                "addresses.postal_code_hash"
+            ],
             "redactedOutputClasses": [],
             "plaintextJustifications": []
         },

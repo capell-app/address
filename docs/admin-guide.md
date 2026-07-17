@@ -50,9 +50,9 @@ This guide is for admins who keep the shared list of countries and postal addres
 
 ## Troubleshooting
 
-| What you see                                     | What it means                          | What to do                                                                          |
-| ------------------------------------------------ | -------------------------------------- | ----------------------------------------------------------------------------------- |
-| The country I need is missing from a picker      | That country has not been added yet    | Go to **Web Pages > Countries** and add it with its **Name** and ISO codes          |
-| The address picker is empty in site settings     | No addresses have been saved yet       | Go to **Web Pages > Addresses** and create one first                                |
-| A country shows zero **Addresses**               | No saved address uses that country     | This is fine; the country is still available to pick when you add an address        |
+| What you see                                     | What it means                                                                            | What to do                                                                                                    |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| The country I need is missing from a picker      | That country has not been added yet                                                      | Go to **Web Pages > Countries** and add it with its **Name** and ISO codes                                    |
+| The address picker is empty in site settings     | No addresses have been saved yet                                                         | Go to **Web Pages > Addresses** and create one first                                                          |
+| A country shows zero **Addresses**               | No saved address uses that country                                                       | This is fine; the country is still available to pick when you add an address                                  |
 | The address changed for one site but not another | The site picker created a site-specific copy to protect a shared or other site's address | Check the selected address on each site, then update the intended address record in **Web Pages > Addresses** |

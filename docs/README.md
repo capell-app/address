@@ -8,7 +8,7 @@ Start at the [package README](../README.md) when deciding whether to install thi
 
 | Doc                                                             | Use it for                                                                         |
 | --------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [Admin Guide](admin-guide.md)                                   | Manage addresses, countries, and address selection in the admin.                  |
+| [Admin Guide](admin-guide.md)                                   | Manage addresses, countries, and address selection in the admin.                   |
 | [Credits And Acknowledgements](credits-and-acknowledgements.md) | Upstream services, dependencies, and acknowledgements.                             |
 | [Overview](overview.md)                                         | Package boundary, runtime surfaces, install notes, and first troubleshooting path. |
 
