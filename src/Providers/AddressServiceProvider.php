@@ -68,18 +68,12 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     public function registeringPackage(): void
     {
+        parent::registeringPackage();
+
         $this->app->booting(function (): void {
             if ($this->isPackageInstalled()) {
                 $this->registerResources();
             }
-        });
-
-        $this->app->booted(function (): void {
-            if (! $this->isPackageInstalled()) {
-                return;
-            }
-
-            $this->bootInstalledPackage();
         });
     }
 
@@ -89,7 +83,8 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
         return CapellCore::getPackage(self::$packageName)->isInstalled();
     }
 
-    private function bootInstalledPackage(): self
+    #[Override]
+    protected function bootInstalledPackage(): self
     {
         return $this
             ->registerModels()
