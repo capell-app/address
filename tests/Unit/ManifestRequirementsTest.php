@@ -133,6 +133,11 @@ describe('address capell.json manifest', function (): void {
                 'type' => 'migration',
                 'class' => AddressMigrationsContribution::class,
                 'tables' => ['countries', 'addresses'],
+                'migrationFiles' => [
+                    '2026_05_10_190839_01_create_countries_table',
+                    '2026_05_10_190839_02_create_addresses_table',
+                    '2026_07_12_000001_add_address_ownership_and_encrypt_meta',
+                ],
             ])
             ->toContain([
                 'type' => 'console-command',
