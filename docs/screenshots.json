@@ -13,6 +13,7 @@
             "targetType": "admin-surface",
             "target": "CountryResource",
             "required": true,
+            "url": "/address/countries",
             "notes": "Requires package migrations and seeded country rows with ISO2/ISO3 codes and language relationships.",
             "useCase": "An administrator reviews available countries before using country and address selectors elsewhere in Capell.",
             "screenshotPath": "packages/address/docs/screenshots/countries-admin-index.png",
@@ -26,6 +27,7 @@
             "targetType": "admin-surface",
             "target": "AddressResource",
             "required": true,
+            "url": "/address/addresses",
             "notes": "Requires seeded addresses connected to seeded countries. Include at least one address with full line, city, state, postal code, and country data.",
             "useCase": "An administrator manages reusable postal addresses that other packages can reference instead of duplicating location fields.",
             "screenshotPath": "packages/address/docs/screenshots/addresses-admin-index.png",
@@ -39,7 +41,7 @@
             "targetType": "admin-surface",
             "target": "CountryResource",
             "scenario": "admin-index",
-            "url": "/countries",
+            "url": "/address/countries",
             "click": "[wire\\:click*=\"mountAction('create')\"]",
             "waitFor": "[role=\"dialog\"] form, .fi-modal-window form",
             "required": false,
@@ -56,7 +58,7 @@
             "targetType": "admin-surface",
             "target": "AddressResource",
             "scenario": "admin-index",
-            "url": "/addresses",
+            "url": "/address/addresses",
             "click": "[wire\\:click*=\"mountAction('create')\"]",
             "waitFor": "[role=\"dialog\"] form, .fi-modal-window form",
             "required": false,
@@ -77,6 +79,27 @@
             "useCase": "A site administrator selects reusable address data while editing site-level settings.",
             "screenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected.png",
             "darkScreenshotPath": "packages/address/docs/screenshots/site-settings-fields-where-address-data-is-injected-dark.png"
+        },
+        {
+            "id": "address-admin-sidebar-menu-open",
+            "title": "Countries admin index with admin sidebar menu open.",
+            "package": "address",
+            "surface": "admin",
+            "targetType": "admin-surface",
+            "target": "CountryResource",
+            "url": "/address/countries",
+            "waitFor": "table",
+            "required": false,
+            "notes": "Requires package migrations and seeded country rows with ISO2/ISO3 codes and language relationships. Capture this same admin surface with the fully collapsible sidebar opened.",
+            "useCase": "An administrator reviews available countries before using country and address selectors elsewhere in Capell.",
+            "screenshotPath": "packages/address/docs/screenshots/address-admin-sidebar-menu-open.png",
+            "darkScreenshotPath": "packages/address/docs/screenshots/address-admin-sidebar-menu-open-dark.png",
+            "interactions": [
+                {
+                    "type": "click",
+                    "selector": ".fi-topbar-open-collapse-sidebar-btn"
+                }
+            ]
         }
     ]
 }
