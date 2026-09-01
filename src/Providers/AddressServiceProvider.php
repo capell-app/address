@@ -24,13 +24,19 @@ use Capell\Address\Support\AddressModelRegistrar;
 use Capell\Address\Support\FlagIconRenderer;
 use Capell\Address\Support\Language\FlagsService;
 use Capell\Admin\Data\AdminSurfaceContributionData;
+use Capell\Admin\Enums\AdminSurfaceContributionType;
 use Capell\Admin\Enums\ConfiguratorTypeEnum as AdminConfiguratorTypeEnum;
 use Capell\Admin\Enums\SchemaExtenderEnum;
 use Capell\Admin\Facades\CapellAdmin;
+use Capell\Admin\Filament\Plugin\CapellAdminPlugin;
+use Capell\Admin\Support\AdminSurfaceContributionRegistry;
 use Capell\Core\Data\VendorAssetData;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Site;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
+use Capell\PrivacyCenter\Support\PrivacySubjectEraserRegistry;
+use Capell\PrivacyCenter\Support\PrivacySubjectExporterRegistry;
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -66,6 +72,7 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
             ->hasTranslations();
     }
 
+    #[Override]
     public function registeringPackage(): void
     {
         parent::registeringPackage();
@@ -159,11 +166,25 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     private function registerLanguageConfigurator(): self
     {
-        CapellAdmin::contributeToAdminSurface(AdminSurfaceContributionData::configurator(
-            class: DefaultLanguageConfigurator::class,
-            group: AdminConfiguratorTypeEnum::Language->value,
-            name: DefaultLanguageConfigurator::getKey(),
-        ));
+        CapellAdmin::serving(function (): void {
+            if (! Filament::getCurrentPanel()?->hasPlugin(CapellAdminPlugin::ID)) {
+                return;
+            }
+
+            $registry = $this->app->make(AdminSurfaceContributionRegistry::class);
+            $key = 'configurator:' . AdminConfiguratorTypeEnum::Language->value . ':' . DefaultLanguageConfigurator::getKey();
+            $contributions = $registry->all()[AdminSurfaceContributionType::Configurator->value] ?? [];
+
+            if (! isset($contributions[$key])) {
+                return;
+            }
+
+            $registry->replace(AdminSurfaceContributionData::configurator(
+                class: DefaultLanguageConfigurator::class,
+                group: AdminConfiguratorTypeEnum::Language->value,
+                name: DefaultLanguageConfigurator::getKey(),
+            ));
+        });
 
         return $this;
     }
@@ -223,12 +244,13 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     private function registerPrivacyCenterContributors(): self
     {
-        $eraser = 'Capell\\PrivacyCenter\\Support\\PrivacySubjectEraserRegistry';
-        $exporter = 'Capell\\PrivacyCenter\\Support\\PrivacySubjectExporterRegistry';
+        $eraser = PrivacySubjectEraserRegistry::class;
+        $exporter = PrivacySubjectExporterRegistry::class;
 
         if ($this->app->bound($eraser)) {
             $this->app->make($eraser)->register('address', static fn (Model $subject): int => EraseAddressPrivacyDataAction::run($subject));
         }
+
         if ($this->app->bound($exporter)) {
             $this->app->make($exporter)->register('address', static fn (Model $subject): array => BuildAddressPrivacyExportAction::run($subject));
         }
