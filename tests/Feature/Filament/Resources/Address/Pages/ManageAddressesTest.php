@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Address\Filament\Resources\Addresses\Pages\ManageAddresses;
 use Capell\Address\Models\Address;
+use Capell\Address\Models\Country;
 use Capell\Admin\Filament\Actions\CreateAction;
 use Capell\Tests\Support\Concerns\CreatesAdminUser;
 use Filament\Actions\EditAction;
@@ -27,6 +28,23 @@ test('can list addresses', function (): void {
         ->assertSuccessful()
         ->assertCountTableRecords($addresses->count())
         ->assertCanSeeTableRecords($addresses);
+});
+
+test('uses filter-safe empty state copy when the country filter excludes an existing address', function (): void {
+    $address = Address::factory()->create();
+    $excludedCountry = Country::factory()->create();
+
+    livewire(ManageAddresses::class)
+        ->assertSuccessful()
+        ->assertCountTableRecords(1)
+        ->assertCanSeeTableRecords([$address])
+        ->filterTable('country_id', $excludedCountry->getKey())
+        ->assertCountTableRecords(0)
+        ->assertCanNotSeeTableRecords([$address])
+        ->assertSee('No addresses found')
+        ->assertSee('Create an address, or adjust the filters to see available records.');
+
+    expect(Address::query()->count())->toBe(1);
 });
 
 test('lists decrypted addresses without a plaintext pii search contract', function (): void {

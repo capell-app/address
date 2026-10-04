@@ -25,12 +25,16 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Override;
 
 class AddressesTable implements TableConfigurator
 {
+    #[Override]
     public static function configure(Table $table): Table
     {
         return $table
+            ->emptyStateHeading(__('capell-address::table.addresses_empty'))
+            ->emptyStateDescription(__('capell-address::table.addresses_empty_description'))
             ->modifyQueryUsing(fn (Builder $query): Builder => $query->with('country'))
             ->columns(static::getTableColumns())
             ->recordActions([

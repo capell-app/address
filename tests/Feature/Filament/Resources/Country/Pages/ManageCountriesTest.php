@@ -56,12 +56,35 @@ test('offers import before advanced manual creation on an empty country index', 
     $component = livewire(ManageCountries::class)
         ->assertSuccessful()
         ->assertActionVisible('import')
-        ->assertSee(__('capell-address::import.empty_description'))
+        ->assertSee(__('capell-address::table.countries_empty'))
+        ->assertSee(__('capell-address::table.countries_empty_description'))
         ->assertSee(__('capell-address::import.manual'))
         ->mountAction('import')
         ->assertActionMounted('import');
+
+    $instance = $component->instance();
+    throw_unless($instance instanceof ManageCountries, RuntimeException::class, 'Expected the ManageCountries component.');
+
+    expect(__('capell-address::table.countries_empty'))->toBe('No countries found')
+        ->and(__('capell-address::table.countries_empty_description'))->toBe('No countries are available in the current view. Clear any search or filters, or add countries to the catalogue.')
+        ->and($instance->getTable()->getEmptyStateHeading())->toBe(__('capell-address::table.countries_empty'))
+        ->and($instance->getTable()->getEmptyStateDescription())->toBe(__('capell-address::table.countries_empty_description'));
     expect(manageCountriesActionSchema($component)->toHtml())
         ->toContain(__('capell-address::import.format_help'));
+});
+
+test('uses filter-safe empty state copy when search excludes an existing country', function (): void {
+    $country = Country::factory()->create(['name' => 'United Kingdom']);
+
+    livewire(ManageCountries::class)
+        ->assertSuccessful()
+        ->searchTable('France')
+        ->assertCountTableRecords(0)
+        ->assertCanNotSeeTableRecords([$country])
+        ->assertSee(__('capell-address::table.countries_empty'))
+        ->assertSee(__('capell-address::table.countries_empty_description'));
+
+    expect(Country::query()->count())->toBe(1);
 });
 
 test('requires a dataset before applying an import', function (): void {

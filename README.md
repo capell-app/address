@@ -10,8 +10,6 @@ Address adds site-scoped country and postal-address records, admin resources, an
 
 Admins manage countries and reusable addresses, then select saved address data while editing a site.
 
-Evidence: [`capell.json`](capell.json), [`src/Models/Address.php`](src/Models/Address.php), [`src/Models/Country.php`](src/Models/Country.php), [`docs/overview.admin.md`](docs/overview.admin.md), [`docs/screenshots.json`](docs/screenshots.json), [`tests/Feature/Filament/Resources/Sites/Schemas/SiteSchemaExtenderTest.php`](tests/Feature/Filament/Resources/Sites/Schemas/SiteSchemaExtenderTest.php).
-
 Status details:
 
 - Status: Available
@@ -26,8 +24,6 @@ Status details:
 **For developers:** The package contributes AddressResource, CountryResource, reusable form fields, and a site schema extender instead of making each package model location fields again.
 
 **For teams:** A postal address can be corrected once and reused wherever a Capell workflow references it.
-
-Evidence: [`capell.json`](capell.json), [`src/Providers/AddressServiceProvider.php`](src/Providers/AddressServiceProvider.php), [`src/Filament/Resources/Sites/Schemas/Extenders/SiteSchemaExtender.php`](src/Filament/Resources/Sites/Schemas/Extenders/SiteSchemaExtender.php), [`tests/Unit/AddressProviderContractsTest.php`](tests/Unit/AddressProviderContractsTest.php), [`docs/overview.admin.md`](docs/overview.admin.md), [`docs/screenshots.json`](docs/screenshots.json), [`tests/Feature/Filament/Resources/Address/AddressResourceTest.php`](tests/Feature/Filament/Resources/Address/AddressResourceTest.php).
 
 ## Screens And Workflow
 
@@ -107,6 +103,7 @@ Screenshot contract: `docs/screenshots.json`.
 - `ListCountryOptionsAction`
 - `NormalizeAddressGeocodingAction`
 - `ReviewCountryUploadAction`
+- `SeedAddressScreenshotFixtureAction`
 
 ### Data objects
 
@@ -138,6 +135,7 @@ Screenshot contract: `docs/screenshots.json`.
 - `ImportCountriesCommand`
 - `InstallCommand`
 - `NormalizeAddressGeocodingCommand`
+- `SeedAddressScreenshotFixtureCommand`
 
 ### Manifest contributions
 
@@ -200,12 +198,13 @@ Screenshot contract: `docs/screenshots.json`.
 1. Install the package: `composer require capell-app/address`.
 2. Run the package setup: `php artisan capell:address-install`.
 3. See it working: run `php artisan capell:address-demo`.
-4. Open the package admin surface at `/address/countries` and confirm Address is available.
+4. Open the package admin surface at `/admin/address/countries` and confirm Address is available.
 
 ## Next Steps
 
 - [Package docs](docs/README.md)
 - [Overview](docs/overview.md)
+- [Worked extension examples](docs/extension-contracts.md)
 - [Admin guide](docs/admin-guide.md)
 - [Troubleshooting](#troubleshooting)
 - [Screenshot contract](docs/screenshots.json)
@@ -213,7 +212,6 @@ Screenshot contract: `docs/screenshots.json`.
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
 - [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
-- Related packages: [Bookings](../bookings/README.md), [Events](../events/README.md).
-- Focused tests: `vendor/bin/pest packages/address/tests --configuration=phpunit.xml`.
+- Related packages: [Bookings](../bookings/README.md), [Events](../events/README.md), [Privacy Center](../privacy-center/README.md).
 
 <!-- prettier-ignore-end -->

@@ -1,6 +1,6 @@
 ---
 name: capell-address-development
-description: Use when editing Capell Address countries, addresses, selectors, or flag rendering.
+description: Reusable countries, addresses, address selectors, country selectors, and flags for Capell admin. Use when editing Capell Address countries, addresses, selectors, or flag rendering.
 ---
 
 # Capell Address

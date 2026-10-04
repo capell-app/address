@@ -23,16 +23,18 @@ use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
+use Override;
 
 class CountriesTable implements TableConfigurator
 {
+    #[Override]
     public static function configure(Table $table): Table
     {
         $livewire = $table->getLivewire();
 
         return $table
-            ->emptyStateHeading(__('capell-address::import.empty_heading'))
-            ->emptyStateDescription(__('capell-address::import.empty_description'))
+            ->emptyStateHeading(__('capell-address::table.countries_empty'))
+            ->emptyStateDescription(__('capell-address::table.countries_empty_description'))
             ->emptyStateActions($livewire instanceof ManageCountries ? [$livewire->importAction()] : [])
             ->columns(static::getTableColumns())
             ->recordActions([
