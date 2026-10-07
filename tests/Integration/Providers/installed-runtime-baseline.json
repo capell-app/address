@@ -1,0 +1,93 @@
+{
+    "version": 3,
+    "package": "address",
+    "scenarios": {
+        "default": {
+            "source": {
+                "ref": "origin/main",
+                "commit": "646068b2d21e233ea517c342d62bc0eca1762192",
+                "providers": {
+                    "Providers/AddressServiceProvider.php": "260dc21fd3c34aa442374b2b270e9512ec74dee3e9ceb5f1de1d9e90cd4a96bb",
+                    "Providers/ConsoleServiceProvider.php": "73aefca4505b7706152d752baab5c1baa7df311a1be07f3841a0e939e748b9e0"
+                }
+            },
+            "disabledContributions": [],
+            "surfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [
+                    "configurator:Capell\\Address\\Filament\\Configurators\\Addresses\\DefaultAddressConfigurator",
+                    "configurator:Capell\\Address\\Filament\\Configurators\\Countries\\DefaultCountryConfigurator",
+                    "resource:Capell\\Address\\Filament\\Resources\\Addresses\\AddressResource",
+                    "resource:Capell\\Address\\Filament\\Resources\\Countries\\CountryResource"
+                ],
+                "listeners": [
+                    "Capell\\Admin\\Events\\ServingAdmin|Capell\\Address\\Providers\\AddressServiceProvider():void bound=Capell\\Address\\Providers\\AddressServiceProvider",
+                    "eloquent.creating: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void",
+                    "eloquent.creating: Capell\\Address\\Models\\Address|Capell\\Address\\Observers\\AddressObserver@creating",
+                    "eloquent.creating: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void",
+                    "eloquent.creating: Capell\\Address\\Models\\Country|Capell\\Address\\Observers\\CountryObserver@creating",
+                    "eloquent.deleted: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.deleted: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.deleting: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void",
+                    "eloquent.deleting: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void",
+                    "eloquent.restoring: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void",
+                    "eloquent.restoring: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void",
+                    "eloquent.retrieved: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.retrieved: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.retrieved: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.retrieved: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.saved: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.saved: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model $model):void",
+                    "eloquent.saved: Capell\\Core\\Models\\Site|static Capell\\Address\\Providers\\AddressServiceProvider(Capell\\Core\\Models\\Site $site):?Capell\\Address\\Models\\Address",
+                    "eloquent.saving: Capell\\Address\\Models\\Address|static Capell\\Address\\Models\\Address(Capell\\Address\\Models\\Address $address):void",
+                    "eloquent.updating: Capell\\Address\\Models\\Address|Capell\\Address\\Models\\Address(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void",
+                    "eloquent.updating: Capell\\Address\\Models\\Country|Capell\\Address\\Models\\Country(Illuminate\\Database\\Eloquent\\Model&Capell\\Core\\Models\\Contracts\\Userstampable $model):void"
+                ],
+                "gates": [],
+                "policies": [
+                    "Capell\\Address\\Models\\Address=Capell\\Address\\Policies\\AddressPolicy",
+                    "Capell\\Address\\Models\\Country=Capell\\Address\\Policies\\CountryPolicy"
+                ],
+                "commands": [
+                    "capell:address-countries-import",
+                    "capell:address-demo",
+                    "capell:address-faker",
+                    "capell:address-geocode-normalize",
+                    "capell:address-install",
+                    "capell:address-screenshot-fixture"
+                ],
+                "view-namespaces": ["capell-address"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190839_01_create_countries_table",
+                    "2026_05_10_190839_02_create_addresses_table",
+                    "2026_07_12_000001_add_address_ownership_and_encrypt_meta"
+                ]
+            },
+            "uninstalledSurfaces": {
+                "routes": [],
+                "livewire": [],
+                "filament": [],
+                "listeners": [],
+                "gates": [],
+                "policies": [],
+                "commands": [
+                    "capell:address-countries-import",
+                    "capell:address-demo",
+                    "capell:address-faker",
+                    "capell:address-geocode-normalize",
+                    "capell:address-install",
+                    "capell:address-screenshot-fixture"
+                ],
+                "view-namespaces": ["capell-address"],
+                "config-keys": [],
+                "migrations": [
+                    "2026_05_10_190839_01_create_countries_table",
+                    "2026_05_10_190839_02_create_addresses_table",
+                    "2026_07_12_000001_add_address_ownership_and_encrypt_meta"
+                ]
+            }
+        }
+    }
+}

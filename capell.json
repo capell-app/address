@@ -24,8 +24,8 @@
         "conflicts": []
     },
     "providers": {
-        "metadata": [],
-        "install": [],
+        "metadata": ["Capell\\Address\\Providers\\AddressServiceProvider"],
+        "install": ["Capell\\Address\\Providers\\ConsoleServiceProvider"],
         "runtime": ["Capell\\Address\\Providers\\AddressServiceProvider"],
         "admin": [],
         "frontend": []

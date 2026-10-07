@@ -50,6 +50,11 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/address';
 
+    private bool $installedRuntimeBooted = false;
+
+    private bool $resourcesRegistered = false;
+
+    #[Override]
     public function configurePackage(Package $package): void
     {
         $package->name(self::$name)
@@ -73,6 +78,8 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
     #[Override]
     public function registeringPackage(): void
     {
+        $this->app->register(ConsoleServiceProvider::class);
+
         parent::registeringPackage();
 
         $this->app->booting(function (): void {
@@ -89,9 +96,13 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
     }
 
     #[Override]
-    protected function bootInstalledPackage(): self
+    protected function bootInstalledRuntime(): void
     {
-        return $this
+        if ($this->installedRuntimeBooted) {
+            return;
+        }
+
+        $this
             ->registerModels()
             ->registerPolicies()
             ->registerRelationships()
@@ -103,6 +114,8 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
             ->registerSchemaExtenders()
             ->registerPrivacyCenterContributors()
             ->registerBladeComponents();
+
+        $this->installedRuntimeBooted = true;
     }
 
     private function registerPackageAssets(): self
@@ -134,6 +147,12 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     private function registerModels(): self
     {
+        $models = CapellCore::getModels();
+
+        if (in_array(Address::class, $models, true) && in_array(Country::class, $models, true)) {
+            return $this;
+        }
+
         AddressModelRegistrar::register();
 
         return $this;
@@ -189,6 +208,10 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     private function registerResources(): self
     {
+        if ($this->resourcesRegistered) {
+            return $this;
+        }
+
         CapellAdmin::contributeToAdminSurface(AdminSurfaceContributionData::resource(
             class: ResourceEnum::Address->value,
             group: ResourceEnum::Address->name,
@@ -197,6 +220,7 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
             class: ResourceEnum::Country->value,
             group: ResourceEnum::Country->name,
         ));
+        $this->resourcesRegistered = true;
 
         return $this;
     }

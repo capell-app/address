@@ -18,4 +18,4 @@ Reusable countries, addresses, address selectors, country selectors, and flags f
 - Treat countries and addresses as shared admin primitives.
 - Keep selectors reusable; avoid package-specific address assumptions.
 - Site schema extension belongs in public extenders, not consuming packages.
-- Run `vendor/bin/pest packages/address/tests`.
+- Verify customisations in the consuming application's test suite.
