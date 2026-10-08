@@ -170,7 +170,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 ## Install Impact
 
-- Required packages: `capell-app/admin`.
+- Required packages: `capell-app/admin`, `capell-app/core`.
 - Admin navigation: declares `admin-resource: AddressResourceContribution`, `admin-resource: CountryResourceContribution`; each Filament page or resource controls its own navigation visibility.
 - Admin/editor extensions: `configurator: AddressConfiguratorsContribution`, `schema-extender: AddressSiteSchemaExtenderContribution`.
 - Permissions: access also governed by package policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
@@ -184,7 +184,7 @@ Screenshot contract: `docs/screenshots.json`.
 
 ## Common Pitfalls
 
-- Keep required Capell packages on compatible v4 releases: `capell-app/admin`.
+- Keep required Capell packages on compatible v4 releases: `capell-app/admin`, `capell-app/core`.
 - Run migrations before opening package resources or public routes.
 
 ## Troubleshooting

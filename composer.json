@@ -26,6 +26,7 @@
     "require": {
         "php": "^8.4",
         "capell-app/admin": "^1.0",
+        "capell-app/core": "^1.0",
         "stijnvanouplines/blade-country-flags": "^1.0"
     },
     "suggest": {
