@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+namespace Capell\Address\Tests\Feature\Filament\Configurators\Languages;
+
 use Capell\Address\Filament\Configurators\Languages\DefaultLanguageConfigurator as AddressDefaultLanguageConfigurator;
 use Capell\Address\Tests\AddressTestCase;
 use Capell\Admin\Data\AdminSurfaceContributionData;
@@ -16,6 +18,7 @@ use Capell\Admin\Support\AdminSurfaceContributionRegistry;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\PanelRegistry;
+use Override;
 use PHPUnit\Framework\Attributes\Test;
 
 final class AddressLanguageConfiguratorRegistrationTest extends AddressTestCase

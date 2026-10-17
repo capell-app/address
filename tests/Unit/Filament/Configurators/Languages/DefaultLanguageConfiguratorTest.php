@@ -2,17 +2,25 @@
 
 declare(strict_types=1);
 
-use Capell\Address\Filament\Components\Forms\FlagSelect;
 use Capell\Address\Filament\Configurators\Languages\DefaultLanguageConfigurator;
+use Capell\Tests\Packages\Fixtures\PackageSurfaceContractSchemaHarness;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 
-require_once __DIR__ . '/../../../../../src/Support/Language/FlagsService.php';
-require_once __DIR__ . '/../../../../../src/Filament/Components/Forms/FlagSelect.php';
-require_once __DIR__ . '/../../../../../src/Filament/Configurators/Languages/DefaultLanguageConfigurator.php';
+it('offers flag choices in the configured language form', function (): void {
+    $schema = Schema::make(new PackageSurfaceContractSchemaHarness)->operation('edit');
+    $schema->components(array_map(static function (mixed $component): Component {
+        if (! $component instanceof Component) {
+            throw new RuntimeException('The configured form must contain schema components.');
+        }
 
-it('replaces the default language flag input with a flag select', function (): void {
-    $reflectionMethod = new ReflectionMethod(DefaultLanguageConfigurator::class, 'makeFlagField');
+        return $component;
+    }, (new DefaultLanguageConfigurator)->make($schema)));
+    $field = collect($schema->getFlatComponents(withHidden: true))
+        ->first(fn (mixed $component): bool => $component instanceof Select && $component->getName() === 'flag');
 
-    $field = $reflectionMethod->invoke(new DefaultLanguageConfigurator);
-
-    expect($field)->toBeInstanceOf(FlagSelect::class);
+    expect($field)->toBeInstanceOf(Select::class);
+    assert($field instanceof Select);
+    expect($field->getOptions())->toHaveKey('gb');
 });

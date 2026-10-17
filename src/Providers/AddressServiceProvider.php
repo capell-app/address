@@ -50,10 +50,6 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     public static string $packageName = 'capell-app/address';
 
-    private bool $installedRuntimeBooted = false;
-
-    private bool $resourcesRegistered = false;
-
     #[Override]
     public function configurePackage(Package $package): void
     {
@@ -81,12 +77,6 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
         $this->app->register(ConsoleServiceProvider::class);
 
         parent::registeringPackage();
-
-        $this->app->booting(function (): void {
-            if ($this->isPackageInstalled()) {
-                $this->registerResources();
-            }
-        });
     }
 
     #[Override]
@@ -98,24 +88,18 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
     #[Override]
     protected function bootInstalledRuntime(): void
     {
-        if ($this->installedRuntimeBooted) {
-            return;
-        }
-
         $this
+            ->registerResources()
             ->registerModels()
             ->registerPolicies()
             ->registerRelationships()
             ->registerPackageAssets()
             ->registerSupportServices()
-            ->registerResources()
             ->registerConfigurators()
             ->registerLanguageConfigurator()
             ->registerSchemaExtenders()
             ->registerPrivacyCenterContributors()
             ->registerBladeComponents();
-
-        $this->installedRuntimeBooted = true;
     }
 
     private function registerPackageAssets(): self
@@ -208,10 +192,6 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
 
     private function registerResources(): self
     {
-        if ($this->resourcesRegistered) {
-            return $this;
-        }
-
         CapellAdmin::contributeToAdminSurface(AdminSurfaceContributionData::resource(
             class: ResourceEnum::Address->value,
             group: ResourceEnum::Address->name,
@@ -220,7 +200,6 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
             class: ResourceEnum::Country->value,
             group: ResourceEnum::Country->name,
         ));
-        $this->resourcesRegistered = true;
 
         return $this;
     }
