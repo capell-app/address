@@ -8,6 +8,7 @@ use Capell\Address\Models\Address;
 use Capell\Address\Models\Country;
 use Capell\Core\Models\Language;
 use Capell\Core\Models\Site;
+use Capell\ScreenshotFixtures\FixtureState;
 use RuntimeException;
 
 /**
@@ -41,6 +42,9 @@ final class SeedAddressScreenshotFixtureAction
     public static function run(): array
     {
         self::assertDisposableScreenshotEnvironment();
+
+        require_once dirname(__DIR__, 4) . '/scripts/screenshots/FixtureState.php';
+        FixtureState::boot();
 
         $language = Language::query()->where('code', 'en')->first() ?? Language::query()->orderBy('id')->first();
 
@@ -100,7 +104,9 @@ final class SeedAddressScreenshotFixtureAction
                 && in_array(getenv('CAPELL_SCREENSHOT_FIXTURE'), ['1', 'true', 'record-state'], true)
                 && is_string($basePath)
                 && is_string($appPath)
-                && $basePath === $appPath,
+                && $basePath === $appPath
+                && ($basePath === realpath(dirname(__DIR__, 4) . '/vendor/orchestra/testbench-core/laravel')
+                    || str_starts_with($basePath, dirname(__DIR__, 4) . '/tmp/testbench-skeletons/')),
             RuntimeException::class,
             'Address screenshot fixtures require the explicit disposable local screenshot environment.',
         );
