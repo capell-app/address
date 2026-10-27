@@ -154,7 +154,7 @@ it('builds address quality health reports for country and coordinate coverage', 
 
     expect($diagnostics)->toHaveCount(4)
         ->and($diagnostics->every(fn (DoctorCheckResultData $result): bool => $result->label !== ''))->toBeTrue()
-        ->and($diagnostics->firstWhere('label', 'Address data quality')?->passed)->toBeFalse();
+        ->and($diagnostics->firstWhere('id', 'legacy.address.data.quality')?->passed)->toBeFalse();
 
     $collectionReport = BuildAddressQualityHealthReportAction::run(
         Address::query()->with('country')->get(),
@@ -222,7 +222,7 @@ it('reports likely duplicate address groups without merging records', function (
         ->and($report->issues)->toContain('2 address(es) appear in 1 likely duplicate group(s).');
 
     $duplicateCheck = AddressHealthCheck::runDiagnostics()
-        ->firstWhere('label', 'Duplicate address quality');
+        ->firstWhere('id', 'legacy.duplicate.address.quality');
 
     expect($duplicateCheck)
         ->toBeInstanceOf(DoctorCheckResultData::class)
@@ -298,7 +298,7 @@ it('documents provider registration by reporting only available tagged provider 
         ->issues->toBe([]);
 
     $providerCheck = AddressHealthCheck::runDiagnostics()
-        ->firstWhere('label', 'Address validation and geocoding providers');
+        ->firstWhere('id', 'legacy.address.validation.and.geocoding.providers');
 
     expect($providerCheck)
         ->toBeInstanceOf(DoctorCheckResultData::class)

@@ -201,6 +201,12 @@ Screenshot contract: `docs/screenshots.json`.
 3. See it working: run `php artisan capell:address-demo`.
 4. Open the package admin surface at `/admin/address/countries` and confirm Address is available.
 
+## Upgrading
+
+No manual steps between minor versions.
+
+Read [CHANGELOG.md](CHANGELOG.md) before upgrading.
+
 ## Next Steps
 
 - [Package docs](docs/README.md)

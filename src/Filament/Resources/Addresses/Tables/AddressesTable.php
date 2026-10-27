@@ -42,7 +42,9 @@ class AddressesTable implements TableConfigurator
                 ActionGroup::make([
                     ReplicateAction::make('replicate')
                         ->schema(fn (Schema $configurator): Schema => AddressForm::configure($configurator)),
-                    DeleteAction::make('delete'),
+                    DeleteAction::make('delete')
+                        ->modalHeading(__('capell-address::address.delete_modal.heading'))
+                        ->modalDescription(__('capell-address::address.delete_modal.description')),
                 ])
                     ->color('gray'),
             ])
@@ -54,9 +56,13 @@ class AddressesTable implements TableConfigurator
                 TrashedFilter::make(),
             ])
             ->toolbarActions([
-                DeleteBulkAction::make('delete'),
+                DeleteBulkAction::make('delete')
+                    ->modalHeading(__('capell-address::address.delete_bulk_modal.heading'))
+                    ->modalDescription(__('capell-address::address.delete_bulk_modal.description')),
                 RestoreBulkAction::make('restore'),
-                ForceDeleteBulkAction::make('forceDelete'),
+                ForceDeleteBulkAction::make('forceDelete')
+                    ->modalHeading(__('capell-address::address.force_delete_bulk_modal.heading'))
+                    ->modalDescription(__('capell-address::address.force_delete_bulk_modal.description')),
             ]);
     }
 

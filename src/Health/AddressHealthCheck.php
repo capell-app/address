@@ -59,6 +59,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
             remediation: $missingTables === []
                 ? null
                 : (string) __('capell-address::health.storage_tables_remediation'),
+            id: 'legacy.address.storage.tables',
         );
     }
 
@@ -72,6 +73,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
                 passed: false,
                 message: (string) __('capell-address::health.data_quality_missing_tables'),
                 remediation: (string) __('capell-address::health.data_quality_missing_tables_remediation'),
+                id: 'legacy.address.data.quality',
             );
         }
 
@@ -91,6 +93,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
             remediation: $passed
                 ? null
                 : (string) __('capell-address::health.data_quality_remediation'),
+            id: 'legacy.address.data.quality',
         );
     }
 
@@ -104,6 +107,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
                 passed: false,
                 message: (string) __('capell-address::health.duplicate_addresses_missing_tables'),
                 remediation: (string) __('capell-address::health.data_quality_missing_tables_remediation'),
+                id: 'legacy.duplicate.address.quality',
             );
         }
 
@@ -123,6 +127,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
             remediation: $passed
                 ? null
                 : (string) __('capell-address::health.duplicate_addresses_remediation'),
+            id: 'legacy.duplicate.address.quality',
         );
     }
 
@@ -135,6 +140,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
                 'validation' => $this->availableProviderCount(AddressValidationProvider::TAG),
                 'geocoding' => $this->availableProviderCount(AddressGeocodingProvider::TAG),
             ]),
+            id: 'legacy.address.validation.and.geocoding.providers',
         );
     }
 

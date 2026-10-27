@@ -42,7 +42,9 @@ class CountriesTable implements TableConfigurator
                 ActionGroup::make([
                     ReplicateAction::make('replicate')
                         ->schema(fn (Schema $configurator): Schema => CountryForm::configure($configurator)),
-                    DeleteAction::make('delete'),
+                    DeleteAction::make('delete')
+                        ->modalHeading(__('capell-address::country.delete_modal.heading'))
+                        ->modalDescription(__('capell-address::country.delete_modal.description')),
                 ])
                     ->color('gray'),
             ])
@@ -51,9 +53,13 @@ class CountriesTable implements TableConfigurator
                 TrashedFilter::make(),
             ])
             ->toolbarActions([
-                DeleteBulkAction::make('delete'),
+                DeleteBulkAction::make('delete')
+                    ->modalHeading(__('capell-address::country.delete_bulk_modal.heading'))
+                    ->modalDescription(__('capell-address::country.delete_bulk_modal.description')),
                 RestoreBulkAction::make('restore'),
-                ForceDeleteBulkAction::make('forceDelete'),
+                ForceDeleteBulkAction::make('forceDelete')
+                    ->modalHeading(__('capell-address::country.force_delete_bulk_modal.heading'))
+                    ->modalDescription(__('capell-address::country.force_delete_bulk_modal.description')),
             ]);
     }
 
