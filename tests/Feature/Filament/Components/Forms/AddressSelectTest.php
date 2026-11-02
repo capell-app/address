@@ -3,14 +3,21 @@
 declare(strict_types=1);
 
 use Capell\Address\Filament\Components\Forms\AddressSelect;
+use Capell\Address\Filament\Components\Forms\CountrySelect;
 use Capell\Address\Models\Address;
 use Capell\Core\Models\Site;
 use Filament\Forms\Components\Select;
+use Filament\Schemas\Concerns\InteractsWithSchemas;
+use Filament\Schemas\Contracts\HasSchemas;
+use Filament\Schemas\Schema;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection as SupportCollection;
+use Illuminate\Support\Facades\Gate;
+use Livewire\Component;
 
 it('searches addresses by persisted address line columns', function (): void {
     $matchingAddress = Address::factory()->create([
@@ -145,3 +152,52 @@ function addressSelectSiteScopedUser(SupportCollection $assignedSiteIds): User
 
     return $user;
 }
+
+it('binds address and country option forms to their mounted action state', function (string $selectClass, string $operation): void {
+    $component = new AddressOptionSchemaHarness;
+    $schema = Schema::make($component)
+        ->statePath('mountedActions.0.data')
+        ->operation($operation);
+    $select = $selectClass::make('selected_id');
+    $optionForm = $operation === 'createOption'
+        ? $select->withCreateForm()->getCreateOptionActionForm($schema)
+        : $select->withEditForm()->getEditOptionActionForm($schema);
+
+    expect($optionForm)->toBeInstanceOf(Schema::class);
+    $optionForm->fill(['name' => 'Option draft']);
+    expect(data_get($component->mountedActions, '0.data.name'))->toBe('Option draft');
+})->with([
+    'address create' => [AddressSelect::class, 'createOption'],
+    'address edit' => [AddressSelect::class, 'editOption'],
+    'country create' => [CountrySelect::class, 'createOption'],
+    'country edit' => [CountrySelect::class, 'editOption'],
+]);
+
+final class AddressOptionSchemaHarness extends Component implements HasSchemas
+{
+    use InteractsWithSchemas;
+
+    /** @var array<int, array<string, mixed>> */
+    public array $mountedActions = [];
+}
+
+it('updates the selected address only when authorised', function (bool $allowed): void {
+    $address = Address::factory()->create(['name' => 'Original address']);
+    auth()->setUser(Capell\Tests\Fixtures\Models\User::factory()->create());
+    Gate::before(static fn (User $user, string $ability): ?bool => $ability === 'update' ? $allowed : null);
+    $select = AddressSelect::make('address_id')->withEditForm();
+    $schema = Schema::make(new AddressOptionSchemaHarness)->model($address);
+    $update = fn (): mixed => $select->evaluate($select->getUpdateOptionUsing(), [
+        'data' => ['name' => 'Changed address'],
+        'schema' => $schema,
+        'form' => $schema,
+    ]);
+
+    if ($allowed) {
+        $update();
+        expect($address->fresh()->name)->toBe('Changed address');
+    } else {
+        expect($update)->toThrow(AuthorizationException::class)
+            ->and($address->fresh()->name)->toBe('Original address');
+    }
+})->with(['allowed' => true, 'denied' => false]);

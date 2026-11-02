@@ -55,7 +55,7 @@ class CountrySelect extends Select
 
     public function withCreateForm(): self
     {
-        return $this->createOptionForm(fn (Schema $configurator): Schema => CountryForm::configure($configurator)
+        return $this->createOptionForm(fn (Schema $schema): Schema => CountryForm::configure($schema)
             ->model(Country::class))
             ->createOptionAction(
                 fn (Action $action): Action => $action
@@ -80,7 +80,7 @@ class CountrySelect extends Select
 
             return $record?->attributesToArray() ?? [];
         })
-            ->editOptionForm(fn (Schema $configurator): Schema => CountryForm::configure($configurator))
+            ->editOptionForm(fn (Schema $schema): Schema => CountryForm::configure($schema))
             ->editOptionAction(
                 fn (Action $action): Action => $action
                     ->modalHeading(__('capell-address::form.country'))

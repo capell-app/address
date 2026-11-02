@@ -50,7 +50,7 @@ class AddressSelect extends Select
 
     public function withCreateForm(): self
     {
-        return $this->createOptionForm(fn (Schema $configurator): Schema => AddressForm::configure($configurator))
+        return $this->createOptionForm(fn (Schema $schema): Schema => AddressForm::configure($schema))
             ->createOptionAction(
                 fn (Action $action): Action => $action
                     ->modalHeading(__('capell-address::generic.address'))
@@ -71,9 +71,9 @@ class AddressSelect extends Select
 
             return $record?->attributesToArray() ?? [];
         })
-            ->editOptionForm(fn (Schema $configurator): Schema => AddressForm::configure($configurator))
-            ->updateOptionUsing(static function (array $data, Schema $configurator): ?int {
-                $record = $configurator->getRecord();
+            ->editOptionForm(fn (Schema $schema): Schema => AddressForm::configure($schema))
+            ->updateOptionUsing(static function (array $data, Schema $schema): ?int {
+                $record = $schema->getRecord();
 
                 if ($record instanceof Address) {
                     Gate::authorize('update', $record);
