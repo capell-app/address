@@ -6,6 +6,7 @@ namespace Capell\Address\Models;
 
 use Capell\Address\Database\Factories\CountryFactory;
 use Capell\Address\Observers\CountryObserver;
+use Capell\Core\Concerns\HasCapellTable;
 use Capell\Core\Models\Concerns\HasDefault;
 use Capell\Core\Models\Concerns\HasStatus;
 use Capell\Core\Models\Concerns\HasUserstamps;
@@ -86,6 +87,8 @@ use Staudenmeir\EloquentJsonRelations\Relations\BelongsToJson;
 #[ObservedBy(CountryObserver::class)]
 class Country extends Model implements Defaultable, Userstampable
 {
+    use HasCapellTable;
+
     /** @use HasDefault<self> */
     use HasDefault;
 

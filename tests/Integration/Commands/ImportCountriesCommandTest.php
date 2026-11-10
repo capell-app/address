@@ -91,7 +91,7 @@ it('dry runs country imports without writing records', function (): void {
         'path' => $path,
         '--dry-run' => true,
     ])
-        ->expectsOutputToContain('Country import dry run found 1 country record')
+        ->expectsOutputToContain(__('capell-address::import.dry_run', ['changed' => 1]))
         ->assertSuccessful();
 
     expect(Country::query()->where('iso2', 'GB')->exists())->toBeFalse();

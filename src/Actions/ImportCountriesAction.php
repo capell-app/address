@@ -154,6 +154,7 @@ final class ImportCountriesAction
      */
     private function csvRows(string $path): array
     {
+        // capell-security-scan: local-stream reads the countries CSV shipped in this package's resources
         $stream = fopen($path, 'r');
 
         throw_if($stream === false, RuntimeException::class, 'Unable to open country CSV dataset.');

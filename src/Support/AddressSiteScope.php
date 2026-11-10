@@ -7,6 +7,7 @@ namespace Capell\Address\Support;
 use Capell\Address\Models\Address;
 use Capell\Admin\Support\SiteScope;
 use Capell\Core\Models\Site;
+use Capell\Core\Support\TableName;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
@@ -30,7 +31,7 @@ final class AddressSiteScope
         $assignedSiteIds = $actor->getAssignedSiteIds();
 
         return $assignedSiteIds->isNotEmpty()
-            ? $query->whereHas('sites', fn (Builder $siteQuery): Builder => $siteQuery->whereIn('sites.id', $assignedSiteIds))
+            ? $query->whereHas('sites', fn (Builder $siteQuery): Builder => $siteQuery->whereIn(TableName::resolve('sites') . '.id', $assignedSiteIds))
             : $query->whereRaw('1 = 0');
     }
 
@@ -54,7 +55,7 @@ final class AddressSiteScope
         }
 
         return $address->sites()
-            ->whereIn('sites.id', $assignedSiteIds)
+            ->whereIn(TableName::resolve('sites') . '.id', $assignedSiteIds)
             ->exists();
     }
 }

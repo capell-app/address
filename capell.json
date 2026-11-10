@@ -8,7 +8,7 @@
     "version": "1.0.0",
     "description": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
     "product": {
-        "group": "Capell Foundation",
+        "group": "Capell Essentials",
         "tier": "free",
         "bundle": "foundation"
     },
@@ -24,7 +24,10 @@
         "conflicts": []
     },
     "providers": {
-        "metadata": ["Capell\\Address\\Providers\\AddressServiceProvider"],
+        "metadata": [
+            "Capell\\Address\\Providers\\AddressServiceProvider",
+            "Capell\\Address\\Providers\\MigrationMetadataServiceProvider"
+        ],
         "install": ["Capell\\Address\\Providers\\ConsoleServiceProvider"],
         "runtime": ["Capell\\Address\\Providers\\AddressServiceProvider"],
         "admin": [],
@@ -198,6 +201,22 @@
     },
     "marketplace": {
         "summary": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
+        "problem": "When our team corrects a postal address in one place, other copies can still be out of date.",
+        "outcome": "A site has reusable address records that can be selected across supported workflows.",
+        "faq": [
+            {
+                "question": "Can an address be reused?",
+                "answer": "Yes. Supported workflows can select saved address records."
+            },
+            {
+                "question": "Who manages countries and addresses?",
+                "answer": "Administrators manage countries and reusable addresses in the admin."
+            },
+            {
+                "question": "Are address records site-scoped?",
+                "answer": "Yes. Address records are scoped to a site."
+            }
+        ],
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",

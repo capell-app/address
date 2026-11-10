@@ -6,6 +6,7 @@ namespace Capell\Address\Models;
 
 use Capell\Address\Database\Factories\AddressFactory;
 use Capell\Address\Observers\AddressObserver;
+use Capell\Core\Concerns\HasCapellTable;
 use Capell\Core\Models\Concerns\HasDefault;
 use Capell\Core\Models\Concerns\HasStatus;
 use Capell\Core\Models\Concerns\HasUserstamps;
@@ -92,6 +93,8 @@ use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 #[ObservedBy(AddressObserver::class)]
 class Address extends Model implements Defaultable, Userstampable
 {
+    use HasCapellTable;
+
     /** @use HasDefault<self> */
     use HasDefault;
 
@@ -147,6 +150,7 @@ class Address extends Model implements Defaultable, Userstampable
         return $this->hasMany(Site::class, 'meta->address_id');
     }
 
+    #[Override]
     protected static function booted(): void
     {
         static::saving(static function (Address $address): void {

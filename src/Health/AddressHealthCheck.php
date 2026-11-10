@@ -10,6 +10,7 @@ use Capell\Address\Contracts\AddressValidationProvider;
 use Capell\Address\Data\AddressQualityHealthReportData;
 use Capell\Core\Contracts\Extensions\ChecksExtensionHealth;
 use Capell\Core\Data\Diagnostics\DoctorCheckResultData;
+use Capell\Core\Support\TableName;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Schema;
 
@@ -150,7 +151,7 @@ final class AddressHealthCheck implements ChecksExtensionHealth
     private function missingTables(): array
     {
         return array_values(array_filter(
-            ['countries', 'addresses'],
+            [TableName::resolve('countries'), TableName::resolve('addresses')],
             static fn (string $tableName): bool => ! Schema::hasTable($tableName),
         ));
     }

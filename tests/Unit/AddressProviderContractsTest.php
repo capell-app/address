@@ -227,7 +227,7 @@ it('reports likely duplicate address groups without merging records', function (
     expect($duplicateCheck)
         ->toBeInstanceOf(DoctorCheckResultData::class)
         ->passed->toBeFalse()
-        ->message->toBe('Checked 3 address(es); 2 address(es) appear in 1 likely duplicate group(s).')
+        ->message->toBe(__('capell-address::health.duplicate_addresses_failed', ['addresses' => 3, 'duplicates' => 2, 'groups' => 1]))
         ->remediation->toBe('Review duplicate address groups before adding merge or cleanup workflows.');
 });
 
@@ -303,8 +303,7 @@ it('documents provider registration by reporting only available tagged provider 
     expect($providerCheck)
         ->toBeInstanceOf(DoctorCheckResultData::class)
         ->passed->toBeTrue()
-        ->message->toContain('1 validation provider(s)')
-        ->message->toContain('1 geocoding provider(s)');
+        ->message->toBe(__('capell-address::health.providers_message', ['validation' => 1, 'geocoding' => 1]));
 });
 
 it('documents PII export and erasure responsibilities for consuming packages', function (): void {

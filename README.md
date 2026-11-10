@@ -2,171 +2,51 @@
 
 <!-- prettier-ignore-start -->
 
-## What This Plugin Adds
-
-Address is an **Available**, **Schema-owning** Capell package in the **Capell Foundation** product group. It ships as `capell-app/address` and extends these surfaces: admin.
+## What It Does
 
 Address adds site-scoped country and postal-address records, admin resources, and shared address selectors for other Capell packages.
 
+- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/address).
+- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/extensions/address).
+- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.75`, `stijnvanouplines/blade-country-flags ^1.0`.
+- **Install:** `composer require capell-app/address`.
+
 Admins manage countries and reusable addresses, then select saved address data while editing a site.
 
-Status details:
-
-- Status: Available
-- Tier: free
-- Bundle: foundation
-- Composer package: `capell-app/address`
-- Namespace: `Capell\Address`
-- Theme key: not applicable
-
-## Why It Matters
+## Who It Is For
 
 **For developers:** The package contributes AddressResource, CountryResource, reusable form fields, and a site schema extender instead of making each package model location fields again.
 
 **For teams:** A postal address can be corrected once and reused wherever a Capell workflow references it.
 
-## Screens And Workflow
+## Quick Start
 
-Screenshot contract: `docs/screenshots.json`.
+1. Install the package: `composer require capell-app/address`.
+2. Run the package setup: `php artisan capell:address-install`.
+3. See it working: run `php artisan capell:address-demo`.
+4. Open the package admin surface at `/admin/address/countries` and confirm Address is available.
+
+## Configure
+
+- **Commands:** `php artisan capell:address-countries-import`, `php artisan capell:address-demo`, `php artisan capell:address-faker`, `php artisan capell:address-geocode-normalize`, `php artisan capell:address-install`.
+
+## Limits And Pitfalls
+
+- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.75`.
+- Run migrations before opening package resources or public routes.
+
+## Screens And Workflow
 
 ![Countries admin index](docs/screenshots/countries-admin-index.png)
 
 ![Addresses admin index](docs/screenshots/addresses-admin-index.png)
 
-- Countries admin index (admin, required evidence).
-- Addresses admin index (admin, required evidence).
-- Create/edit country form (admin, supplementary evidence).
-- Create/edit address form (admin, supplementary evidence).
-- Site settings fields where address data is injected (admin, supplementary evidence).
-- Countries admin index with admin sidebar menu open (admin, supplementary evidence).
-
-## Technical Shape
-
-### Service providers
-
-- `Capell\Address\Providers\AddressServiceProvider`
-- `Capell\Address\Providers\ConsoleServiceProvider`
-
-### Migrations
-
-- `packages/address/database/migrations/2026_05_10_190839_01_create_countries_table.php`
-- `packages/address/database/migrations/2026_05_10_190839_02_create_addresses_table.php`
-- `packages/address/database/migrations/2026_07_12_000001_add_address_ownership_and_encrypt_meta.php`
-
-### Models
-
-- `Address`
-- `Country`
-
-### Filament classes
-
-- `AddressSelect`
-- `CountrySelect`
-- `FlagSelect`
-- `DefaultAddressConfigurator`
-- `DefaultCountryConfigurator`
-- `DefaultLanguageConfigurator`
-- `AddressResource`
-- `ManageAddresses`
-- `AddressForm`
-- `AddressesTable`
-- `CountryResource`
-- `ManageCountries`
-- `CountryForm`
-- `CountriesTable`
-- `SiteSchemaExtender`
-
-### Policies
-
-- `AbstractAddressResourcePolicy`
-- `AddressPolicy`
-- `CountryPolicy`
-
-### Extension contracts
-
-- `AddressGeocodingProvider`
-- `AddressValidationProvider`
-
-### Actions
-
-- `BuildAddressPrivacyExportAction`
-- `BuildAddressQualityHealthReportAction`
-- `CloneSharedAddressForMutationAction`
-- `EnsureSiteOwnsAddressAction`
-- `EraseAddressPrivacyDataAction`
-- `FindDuplicateAddressGroupsAction`
-- `GetAddressNameAction`
-- `GetAddressSelectRecordAction`
-- `GetCountryNameAction`
-- `ImportCountriesAction`
-- `InstallAddressPackageAction`
-- `ListAddressOptionsAction`
-- `ListCountryOptionsAction`
-- `NormalizeAddressGeocodingAction`
-- `ReviewCountryUploadAction`
-- `SeedAddressScreenshotFixtureAction`
-
-### Data objects
-
-- `AddressGeocodingResultData`
-- `AddressMetaData`
-- `AddressQualityHealthReportData`
-- `AddressValidationResultData`
-- `CountryImportReviewData`
-- `DuplicateAddressGroupData`
-- `ImportCountriesResultData`
-- `NormalizeAddressGeocodingResultData`
-
-### Command signatures
-
-- `capell:address-countries-import`
-- `capell:address-demo`
-- `capell:address-faker`
-- `capell:address-geocode-normalize`
-- `capell:address-install`
-
-### Manifest action API
-
-- `install: Capell\Address\Actions\InstallAddressPackageAction`
-
-### Console command classes
-
-- `DemoCommand`
-- `FakerCommand`
-- `ImportCountriesCommand`
-- `InstallCommand`
-- `NormalizeAddressGeocodingCommand`
-- `SeedAddressScreenshotFixtureCommand`
-
-### Manifest contributions
-
-- `admin-resource: Capell\Address\Manifest\AddressResourceContribution`
-- `admin-resource: Capell\Address\Manifest\CountryResourceContribution`
-- `asset: Capell\Address\Manifest\AddressAdminAssetsContribution`
-- `configurator: Capell\Address\Manifest\AddressConfiguratorsContribution`
-- `console-command: Capell\Address\Manifest\AddressConsoleCommandsContribution`
-- `health-check: Capell\Address\Health\AddressHealthCheck`
-- `migration: Capell\Address\Manifest\AddressMigrationsContribution`
-- `model: Capell\Address\Manifest\AddressModelsContribution`
-- `schema-extender: Capell\Address\Manifest\AddressSiteSchemaExtenderContribution`
-
-### Health checks
-
-- `Capell\Address\Health\AddressHealthCheck`
-
-### Blade views
-
-- `packages/address/resources/views/components/flag-icon.blade.php`
-
-
-## Data Model
-
-- Required tables: `countries`, `addresses`.
-- Models: `Address`, `Country`.
-- Core record references in migrations: `sites via site_id`, `languages via language_id`.
-- Migration files: `2026_05_10_190839_01_create_countries_table.php`, `2026_05_10_190839_02_create_addresses_table.php`, `2026_07_12_000001_add_address_ownership_and_encrypt_meta.php`.
-- Migration impact: run host migrations through the package install flow before opening package surfaces.
-- Deletion/retention behaviour: migrations declare null-on-delete relationships; no timed pruning or retention schedule is declared in `capell.json`.
+- Countries admin index (admin).
+- Addresses admin index (admin).
+- Create/edit country form (admin).
+- Create/edit address form (admin).
+- Site settings fields where address data is injected (admin).
+- Countries admin index with admin sidebar menu open (admin).
 
 ## Install Impact
 
@@ -182,24 +62,12 @@ Screenshot contract: `docs/screenshots.json`.
 - Cache tags: none declared.
 - Commands: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
 
-## Common Pitfalls
-
-- Keep required Capell packages on compatible v4 releases: `capell-app/admin`, `capell-app/core`.
-- Run migrations before opening package resources or public routes.
-
 ## Troubleshooting
 
 | Symptom | Likely cause | Check | Fix |
 | --- | --- | --- | --- |
 | Package surface is missing after install | Provider or manifest is not loaded | Confirm `capell.json`, package `composer.json`, and provider registration | Reinstall the package, refresh Composer autoload, and clear host caches |
 | Admin screen or command fails on missing table | Package migrations have not run | Check the tables listed in `Data Model` | Run host migrations and rerun the focused package test |
-
-## Quick Start
-
-1. Install the package: `composer require capell-app/address`.
-2. Run the package setup: `php artisan capell:address-install`.
-3. See it working: run `php artisan capell:address-demo`.
-4. Open the package admin surface at `/admin/address/countries` and confirm Address is available.
 
 ## Upgrading
 
@@ -214,11 +82,11 @@ Read [CHANGELOG.md](CHANGELOG.md) before upgrading.
 - [Worked extension examples](docs/extension-contracts.md)
 - [Admin guide](docs/admin-guide.md)
 - [Troubleshooting](#troubleshooting)
-- [Screenshot contract](docs/screenshots.json)
+- [Developer reference](docs/reference.md)
 - [Marketplace assets](docs/assets/marketplace/)
 - [Capell content language plan](../../docs/CONTENT_LANGUAGE_PLAN.md)
 - [Capell documentation design system](../../docs/DESIGN_SYSTEM.md)
 - [Capell and package ERD notes](../../docs/erd/capell-and-package-erds.md)
-- Related packages: [Bookings](../bookings/README.md), [Events](../events/README.md), [Privacy Center](../privacy-center/README.md).
+- Related packages: [Bookings](../bookings/README.md), [Events](../events/README.md), [Privacy Centre](../privacy-center/README.md).
 
 <!-- prettier-ignore-end -->

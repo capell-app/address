@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Capell\Address\Actions\EnsureSiteOwnsAddressAction;
 use Capell\Core\Models\Site;
+use Capell\Core\Support\TableName;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Crypt;
@@ -14,14 +15,14 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('addresses', function (Blueprint $table): void {
+        Schema::table(TableName::resolve('addresses'), function (Blueprint $table): void {
             foreach ([
                 'address_part_index',
                 'address_full_index',
                 'addresses_city_state_country_id_index',
                 'addresses_state_postal_code_country_id_index',
             ] as $index) {
-                if (Schema::hasIndex('addresses', $index)) {
+                if (Schema::hasIndex(TableName::resolve('addresses'), $index)) {
                     $table->dropIndex($index);
                 }
             }
@@ -36,14 +37,14 @@ return new class extends Migration
             $table->text('meta')->nullable()->change();
             $table->string('line1_hash', 64)->nullable()->index();
             $table->string('postal_code_hash', 64)->nullable()->index();
-            $table->index(['line1_hash', 'postal_code_hash', 'country_id'], 'address_blind_lookup_index');
+            $table->index(['line1_hash', 'postal_code_hash', 'country_id'], TableName::namedIndex('addresses', 'address_blind_lookup_index'));
         });
 
         $secret = config('app.key');
         throw_unless(is_string($secret) && $secret !== '', RuntimeException::class, 'Address blind-index secret is unavailable.');
         $encryptedColumns = ['name', 'line1', 'line2', 'city', 'state', 'postal_code', 'meta'];
 
-        DB::table('addresses')->orderBy('id')->eachById(function (object $address) use ($encryptedColumns, $secret): void {
+        DB::table(TableName::resolve('addresses'))->orderBy('id')->eachById(function (object $address) use ($encryptedColumns, $secret): void {
             $updates = [];
 
             foreach ($encryptedColumns as $column) {
@@ -62,7 +63,7 @@ return new class extends Migration
 
             $updates['line1_hash'] = $this->blindIndex(is_string($address->line1 ?? null) ? $address->line1 : null, $secret);
             $updates['postal_code_hash'] = $this->blindIndex(is_string($address->postal_code ?? null) ? $address->postal_code : null, $secret);
-            DB::table('addresses')->where('id', $address->id)->update($updates);
+            DB::table(TableName::resolve('addresses'))->where('id', $address->id)->update($updates);
         });
 
         Site::query()->cursor()->each(static function (Site $site): void {
@@ -74,7 +75,7 @@ return new class extends Migration
     {
         $encryptedColumns = ['name', 'line1', 'line2', 'city', 'state', 'postal_code', 'meta'];
 
-        DB::table('addresses')->orderBy('id')->eachById(function (object $address) use ($encryptedColumns): void {
+        DB::table(TableName::resolve('addresses'))->orderBy('id')->eachById(function (object $address) use ($encryptedColumns): void {
             $updates = [];
 
             foreach ($encryptedColumns as $column) {
@@ -91,11 +92,11 @@ return new class extends Migration
                 }
             }
 
-            DB::table('addresses')->where('id', $address->id)->update($updates);
+            DB::table(TableName::resolve('addresses'))->where('id', $address->id)->update($updates);
         });
 
-        Schema::table('addresses', function (Blueprint $table): void {
-            $table->dropIndex('address_blind_lookup_index');
+        Schema::table(TableName::resolve('addresses'), function (Blueprint $table): void {
+            $table->dropIndex(TableName::namedIndex('addresses', 'address_blind_lookup_index'));
             $table->dropColumn(['site_id', 'line1_hash', 'postal_code_hash']);
         });
     }

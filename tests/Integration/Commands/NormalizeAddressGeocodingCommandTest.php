@@ -27,7 +27,7 @@ it('normalizes address geocoding from the console', function (): void {
         '--dry-run' => true,
         '--limit' => 1,
     ])
-        ->expectsOutputToContain('Geocoding dry run found 1 of 1 scanned address')
+        ->expectsOutputToContain(__('capell-address::geocoding.dry_run', ['updated' => 1, 'scanned' => 1]))
         ->assertSuccessful();
 
     expect($address->refresh()->meta)->toBe([]);
@@ -36,7 +36,7 @@ it('normalizes address geocoding from the console', function (): void {
         '--provider' => 'fixture-geocoding',
         '--limit' => 1,
     ])
-        ->expectsOutputToContain('Normalized geocoding for 1 of 1 scanned address')
+        ->expectsOutputToContain(__('capell-address::geocoding.completed', ['updated' => 1, 'scanned' => 1]))
         ->assertSuccessful();
 
     expect($address->refresh()->meta)

@@ -1,0 +1,28 @@
+{
+    "create_addresses_table": {
+        "names": [
+            "2026_01_02_000002_create_addresses_table",
+            "2026_04_20_000002_create_addresses_table",
+            "2026_05_10_190839_02_create_addresses_table"
+        ],
+        "sha256": [
+            "68bcfe78671a964616c97c131af1057a634cc74a88a963e14547687188cdd4f0",
+            "6dffbb9f7f7787d771a5908e12cd166c0faa9e09dd9a9edcb228638cb11f8390",
+            "93ff69f5283d213d387eac67b6755b94cc409a89eef6d206167dfa7572de2be6",
+            "a0b51c88d69a04a64368d90b72d113310463ce5be23a10241e4aeb5d1cef6045",
+            "e5865cb434b9c796d61cca900c46fd56ffc89a413c00ec1fbfb62da49d56285a"
+        ]
+    },
+    "create_countries_table": {
+        "names": [
+            "2026_01_02_000001_create_countries_table",
+            "2026_04_20_000001_create_countries_table",
+            "2026_05_10_190839_01_create_countries_table"
+        ],
+        "sha256": [
+            "2619b263af63ce5f9683023ea93e5d7ae6efe2165460ce624ec4181f333e79c7",
+            "4a23b08d6b3cb6b78abc3a92e4b047447d87de513cc8211efcfb9c29a0528ba5",
+            "a13907066b4f96f4caa8ef15af8ca17395b106fa2931fdd6c4b4f4dd5ab2cc7d"
+        ]
+    }
+}

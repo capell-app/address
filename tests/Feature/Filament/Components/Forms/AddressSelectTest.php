@@ -5,10 +5,9 @@ declare(strict_types=1);
 use Capell\Address\Filament\Components\Forms\AddressSelect;
 use Capell\Address\Filament\Components\Forms\CountrySelect;
 use Capell\Address\Models\Address;
+use Capell\Address\Tests\Support\AddressOptionSchemaHarness;
 use Capell\Core\Models\Site;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Concerns\InteractsWithSchemas;
-use Filament\Schemas\Contracts\HasSchemas;
 use Filament\Schemas\Schema;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -17,7 +16,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection as SupportCollection;
 use Illuminate\Support\Facades\Gate;
-use Livewire\Component;
 
 it('searches addresses by persisted address line columns', function (): void {
     $matchingAddress = Address::factory()->create([
@@ -172,14 +170,6 @@ it('binds address and country option forms to their mounted action state', funct
     'country create' => [CountrySelect::class, 'createOption'],
     'country edit' => [CountrySelect::class, 'editOption'],
 ]);
-
-final class AddressOptionSchemaHarness extends Component implements HasSchemas
-{
-    use InteractsWithSchemas;
-
-    /** @var array<int, array<string, mixed>> */
-    public array $mountedActions = [];
-}
 
 it('updates the selected address only when authorised', function (bool $allowed): void {
     $address = Address::factory()->create(['name' => 'Original address']);
