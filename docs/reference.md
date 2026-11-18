@@ -6,7 +6,7 @@ Developer reference for `capell-app/address`. Start with the [README](../README.
 
 ## Package Details
 
-Address is an **Available**, **Schema-owning** Capell package in the **Capell Essentials** product group. It ships as `capell-app/address` and extends these surfaces: admin.
+Address is an **Available** Capell package in the **Capell Essentials** product group. It ships as `capell-app/address` and extends these surfaces: admin.
 
 - Status: Available
 - Tier: free
@@ -22,6 +22,10 @@ Address is an **Available**, **Schema-owning** Capell package in the **Capell Es
 - `Capell\Address\Providers\AddressServiceProvider`
 - `Capell\Address\Providers\MigrationMetadataServiceProvider`
 - `Capell\Address\Providers\ConsoleServiceProvider`
+
+### Config files
+
+- `packages/address/config/capell-address.php`
 
 ### Migrations
 
@@ -67,6 +71,7 @@ Address is an **Available**, **Schema-owning** Capell package in the **Capell Es
 
 - `BuildAddressPrivacyExportAction`
 - `BuildAddressQualityHealthReportAction`
+- `BuildGeocodingHttpClientAction`
 - `CloneSharedAddressForMutationAction`
 - `EnsureSiteOwnsAddressAction`
 - `EraseAddressPrivacyDataAction`
@@ -79,6 +84,8 @@ Address is an **Available**, **Schema-owning** Capell package in the **Capell Es
 - `ListAddressOptionsAction`
 - `ListCountryOptionsAction`
 - `NormalizeAddressGeocodingAction`
+- `PruneAddressPrivacyDataAction`
+- `RehashAddressBlindIndexesAction`
 - `ReviewCountryUploadAction`
 - `SeedAddressScreenshotFixtureAction`
 
@@ -87,6 +94,7 @@ Address is an **Available**, **Schema-owning** Capell package in the **Capell Es
 - `AddressGeocodingResultData`
 - `AddressMetaData`
 - `AddressQualityHealthReportData`
+- `AddressRetentionResultData`
 - `AddressValidationResultData`
 - `CountryImportReviewData`
 - `DuplicateAddressGroupData`
@@ -95,6 +103,7 @@ Address is an **Available**, **Schema-owning** Capell package in the **Capell Es
 
 ### Command signatures
 
+- `capell:address-blind-index-rehash`
 - `capell:address-countries-import`
 - `capell:address-demo`
 - `capell:address-faker`
@@ -112,6 +121,7 @@ Address is an **Available**, **Schema-owning** Capell package in the **Capell Es
 - `ImportCountriesCommand`
 - `InstallCommand`
 - `NormalizeAddressGeocodingCommand`
+- `RehashAddressBlindIndexesCommand`
 - `SeedAddressScreenshotFixtureCommand`
 
 ### Manifest contributions

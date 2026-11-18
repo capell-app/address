@@ -7,6 +7,7 @@ use Capell\Address\Console\Commands\FakerCommand;
 use Capell\Address\Console\Commands\ImportCountriesCommand;
 use Capell\Address\Console\Commands\InstallCommand;
 use Capell\Address\Console\Commands\NormalizeAddressGeocodingCommand;
+use Capell\Address\Console\Commands\RehashAddressBlindIndexesCommand;
 use Capell\Address\Filament\Configurators\Addresses\DefaultAddressConfigurator;
 use Capell\Address\Filament\Configurators\Countries\DefaultCountryConfigurator;
 use Capell\Address\Filament\Configurators\Languages\DefaultLanguageConfigurator;
@@ -84,6 +85,7 @@ describe('address capell.json manifest', function (): void {
             ->and(data_get($manifest, 'commands.faker'))->toBe('capell:address-faker')
             ->and(data_get($manifest, 'commands.countriesImport'))->toBe('capell:address-countries-import')
             ->and(data_get($manifest, 'commands.geocodeNormalize'))->toBe('capell:address-geocode-normalize')
+            ->and(data_get($manifest, 'commands.blindIndexRehash'))->toBe('capell:address-blind-index-rehash')
             ->and(data_get($manifest, 'commands.demo'))->toBe('capell:address-demo')
             ->and(data_get($manifest, 'healthChecks.0.class'))->toBe(AddressHealthCheck::class)
             ->and(data_get($manifest, 'contributionTraceability.deferredContributions'))->toBe([]);
@@ -145,6 +147,7 @@ describe('address capell.json manifest', function (): void {
                 'commands' => [
                     'capell:address-countries-import',
                     'capell:address-geocode-normalize',
+                    'capell:address-blind-index-rehash',
                     'capell:address-install',
                     'capell:address-faker',
                     'capell:address-demo',
@@ -152,6 +155,7 @@ describe('address capell.json manifest', function (): void {
                 'commandClasses' => [
                     ImportCountriesCommand::class,
                     NormalizeAddressGeocodingCommand::class,
+                    RehashAddressBlindIndexesCommand::class,
                     InstallCommand::class,
                     FakerCommand::class,
                     DemoCommand::class,

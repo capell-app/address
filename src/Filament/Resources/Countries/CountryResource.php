@@ -10,6 +10,7 @@ use Capell\Address\Filament\Resources\Countries\Schemas\CountryForm;
 use Capell\Address\Filament\Resources\Countries\Tables\CountriesTable;
 use Capell\Address\Models\Country;
 use Capell\Address\Providers\AddressServiceProvider;
+use Capell\Admin\Enums\NavigationGroupEnum;
 use Capell\Admin\Filament\Concerns\HasConfiguredForm;
 use Capell\Admin\Filament\Concerns\HasConfiguredTable;
 use Capell\Admin\Filament\Concerns\HasNavigationBadge;
@@ -70,9 +71,9 @@ class CountryResource extends Resource
     }
 
     #[Override]
-    public static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): NavigationGroupEnum
     {
-        return (string) (__('capell-admin::navigation.group_websites'));
+        return NavigationGroupEnum::Settings;
     }
 
     #[Override]

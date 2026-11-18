@@ -23,6 +23,6 @@ final class BuildAddressPrivacyExportAction
             return [];
         }
 
-        return ['addresses' => Address::query()->where('site_id', $subject->getKey())->get()->map->attributesToArray()->all()];
+        return ['addresses' => Address::withTrashed()->where('site_id', $subject->getKey())->get()->map->attributesToArray()->all()];
     }
 }

@@ -4,10 +4,10 @@
     "scenarios": {
         "default": {
             "source": {
-                "ref": "c92ce184be4d91c372f35ca125ea25f6c1308599",
-                "commit": "c92ce184be4d91c372f35ca125ea25f6c1308599",
+                "ref": "HEAD",
+                "commit": "bb1b5c31971b2de4514492afa7e7a60f4876d1ab",
                 "providers": {
-                    "Providers/AddressServiceProvider.php": "e4e3f34c64e4b4850327c298dd74da0b6622eea05e9e3cc78345436ee6f722e2",
+                    "Providers/AddressServiceProvider.php": "8b6c9c6e1eb77c83ee57c9b5a218e05a3b90f0cde37d2b006f86dd1c400c2607",
                     "Providers/ConsoleServiceProvider.php": "e01fd8dc90893ea01398df2c79c0cc427199115b15b8ae4832500555368c28d3",
                     "Providers/MigrationMetadataServiceProvider.php": "4cd36ecf5901c6d88fd801252484fbe63b57849e18e2f12a483633b8a2cc8725"
                 },
@@ -114,6 +114,7 @@
                     "capell-address": "Capell\\Address\\View\\Components"
                 },
                 "commands": {
+                    "capell:address-blind-index-rehash": "Capell\\Address\\Console\\Commands\\RehashAddressBlindIndexesCommand",
                     "capell:address-countries-import": "Capell\\Address\\Console\\Commands\\ImportCountriesCommand",
                     "capell:address-demo": "Capell\\Address\\Console\\Commands\\DemoCommand",
                     "capell:address-faker": "Capell\\Address\\Console\\Commands\\FakerCommand",
@@ -121,6 +122,20 @@
                     "capell:address-install": "Capell\\Address\\Console\\Commands\\InstallCommand",
                     "capell:address-screenshot-fixture": "Capell\\Address\\Console\\Commands\\SeedAddressScreenshotFixtureCommand"
                 },
+                "config-defaults": {
+                    "capell-address.php": {
+                        "blind_index_key": null,
+                        "geocoding.connect_timeout": 3,
+                        "geocoding.timeout": 5
+                    }
+                },
+                "config-keys": [
+                    "capell-address",
+                    "capell-address.blind_index_key",
+                    "capell-address.geocoding",
+                    "capell-address.geocoding.connect_timeout",
+                    "capell-address.geocoding.timeout"
+                ],
                 "config-values": {
                     "app.providers": [
                         "Capell\\Address\\Providers\\AddressServiceProvider",
@@ -241,7 +256,7 @@
                     "eloquent.saving: Capell\\Address\\Models\\Address": [
                         [
                             "<package>/src/Models/Address.php",
-                            "static Capell\\Address\\Models\\Address(Capell\\Address\\Models\\Address $address):void source=1c761ab247fde0146ddb766a4118e018",
+                            "static Capell\\Address\\Models\\Address(Capell\\Address\\Models\\Address $address):void source=9150b7c34e5dcbc7cf653c53e2d3cdd9",
                             []
                         ]
                     ],
@@ -491,11 +506,23 @@
                     }
                 },
                 "tagged-consumers": {
+                    "capell.privacy.subject-eraser": [
+                        "Capell\\Address\\Support\\Privacy\\AddressPrivacyContributor"
+                    ],
+                    "capell.privacy.subject-exporter": [
+                        "Capell\\Address\\Support\\Privacy\\AddressPrivacyContributor"
+                    ],
                     "capell.site_schema.extenders": [
                         "Capell\\Address\\Filament\\Resources\\Sites\\Schemas\\Extenders\\SiteSchemaExtender"
                     ]
                 },
                 "tags": {
+                    "capell.privacy.subject-eraser": [
+                        "Capell\\Address\\Support\\Privacy\\AddressPrivacyContributor"
+                    ],
+                    "capell.privacy.subject-exporter": [
+                        "Capell\\Address\\Support\\Privacy\\AddressPrivacyContributor"
+                    ],
                     "capell.site_schema.extenders": [
                         "Capell\\Address\\Filament\\Resources\\Sites\\Schemas\\Extenders\\SiteSchemaExtender"
                     ]
@@ -518,6 +545,7 @@
             },
             "uninstalledSurfaces": {
                 "commands": {
+                    "capell:address-blind-index-rehash": "Capell\\Address\\Console\\Commands\\RehashAddressBlindIndexesCommand",
                     "capell:address-countries-import": "Capell\\Address\\Console\\Commands\\ImportCountriesCommand",
                     "capell:address-demo": "Capell\\Address\\Console\\Commands\\DemoCommand",
                     "capell:address-faker": "Capell\\Address\\Console\\Commands\\FakerCommand",
@@ -525,6 +553,20 @@
                     "capell:address-install": "Capell\\Address\\Console\\Commands\\InstallCommand",
                     "capell:address-screenshot-fixture": "Capell\\Address\\Console\\Commands\\SeedAddressScreenshotFixtureCommand"
                 },
+                "config-defaults": {
+                    "capell-address.php": {
+                        "blind_index_key": null,
+                        "geocoding.connect_timeout": 3,
+                        "geocoding.timeout": 5
+                    }
+                },
+                "config-keys": [
+                    "capell-address",
+                    "capell-address.blind_index_key",
+                    "capell-address.geocoding",
+                    "capell-address.geocoding.connect_timeout",
+                    "capell-address.geocoding.timeout"
+                ],
                 "config-values": {
                     "app.providers": [
                         "Capell\\Address\\Providers\\AddressServiceProvider",

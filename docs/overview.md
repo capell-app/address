@@ -2,6 +2,14 @@
 
 <!-- prettier-ignore-start -->
 
+If you run more than one site from the same admin, the same office address tends to get typed more than once, a little differently each time. This gives you one list of postal addresses and countries to pick from, and each site chooses its address from that list in its own settings.
+
+Visitors won't notice anything new. All of this happens in your admin, nothing is added to your public pages, and postcode lookup and maps aren't part of it.
+
+What you get is tidier records. A health check warns you when two addresses look like the same place spelled two ways, or when an address has no enabled country. When two of your sites share an office and one of them moves, edit the address from that site's settings. That site gets its own copy to change, and the other site's address stays as it was.
+
+Capell has no built-in list of countries. You upload one as a CSV file (a simple spreadsheet format) of country names and their two- and three-letter codes, or add a country by hand. Before anything is saved, you see what the upload would add or switch off.
+
 ## What it does
 
 Address provides Capell's shared Country reference list and structured postal Address records. Sites and other packages can point to those records instead of keeping separate copies of the same location fields.
@@ -28,17 +36,17 @@ Before force-deleting an address, check the Sites count and any consuming packag
 
 Diagnostics checks that the tables exist, every address uses an enabled country, stored coordinates are valid, and likely duplicate groups are visible. Missing coordinates are counted but do not by themselves fail the data-quality check. Validation and geocoding providers are optional extension points; having none configured is not an error.
 
-If an integration has registered an available geocoding provider, run `capell:address-geocode-normalize --dry-run` to preview a batch. Use `--limit=100` to bound it or `--provider=provider-key` to choose one provider. Without an available provider the command scans safely and writes nothing. A successful run stores latitude, longitude, provider key, confidence, and geocoded time in encrypted address metadata. The command is synchronous, is not scheduled, and has no automatic retry; use small batches and review provider failures before rerunning.
+If an integration has registered an available geocoding provider, run `capell:address-geocode-normalize --dry-run` to preview a batch. Use `--limit=100` to bound it or `--provider=provider-key` to choose one provider. Without an available provider the command scans safely and writes nothing. A successful run stores latitude, longitude, provider key, confidence, and geocoded time in encrypted address metadata. The command is synchronous, is not scheduled, and has no automatic retry; use small batches and review provider failures before rerunning. Each outbound request is limited by `CAPELL_ADDRESS_GEOCODING_CONNECT_TIMEOUT` (default 3 seconds) and `CAPELL_ADDRESS_GEOCODING_TIMEOUT` (default 5 seconds); a provider that times out is skipped for that address and the address is left unchanged.
 
 The core Address package exposes validation-provider contracts to integrations, but it does not provide a batch validation command or automatically normalise postal fields from those providers.
 
 ## Privacy and data lifecycle
 
-Address name, street, city, region, postal code, and metadata are encrypted at rest. Deterministic HMAC indexes of the first address line and postal code support exact duplicate lookup; keep `APP_KEY` stable or encrypted values and those indexes will no longer be usable. Country names and codes, ownership IDs, enabled/default flags, timestamps, and user stamps are not encrypted. Treat coordinates as precise location data and protect database, backup, and admin access.
+Address name, street, city, region, postal code, and metadata are encrypted at rest. Deterministic HMAC indexes of the first address line and postal code support exact duplicate lookup. The indexes are keyed with `CAPELL_ADDRESS_BLIND_INDEX_KEY` (`capell-address.blind_index_key`) and use `APP_KEY` only when that is unset. Encrypted values always depend on `APP_KEY`. After changing the blind index key, run `capell:address-blind-index-rehash` to recompute the indexes. Country names and codes, ownership IDs, enabled/default flags, timestamps, and user stamps are not encrypted. Treat coordinates as precise location data and protect database, backup, and admin access.
 
-When Privacy Centre is present, Address contributes export and erasure only for a **Site** subject: it exports addresses whose `site_id` matches that site and soft-deletes those owned records on erasure. It does not guess that an address belongs to a person because an order, booking, attendee, or customer references it. The consuming package must export or erase that relationship, and must detach rather than delete a record still needed by another subject or legal record. Country reference data is never part of subject erasure.
+When Privacy Centre is present, Address contributes export and erasure only for a **Site** subject: it exports active and retained soft-deleted addresses whose `site_id` matches that site and permanently erases those owned records on erasure. It does not guess that an address belongs to a person because an order, booking, attendee, or customer references it. The consuming package must export or erase that relationship, and must detach rather than delete a record still needed by another subject or legal record. Country reference data is never part of subject erasure.
 
-There is no age-based address retention or scheduled cleanup. Soft-deleted records remain until an authorised force-delete, and external geocoding providers may have their own request-data retention terms.
+Cleanup is opt-in: applications can schedule `PruneAddressPrivacyDataAction` with their selected positive retention period to purge expired soft-deleted addresses. Dry runs report candidates; addresses with `meta.legal_hold` are retained. There is no automatic package schedule. External geocoding providers may have their own request-data retention terms. Capell ships no geocoding HTTP provider. A provider that you or a package add sends the address text to a third party, which is a disclosure of personal data. You decide and record the lawful basis, and you tell the people concerned, before you enable a provider. Capell does not choose the basis for you. The command `capell:address-geocode-normalize` is opt-in and does nothing until a provider is registered and the command is run.
 
 ---
 

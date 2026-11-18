@@ -1,0 +1,74 @@
+[
+    {
+        "claim": "If you run more than one site from the same admin, the same office address tends to get typed more than once, a little differently each time.",
+        "evidence": [
+            "src/Filament/Resources/Addresses/AddressResource.php",
+            "src/Actions/CloneSharedAddressForMutationAction.php"
+        ]
+    },
+    {
+        "claim": "This gives you one list of postal addresses and countries to pick from, and each site chooses its address from that list in its own settings.",
+        "evidence": [
+            "src/Filament/Resources/Addresses/AddressResource.php",
+            "database/migrations/2026_05_10_190839_01_create_countries_table.php",
+            "src/Filament/Resources/Sites/Schemas/Extenders/SiteSchemaExtender.php"
+        ]
+    },
+    {
+        "claim": "Visitors won't notice anything new.",
+        "evidence": ["capell.json"]
+    },
+    {
+        "claim": "All of this happens in your admin, nothing is added to your public pages, and postcode lookup and maps aren't part of it.",
+        "evidence": [
+            "capell.json",
+            "src/Contracts/AddressGeocodingProvider.php",
+            "resources/lang/en/health.php"
+        ]
+    },
+    {
+        "claim": "What you get is tidier records.",
+        "evidence": ["resources/lang/en/health.php"]
+    },
+    {
+        "claim": "A health check warns you when two addresses look like the same place spelled two ways, or when an address has no enabled country.",
+        "evidence": [
+            "resources/lang/en/health.php",
+            "src/Health/AddressHealthCheck.php",
+            "src/Actions/BuildAddressQualityHealthReportAction.php"
+        ]
+    },
+    {
+        "claim": "When two of your sites share an office and one of them moves, edit the address from that site's settings.",
+        "evidence": [
+            "src/Filament/Components/Forms/AddressSelect.php",
+            "src/Actions/CloneSharedAddressForMutationAction.php",
+            "src/Filament/Resources/Sites/Schemas/Extenders/SiteSchemaExtender.php"
+        ]
+    },
+    {
+        "claim": "That site gets its own copy to change, and the other site's address stays as it was.",
+        "evidence": [
+            "src/Actions/CloneSharedAddressForMutationAction.php",
+            "src/Filament/Components/Forms/AddressSelect.php"
+        ]
+    },
+    {
+        "claim": "Capell has no built-in list of countries.",
+        "evidence": [
+            "resources/lang/en/import.php",
+            "database/migrations/2026_05_10_190839_01_create_countries_table.php"
+        ]
+    },
+    {
+        "claim": "You upload one as a CSV file (a simple spreadsheet format) of country names and their two- and three-letter codes, or add a country by hand.",
+        "evidence": [
+            "resources/lang/en/import.php",
+            "src/Filament/Resources/Countries/Pages/ManageCountries.php"
+        ]
+    },
+    {
+        "claim": "Before anything is saved, you see what the upload would add or switch off.",
+        "evidence": ["resources/lang/en/import.php"]
+    }
+]

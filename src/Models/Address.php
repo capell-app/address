@@ -6,6 +6,7 @@ namespace Capell\Address\Models;
 
 use Capell\Address\Database\Factories\AddressFactory;
 use Capell\Address\Observers\AddressObserver;
+use Capell\Address\Support\AddressBlindIndex;
 use Capell\Core\Concerns\HasCapellTable;
 use Capell\Core\Models\Concerns\HasDefault;
 use Capell\Core\Models\Concerns\HasStatus;
@@ -24,7 +25,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 use Override;
-use RuntimeException;
 use Staudenmeir\EloquentJsonRelations\HasJsonRelationships;
 
 /**
@@ -128,8 +128,8 @@ class Address extends Model implements Defaultable, Userstampable
     public static function findAddress(string $line1, string $postalCode, int $countryId): ?self
     {
         return self::query()
-            ->where('line1_hash', self::blindIndex($line1))
-            ->where('postal_code_hash', self::blindIndex($postalCode))
+            ->where('line1_hash', AddressBlindIndex::hash($line1))
+            ->where('postal_code_hash', AddressBlindIndex::hash($postalCode))
             ->where('country_id', $countryId)
             ->first();
     }
@@ -154,8 +154,8 @@ class Address extends Model implements Defaultable, Userstampable
     protected static function booted(): void
     {
         static::saving(static function (Address $address): void {
-            $address->setAttribute('line1_hash', self::blindIndex($address->line1));
-            $address->setAttribute('postal_code_hash', self::blindIndex($address->postal_code));
+            $address->setAttribute('line1_hash', AddressBlindIndex::hash($address->line1));
+            $address->setAttribute('postal_code_hash', AddressBlindIndex::hash($address->postal_code));
         });
     }
 
@@ -198,17 +198,5 @@ class Address extends Model implements Defaultable, Userstampable
             'default' => 'boolean',
             'status' => 'boolean',
         ];
-    }
-
-    private static function blindIndex(?string $value): ?string
-    {
-        if (! is_string($value) || trim($value) === '') {
-            return null;
-        }
-
-        $secret = config('app.key');
-        throw_unless(is_string($secret) && $secret !== '', RuntimeException::class, 'Address blind-index secret is unavailable.');
-
-        return hash_hmac('sha256', mb_strtolower(trim($value)), $secret);
     }
 }

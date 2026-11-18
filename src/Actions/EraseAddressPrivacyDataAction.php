@@ -9,6 +9,7 @@ use Capell\Core\Models\Site;
 use Illuminate\Database\Eloquent\Model;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
+use RuntimeException;
 
 /** @method static int run(Model $subject) */
 final class EraseAddressPrivacyDataAction
@@ -22,8 +23,12 @@ final class EraseAddressPrivacyDataAction
             return 0;
         }
 
-        $deleted = Address::query()->where('site_id', $subject->getKey())->delete();
+        $deleted = 0;
+        Address::withTrashed()->where('site_id', $subject->getKey())->eachById(static function (Address $address) use (&$deleted): void {
+            throw_unless($address->forceDelete() === true, RuntimeException::class, 'Address erasure was refused.');
+            $deleted++;
+        });
 
-        return is_int($deleted) ? $deleted : 0;
+        return $deleted;
     }
 }

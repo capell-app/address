@@ -9,8 +9,10 @@ use Capell\Address\Data\AddressGeocodingResultData;
 use Capell\Address\Data\NormalizeAddressGeocodingResultData;
 use Capell\Address\Models\Address;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Lorisleiva\Actions\Concerns\AsFake;
 use Lorisleiva\Actions\Concerns\AsObject;
+use Throwable;
 
 /**
  * @method static NormalizeAddressGeocodingResultData run(Address $address, ?string $providerKey = null, bool $dryRun = false)
@@ -25,9 +27,9 @@ final class NormalizeAddressGeocodingAction
         $addressId = $address->getKey();
 
         foreach ($this->providers($providerKey) as $provider) {
-            $result = $provider->geocode($address);
+            $result = $this->geocode($provider, $address);
 
-            if (! $this->hasValidCoordinates($result)) {
+            if (! $result instanceof AddressGeocodingResultData || ! $this->hasValidCoordinates($result)) {
                 continue;
             }
 
@@ -64,6 +66,25 @@ final class NormalizeAddressGeocodingAction
             updated: false,
             messages: ['No available geocoding provider returned valid coordinates.'],
         );
+    }
+
+    /**
+     * A provider that times out or fails is a geocoding miss for this address:
+     * the address is left unchanged and the next provider is tried.
+     */
+    private function geocode(AddressGeocodingProvider $provider, Address $address): ?AddressGeocodingResultData
+    {
+        try {
+            return $provider->geocode($address);
+        } catch (Throwable $exception) {
+            Log::warning('Address geocoding provider failed; treating as a geocoding miss.', [
+                'provider' => $provider->key(),
+                'address_id' => $address->getKey(),
+                'exception' => $exception::class,
+            ]);
+
+            return null;
+        }
     }
 
     /**

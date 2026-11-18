@@ -6,7 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
-    "description": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
+    "description": "One list of countries and postal addresses in your admin, so each site's address is typed once and kept in step.",
     "product": {
         "group": "Capell Essentials",
         "tier": "free",
@@ -90,6 +90,7 @@
             "commands": [
                 "capell:address-countries-import",
                 "capell:address-geocode-normalize",
+                "capell:address-blind-index-rehash",
                 "capell:address-install",
                 "capell:address-faker",
                 "capell:address-demo"
@@ -97,6 +98,7 @@
             "commandClasses": [
                 "Capell\\Address\\Console\\Commands\\ImportCountriesCommand",
                 "Capell\\Address\\Console\\Commands\\NormalizeAddressGeocodingCommand",
+                "Capell\\Address\\Console\\Commands\\RehashAddressBlindIndexesCommand",
                 "Capell\\Address\\Console\\Commands\\InstallCommand",
                 "Capell\\Address\\Console\\Commands\\FakerCommand",
                 "Capell\\Address\\Console\\Commands\\DemoCommand"
@@ -120,6 +122,7 @@
         "doctor": null,
         "countriesImport": "capell:address-countries-import",
         "geocodeNormalize": "capell:address-geocode-normalize",
+        "blindIndexRehash": "capell:address-blind-index-rehash",
         "faker": "capell:address-faker"
     },
     "actions": {
@@ -163,9 +166,11 @@
             "forbidPublicBladeQueries": true
         },
         "externalHttpClients": {
-            "requiresTimeouts": false,
-            "requiresSecretRedaction": false,
-            "clients": []
+            "requiresTimeouts": true,
+            "requiresSecretRedaction": true,
+            "clients": [
+                "Capell\\Address\\Actions\\BuildGeocodingHttpClientAction"
+            ]
         },
         "adminSurface": {
             "authorization": "policies",
@@ -200,48 +205,49 @@
         "privateDocsRequested": false
     },
     "marketplace": {
-        "summary": "Reusable countries and structured postal addresses for Capell: one shared address record, site-scoped, that any package can reference instead of re-modelling location fields.",
-        "problem": "When our team corrects a postal address in one place, other copies can still be out of date.",
-        "outcome": "A site has reusable address records that can be selected across supported workflows.",
+        "summary": "Type each address once and pick it for your sites, with a country list you upload and check first.",
+        "description": "Several sites in one admin often end up with the same address typed differently. Here you keep postal addresses and countries in a single list, and each site picks its own from its settings. Nothing new shows on your public pages. A health check points out two addresses that look like one place spelled two ways. If two sites share an office and one moves, editing it from that site's settings gives that site a copy of its own. You load countries from a CSV file of names with two- and three-letter codes, and you see what would be added or switched off before anything is saved.",
+        "problem": "The same office address gets typed into several places and drifts out of step.",
+        "outcome": "Each site picks its address from one list, and likely duplicates are flagged for you.",
         "faq": [
             {
-                "question": "Can an address be reused?",
-                "answer": "Yes. Supported workflows can select saved address records."
+                "question": "Does it add anything to my public pages, such as a map or postcode lookup?",
+                "answer": "No. Addresses and countries are managed in the admin only. Nothing is added to your public pages, and there is no postcode lookup or map."
             },
             {
-                "question": "Who manages countries and addresses?",
-                "answer": "Administrators manage countries and reusable addresses in the admin."
+                "question": "Do I have to set up a list of countries before I add addresses?",
+                "answer": "Capell has no built-in list, so you add the countries you need. Upload them as a CSV file and check what the upload would add or switch off before it is saved, or add one at a time with New country (advanced)."
             },
             {
-                "question": "Are address records site-scoped?",
-                "answer": "Yes. Address records are scoped to a site."
+                "question": "If two sites share an address and one moves, does the other site's address change?",
+                "answer": "No. Edit the address from the moving site's settings and that site gets its own copy to change. The other site keeps the original."
             }
         ],
         "screenshots": [
             {
                 "path": "docs/assets/marketplace/extension-card.jpg",
-                "alt": "Address extension card",
-                "caption": "Address extension card"
+                "alt": "Address card showing an empty Countries screen in light and dark themes above steps labelled Country, Address and Reuse.",
+                "caption": "The card describes the idea in three steps, a country, an address and then reusing it."
             },
             {
                 "path": "docs/screenshots/countries-admin-index.png",
-                "alt": "Countries admin index",
-                "caption": "Countries admin index"
+                "alt": "Countries list with United Kingdom marked Default, plus United States, France and Germany with ISO codes and active status.",
+                "caption": "Load countries from a CSV with Import countries, or add one by hand with New country (advanced)."
             },
             {
                 "path": "docs/screenshots/countries-admin-index-dark.png",
-                "alt": "Countries admin index (dark mode)",
-                "caption": "Countries admin index (dark mode)"
+                "alt": "Dark theme Countries list with four active countries, ISO codes, and Import countries and New country buttons.",
+                "caption": "The country list as it looks in the dark admin theme."
             },
             {
                 "path": "docs/screenshots/addresses-admin-index.png",
-                "alt": "Addresses admin index",
-                "caption": "Addresses admin index"
+                "alt": "Addresses list with a London studio marked Default, a New York office and a Paris showroom, each with city and country.",
+                "caption": "One list of postal addresses that your sites can pick from, with a New address button."
             },
             {
                 "path": "docs/screenshots/addresses-admin-index-dark.png",
-                "alt": "Addresses admin index (dark mode)",
-                "caption": "Addresses admin index (dark mode)"
+                "alt": "Dark theme Addresses list with three addresses and a Countries button beside New address.",
+                "caption": "The address list as it looks in the dark admin theme."
             }
         ],
         "categories": ["admin", "foundation"]

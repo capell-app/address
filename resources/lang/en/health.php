@@ -19,5 +19,5 @@ return [
     'duplicate_addresses_failed' => 'Addresses checked: :addresses. Addresses in likely duplicate groups: :duplicates, across :groups groups.',
     'duplicate_addresses_remediation' => 'Review duplicate address groups before adding merge or cleanup workflows.',
     'providers_label' => 'Address: optional address services detected',
-    'providers_message' => 'Validation providers detected: :validation. Geocoding providers detected: :geocoding. Providers are optional extension points.',
+    'providers_message' => 'Detected validation services: :validation. Detected coordinate services: :geocoding. Configure an address service only if your site needs it.',
 ];

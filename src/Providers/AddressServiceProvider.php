@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Capell\Address\Providers;
 
 use Capell\Address\Actions\EnsureSiteOwnsAddressAction;
-use Capell\Address\Bridges\AddressPrivacyBridge;
 use Capell\Address\Console\Commands\DemoCommand;
 use Capell\Address\Console\Commands\FakerCommand;
 use Capell\Address\Console\Commands\ImportCountriesCommand;
 use Capell\Address\Console\Commands\InstallCommand;
 use Capell\Address\Console\Commands\NormalizeAddressGeocodingCommand;
+use Capell\Address\Console\Commands\RehashAddressBlindIndexesCommand;
 use Capell\Address\Console\Commands\SeedAddressScreenshotFixtureCommand;
 use Capell\Address\Enums\ConfiguratorTypeEnum;
 use Capell\Address\Enums\ResourceEnum;
@@ -23,6 +23,7 @@ use Capell\Address\Policies\CountryPolicy;
 use Capell\Address\Support\AddressModelRegistrar;
 use Capell\Address\Support\FlagIconRenderer;
 use Capell\Address\Support\Language\FlagsService;
+use Capell\Address\Support\Privacy\AddressPrivacyContributor;
 use Capell\Admin\Data\AdminSurfaceContributionData;
 use Capell\Admin\Enums\AdminSurfaceContributionType;
 use Capell\Admin\Enums\ConfiguratorTypeEnum as AdminConfiguratorTypeEnum;
@@ -34,6 +35,7 @@ use Capell\Core\Data\VendorAssetData;
 use Capell\Core\Facades\CapellCore;
 use Capell\Core\Models\Site;
 use Capell\Core\Support\Packages\AbstractPackageServiceProvider;
+use Capell\Core\Support\Privacy\PrivacySubjectRegistry;
 use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
@@ -55,12 +57,14 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
     {
         $package->name(self::$name)
             ->hasViews(self::$name)
+            ->hasConfigFile('capell-address')
             ->hasCommands([
                 DemoCommand::class,
                 FakerCommand::class,
                 ImportCountriesCommand::class,
                 InstallCommand::class,
                 NormalizeAddressGeocodingCommand::class,
+                RehashAddressBlindIndexesCommand::class,
                 SeedAddressScreenshotFixtureCommand::class,
             ])
             ->hasMigrations([
@@ -98,7 +102,7 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
             ->registerConfigurators()
             ->registerLanguageConfigurator()
             ->registerSchemaExtenders()
-            ->registerPrivacyCenterContributors()
+            ->registerPrivacyContributors()
             ->registerBladeComponents();
     }
 
@@ -243,9 +247,10 @@ final class AddressServiceProvider extends AbstractPackageServiceProvider
         return $this;
     }
 
-    private function registerPrivacyCenterContributors(): self
+    private function registerPrivacyContributors(): self
     {
-        $this->app->make(AddressPrivacyBridge::class)->register($this->app);
+        $this->app->tag([AddressPrivacyContributor::class], PrivacySubjectRegistry::EXPORTER_TAG);
+        $this->app->tag([AddressPrivacyContributor::class], PrivacySubjectRegistry::ERASER_TAG);
 
         return $this;
     }

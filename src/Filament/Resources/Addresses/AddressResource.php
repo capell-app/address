@@ -11,6 +11,7 @@ use Capell\Address\Filament\Resources\Addresses\Tables\AddressesTable;
 use Capell\Address\Models\Address;
 use Capell\Address\Providers\AddressServiceProvider;
 use Capell\Address\Support\AddressSiteScope;
+use Capell\Admin\Enums\NavigationGroupEnum;
 use Capell\Admin\Filament\Concerns\HasConfiguredForm;
 use Capell\Admin\Filament\Concerns\HasConfiguredTable;
 use Capell\Admin\Filament\Concerns\HasNavigationBadge;
@@ -70,9 +71,9 @@ class AddressResource extends Resource
     }
 
     #[Override]
-    public static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): NavigationGroupEnum
     {
-        return (string) (__('capell-admin::navigation.group_websites'));
+        return NavigationGroupEnum::Settings;
     }
 
     #[Override]

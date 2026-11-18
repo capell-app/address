@@ -6,6 +6,7 @@ use Capell\Address\Actions\BuildAddressPrivacyExportAction;
 use Capell\Address\Actions\CloneSharedAddressForMutationAction;
 use Capell\Address\Actions\EnsureSiteOwnsAddressAction;
 use Capell\Address\Actions\EraseAddressPrivacyDataAction;
+use Capell\Address\Actions\PruneAddressPrivacyDataAction;
 use Capell\Address\Models\Address;
 use Capell\Core\Models\Site;
 use Capell\Tests\Support\MigrationRunner;
@@ -80,4 +81,35 @@ it('claims an unowned address and clones it when another site attaches it', func
         ->and($secondAddress?->site_id)->toBe($secondSite->getKey())
         ->and($secondAddress?->getKey())->not->toBe($firstAddress?->getKey())
         ->and(data_get($secondSite->refresh()->meta, 'address_id'))->toBe($secondAddress?->getKey());
+});
+
+it('exports retained soft-deleted addresses and permanently erases every owned address', function (): void {
+    $site = Site::factory()->create();
+    $deleted = Address::factory()->create(['site_id' => $site->getKey(), 'line1' => 'Retained private street']);
+    $deleted->delete();
+    Address::factory()->create(['site_id' => $site->getKey()]);
+    $other = Address::factory()->create(['site_id' => Site::factory()->create()->getKey()]);
+
+    expect(BuildAddressPrivacyExportAction::run($site)['addresses'])->toHaveCount(2)
+        ->and(EraseAddressPrivacyDataAction::run($site))->toBe(2)
+        ->and(Address::withTrashed()->where('site_id', $site->getKey())->count())->toBe(0)
+        ->and($other->fresh())->not->toBeNull()
+        ->and(EraseAddressPrivacyDataAction::run($site))->toBe(0);
+});
+
+it('prunes only expired deleted addresses and honours holds and dry runs', function (): void {
+    $site = Site::factory()->create();
+    $expired = Address::factory()->create(['site_id' => $site->getKey(), 'deleted_at' => now()->subDays(31)]);
+    $recent = Address::factory()->create(['site_id' => $site->getKey(), 'deleted_at' => now()->subDays(29)]);
+    $active = Address::factory()->create(['site_id' => $site->getKey(), 'created_at' => now()->subYears(2)]);
+    $held = Address::factory()->create(['site_id' => $site->getKey(), 'deleted_at' => now()->subDays(40), 'meta' => ['legal_hold' => true]]);
+
+    $preview = PruneAddressPrivacyDataAction::run(30, dryRun: true);
+    expect($preview->matchedRecords)->toBe(1)->and($preview->affectedRecords)->toBe(0)->and($preview->heldRecords)->toBe(1)
+        ->and($expired->fresh())->not->toBeNull();
+
+    $result = PruneAddressPrivacyDataAction::run(30);
+    expect($result->affectedRecords)->toBe(1)
+        ->and(Address::withTrashed()->whereKey($expired->getKey())->exists())->toBeFalse()
+        ->and(Address::withTrashed()->whereKey([$recent->getKey(), $active->getKey(), $held->getKey()])->count())->toBe(3);
 });

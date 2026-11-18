@@ -2,22 +2,18 @@
 
 <!-- prettier-ignore-start -->
 
-## What It Does
+If you run more than one site from the same admin, the same office address tends to get typed more than once, a little differently each time. This gives you one list of postal addresses and countries to pick from, and each site chooses its address from that list in its own settings.
 
-Address adds site-scoped country and postal-address records, admin resources, and shared address selectors for other Capell packages.
+Visitors won't notice anything new. All of this happens in your admin, nothing is added to your public pages, and postcode lookup and maps aren't part of it.
+
+What you get is tidier records. A health check warns you when two addresses look like the same place spelled two ways, or when an address has no enabled country. When two of your sites share an office and one of them moves, edit the address from that site's settings. That site gets its own copy to change, and the other site's address stays as it was.
+
+Capell has no built-in list of countries. You upload one as a CSV file (a simple spreadsheet format) of country names and their two- and three-letter codes, or add a country by hand. Before anything is saved, you see what the upload would add or switch off.
 
 - **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/address).
 - **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/extensions/address).
-- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.75`, `stijnvanouplines/blade-country-flags ^1.0`.
+- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.78`, `stijnvanouplines/blade-country-flags ^1.0`.
 - **Install:** `composer require capell-app/address`.
-
-Admins manage countries and reusable addresses, then select saved address data while editing a site.
-
-## Who It Is For
-
-**For developers:** The package contributes AddressResource, CountryResource, reusable form fields, and a site schema extender instead of making each package model location fields again.
-
-**For teams:** A postal address can be corrected once and reused wherever a Capell workflow references it.
 
 ## Quick Start
 
@@ -26,13 +22,18 @@ Admins manage countries and reusable addresses, then select saved address data w
 3. See it working: run `php artisan capell:address-demo`.
 4. Open the package admin surface at `/admin/address/countries` and confirm Address is available.
 
+## For Developers
+
+The package contributes AddressResource, CountryResource, reusable form fields, and a site schema extender instead of making each package model location fields again.
+
 ## Configure
 
-- **Commands:** `php artisan capell:address-countries-import`, `php artisan capell:address-demo`, `php artisan capell:address-faker`, `php artisan capell:address-geocode-normalize`, `php artisan capell:address-install`.
+- **Configuration files:** `config/capell-address.php`.
+- **Commands:** `php artisan capell:address-blind-index-rehash`, `php artisan capell:address-countries-import`, `php artisan capell:address-demo`, `php artisan capell:address-faker`, `php artisan capell:address-geocode-normalize`, `php artisan capell:address-install`.
 
 ## Limits And Pitfalls
 
-- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.75`.
+- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.78`.
 - Run migrations before opening package resources or public routes.
 
 ## Screens And Workflow
@@ -56,11 +57,11 @@ Admins manage countries and reusable addresses, then select saved address data w
 - Permissions: access also governed by package policies: `AbstractAddressResourcePolicy`, `AddressPolicy`, `CountryPolicy`.
 - Public routes: none declared.
 - Database changes: package migrations are declared.
-- Config: no package config files.
+- Config: `config/capell-address.php`.
 - Settings: no package settings declared.
 - Queues or schedules: none declared.
 - Cache tags: none declared.
-- Commands: `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
+- Commands: `capell:address-blind-index-rehash`, `capell:address-countries-import`, `capell:address-demo`, `capell:address-faker`, `capell:address-geocode-normalize`, `capell:address-install`.
 
 ## Troubleshooting
 
@@ -81,6 +82,7 @@ Read [CHANGELOG.md](CHANGELOG.md) before upgrading.
 - [Overview](docs/overview.md)
 - [Worked extension examples](docs/extension-contracts.md)
 - [Admin guide](docs/admin-guide.md)
+- Configuration files: [`config/capell-address.php`](config/capell-address.php).
 - [Troubleshooting](#troubleshooting)
 - [Developer reference](docs/reference.md)
 - [Marketplace assets](docs/assets/marketplace/)
