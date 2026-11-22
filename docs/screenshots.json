@@ -1,7 +1,8 @@
 {
     "package": "address",
     "composerName": "capell-app/address",
-    "generatedFor": "deployment-screenshot-runner",
+    "generatedFor": "shared-capell-screenshot-runner",
+    "provenancePolicy": "runner-only-v1",
     "requiresInstalledPackage": true,
     "outputDirectory": "packages/address/docs/screenshots",
     "fixtureCommands": ["capell:address-screenshot-fixture"],

@@ -10,14 +10,14 @@ What you get is tidier records. A health check warns you when two addresses look
 
 Capell has no built-in list of countries. You upload one as a CSV file (a simple spreadsheet format) of country names and their two- and three-letter codes, or add a country by hand. Before anything is saved, you see what the upload would add or switch off.
 
-- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/extensions/address).
-- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/extensions/address).
-- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.78`, `stijnvanouplines/blade-country-flags ^1.0`.
-- **Install:** `composer require capell-app/address`.
+- **Price and availability:** Check current availability and price on the [Capell Marketplace listing](https://capell.app/marketplace/extensions/address).
+- **Licence:** Check the licence terms on the [Capell Marketplace listing](https://capell.app/marketplace/extensions/address).
+- **Requires:** `PHP ^8.4`, `capell-app/admin ^1.0.78`, `capell-app/core ^1.0.78`, `stijnvanouplines/blade-country-flags ^1.0`.
+- **Install:** `composer require capell-app/address:@beta`.
 
 ## Quick Start
 
-1. Install the package: `composer require capell-app/address`.
+1. Install the package: `composer require capell-app/address:@beta`.
 2. Run the package setup: `php artisan capell:address-install`.
 3. See it working: run `php artisan capell:address-demo`.
 4. Open the package admin surface at `/admin/address/countries` and confirm Address is available.
@@ -33,7 +33,7 @@ The package contributes AddressResource, CountryResource, reusable form fields, 
 
 ## Limits And Pitfalls
 
-- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.66`, `capell-app/core ^1.0.78`.
+- Install the required Capell packages at the versions in `composer.json`: `capell-app/admin ^1.0.78`, `capell-app/core ^1.0.78`.
 - Run migrations before opening package resources or public routes.
 
 ## Screens And Workflow
