@@ -6,6 +6,7 @@
     "kind": "package",
     "capellApiVersion": "^1.0",
     "version": "1.0.0",
+    "launchStatus": "shipped",
     "description": "One list of countries and postal addresses in your admin, so each site's address is typed once and kept in step.",
     "product": {
         "group": "Capell Essentials",
